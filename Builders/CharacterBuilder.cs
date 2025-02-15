@@ -190,13 +190,48 @@ namespace Pentacle.Builders
         public static T AddToDatabase<T>(this T ch, bool appearsInShops = true, bool locked = false) where T : CharacterSO
         {
             ch.m_StartsLocked = locked;
-
-            CharacterDB.AddNewCharacter(ch.name, ch);
-
             if(!appearsInShops)
                 MiscDB.AddOmittedFoolToZones(ch.name);
 
+            CharacterDB.AddNewCharacter(ch.name, ch);
+
             return ch;
+        }
+
+        public static SelectableCharacterData GenerateMenuCharacter<T>(this T ch, string unlockedSpriteName, string lockedSpriteName = null, Assembly callingAssembly = null) where T : CharacterSO
+        {
+            callingAssembly ??= Assembly.GetCallingAssembly();
+            
+            var unlockedSprite = ResourceLoader.LoadSprite(unlockedSpriteName, assembly: callingAssembly);
+            var lockedSprite = string.IsNullOrEmpty(lockedSpriteName) ? null : ResourceLoader.LoadSprite(lockedSpriteName, assembly: callingAssembly);
+
+            return new(ch.name, unlockedSprite, lockedSprite != null ? lockedSprite : unlockedSprite);
+        }
+
+        public static SelectableCharacterData GenerateMenuCharacter<T>(this T ch, Sprite unlockedSprite, Sprite lockedSprite = null) where T : CharacterSO
+        {
+            return new(ch.name, unlockedSprite, lockedSprite != null ? lockedSprite : unlockedSprite);
+        }
+
+        public static T AddToDatabase<T>(this T selCh) where T : SelectableCharacterData
+        {
+            CharacterDB.SelectableCharacters.Add(selCh);
+
+            return selCh;
+        }
+
+        public static T SetAsFullDPS<T>(this T selCh) where T : SelectableCharacterData
+        {
+            CharacterDB._dpsCharacters.Add(new(selCh.CharacterName), new([]));
+
+            return selCh;
+        }
+
+        public static T SetAsFullSupport<T>(this T selCh) where T : SelectableCharacterData
+        {
+            CharacterDB._supportCharacters.Add(new(selCh.CharacterName), new([]));
+
+            return selCh;
         }
 
         private static int _rank = -1;

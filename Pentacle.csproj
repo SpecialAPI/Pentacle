@@ -48,6 +48,9 @@
     <Reference Include="Google.Protobuf">
       <HintPath>..\References\Unity\Google.Protobuf.dll</HintPath>
     </Reference>
+    <Reference Include="Marosi.SerializableCollections">
+      <HintPath>..\References\Unity\Marosi.SerializableCollections.dll</HintPath>
+    </Reference>
     <Reference Include="Unity.TextMeshPro">
       <HintPath>..\References\Unity\Unity.TextMeshPro.dll</HintPath>
     </Reference>
