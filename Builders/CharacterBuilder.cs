@@ -187,6 +187,47 @@ namespace Pentacle.Builders
             return ch;
         }
 
+        public static T AddFinalBossItemUnlock<T>(this T ch, string bossId, string unlockId, ModdedAchievement_t achievement, string unlockedItem, bool automaticallyLockItem = true, Assembly callingAssembly = null) where T : CharacterSO
+        {
+            callingAssembly ??= Assembly.GetCallingAssembly();
+
+            if(!ProfileManager.TryGetProfile(callingAssembly, out var profile))
+            {
+                return ch;
+            }
+
+            if(!UnlockablesDB.TryGetFinalBossUnlockCheck(bossId, out var check))
+            {
+                Debug.Log($"Invalid boss: {bossId}");
+                return ch;
+            }
+
+            var achId = achievement?.m_eAchievementID ?? string.Empty;
+
+            check.AddUnlockData(ch.entityID, new($"{profile.Prefix}_{unlockId}")
+            {
+                hasQuestCompletion = false,
+                questID = string.Empty,
+
+                hasCharacterUnlock = false,
+                character = string.Empty,
+
+                hasItemUnlock = !string.IsNullOrEmpty(unlockedItem),
+                items = [unlockedItem],
+
+                hasModdedAchievementUnlock = achievement != null,
+                moddedAchievementID = achId,
+
+                _HasAchievementUnlock = false,
+            });
+            ch.m_BossAchData.Add(new(bossId, achId));
+
+            if (automaticallyLockItem)
+                GetWearable(unlockedItem).startsLocked = true;
+
+            return ch;
+        }
+
         public static T AddToDatabase<T>(this T ch, bool appearsInShops = true, bool locked = false) where T : CharacterSO
         {
             ch.m_StartsLocked = locked;

@@ -93,16 +93,32 @@ namespace Pentacle.Builders
             return w;
         }
 
-        public static T AddToTreasure<T>(this T w) where T : BaseWearableSO
+        public static T AddToTreasure<T>(this T w, Sprite lockedSprite = null, string achievementId = "") where T : BaseWearableSO
         {
-            ItemUtils.AddItemToTreasureStatsCategoryAndGamePool(w);
+            ItemUtils.AddItemToTreasureStatsCategoryAndGamePool(w, new(w.name, lockedSprite, achievementId));
 
             return w;
         }
 
-        public static T AddToShop<T>(this T w) where T : BaseWearableSO
+        public static T AddToTreasure<T>(this T w, string lockedSpriteName, string achievementId = "", Assembly callingAssembly = null) where T : BaseWearableSO
         {
-            ItemUtils.AddItemToShopStatsCategoryAndGamePool(w);
+            callingAssembly ??= Assembly.GetCallingAssembly();
+            ItemUtils.AddItemToTreasureStatsCategoryAndGamePool(w, new(w.name, ResourceLoader.LoadSprite(lockedSpriteName, assembly: callingAssembly), achievementId));
+
+            return w;
+        }
+
+        public static T AddToShop<T>(this T w, Sprite lockedSprite = null, string achievementId = "") where T : BaseWearableSO
+        {
+            ItemUtils.AddItemToShopStatsCategoryAndGamePool(w, new(w.name, lockedSprite, achievementId));
+
+            return w;
+        }
+
+        public static T AddToShop<T>(this T w, string lockedSpriteName, string achievementId = "", Assembly callingAssembly = null) where T : BaseWearableSO
+        {
+            callingAssembly ??= Assembly.GetCallingAssembly();
+            ItemUtils.AddItemToShopStatsCategoryAndGamePool(w, new(w.name, ResourceLoader.LoadSprite(lockedSpriteName, assembly: callingAssembly), achievementId));
 
             return w;
         }
