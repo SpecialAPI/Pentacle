@@ -1,4 +1,5 @@
 ﻿using Pentacle.Advanced;
+using Pentacle.Internal;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -191,20 +192,15 @@ namespace Pentacle.Builders
         {
             callingAssembly ??= Assembly.GetCallingAssembly();
 
-            if(!ProfileManager.TryGetProfile(callingAssembly, out var profile))
+            if (!ProfileManager.TryGetProfile(callingAssembly, out var profile))
             {
-                return ch;
-            }
-
-            if(!UnlockablesDB.TryGetFinalBossUnlockCheck(bossId, out var check))
-            {
-                Debug.Log($"Invalid boss: {bossId}");
                 return ch;
             }
 
             var achId = achievement?.m_eAchievementID ?? string.Empty;
+            ch.m_BossAchData.Add(new(bossId, achId));
 
-            check.AddUnlockData(ch.entityID, new($"{profile.Prefix}_{unlockId}")
+            var unlock = new UnlockableModData($"{profile.Prefix}_{unlockId}")
             {
                 hasQuestCompletion = false,
                 questID = string.Empty,
@@ -219,11 +215,20 @@ namespace Pentacle.Builders
                 moddedAchievementID = achId,
 
                 _HasAchievementUnlock = false,
-            });
-            ch.m_BossAchData.Add(new(bossId, achId));
+            };
 
             if (automaticallyLockItem)
-                GetWearable(unlockedItem).startsLocked = true;
+            {
+                var item = GetWearable(unlockedItem);
+
+                if (item != null)
+                    item.startsLocked = true;
+            }
+
+            if (UnlockablesDB.TryGetFinalBossUnlockCheck(bossId, out var check))
+                check.AddUnlockData(ch.entityID, unlock);
+            else
+                DelayedActions.delayedFinalBossUnlocks.Add((bossId, ch.entityID, unlock));
 
             return ch;
         }

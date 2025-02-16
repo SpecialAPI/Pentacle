@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Pentacle.Internal;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -46,10 +47,26 @@ namespace Pentacle.Builders
             return ach;
         }
 
-        public static T AddToCustomCategory<T>(this T ach, string categoryId, string categoryName) where T : ModdedAchievement_t
+        public static T AddToCustomCategory<T>(this T ach, string categoryId, bool createIfDoesntExist = false, string categoryName = "") where T : ModdedAchievement_t
         {
-            AchievementDB.AddNewAchievement(ach, categoryId, categoryName);
+            var achDb = AchievementDB;
 
+            if (!achDb._steamAchievements.TryAddModdedAchievement(ach))
+            {
+                Debug.LogError($"Achievement with id {ach.m_eAchievementID} already exists.");
+                return ach;
+            }
+
+            foreach(var category in achDb.ModdedAchievementCategories)
+            {
+                if (!category.HasSameID(categoryId))
+                    continue;
+
+                category.achievementNames.Add(ach.m_eAchievementID);
+                return ach;
+            }
+
+            DelayedActions.delayedAchievements.Add((categoryId, ach.m_eAchievementID));
             return ach;
         }
     }

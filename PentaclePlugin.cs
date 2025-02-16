@@ -2,6 +2,7 @@
 using Pentacle.CustomFogs;
 using HarmonyLib;
 using System;
+using Pentacle.Internal;
 
 namespace Pentacle
 {
@@ -22,6 +23,11 @@ namespace Pentacle
 
             UnitExtTools.BuildUnitExtData();
             FogsCustomBossManager.AddFogsTranspiler();
+        }
+
+        internal void Start()
+        {
+            DelayedActions.ProcessPostAwakeActions();
         }
     }
 }
