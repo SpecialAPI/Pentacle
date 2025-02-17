@@ -11,7 +11,7 @@ namespace Pentacle
     {
         public const string MOD_GUID = "BrutalOrchestraModding.Pentacle";
         public const string MOD_NAME = "Pentacle";
-        public const string MOD_VERSION = "1.0.0";
+        public const string MOD_VERSION = "0.0.1";
         public const string MOD_PREFIX = "Pentacle";
 
         internal static Harmony HarmonyInstance;
