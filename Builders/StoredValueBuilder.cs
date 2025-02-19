@@ -23,8 +23,8 @@ namespace Pentacle.Builders
 
             var sv = CreateScriptable<T>();
 
-            sv.name = $"{profile.Prefix}_{id_USD}";
-            sv._UnitStoreDataID = $"{profile.Prefix}_{storedValueId}";
+            sv.name = profile.GetID(id_USD);
+            sv._UnitStoreDataID = profile.GetID(storedValueId);
 
             UnitStoreData.AddCustom_Any_UnitStoreDataToPool(sv, sv._UnitStoreDataID);
             return sv;

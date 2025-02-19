@@ -30,14 +30,14 @@ namespace Pentacle.Builders
             return ab;
         }
 
-        public static AdvancedAbilitySO NewAbility(string id, Assembly callingAssembly = null)
+        public static AdvancedAbilitySO NewAbility(string id_A, Assembly callingAssembly = null)
         {
             callingAssembly ??= Assembly.GetCallingAssembly();
 
-            return NewAbility<AdvancedAbilitySO>(id, callingAssembly);
+            return NewAbility<AdvancedAbilitySO>(id_A, callingAssembly);
         }
 
-        public static T NewAbility<T>(string id, Assembly callingAssembly = null) where T : AbilitySO
+        public static T NewAbility<T>(string id_A, Assembly callingAssembly = null) where T : AbilitySO
         {
             callingAssembly ??= Assembly.GetCallingAssembly();
 
@@ -46,7 +46,7 @@ namespace Pentacle.Builders
 
             var ab = CreateScriptable<T>();
 
-            ab.name = $"{profile.Prefix}_{id}";
+            ab.name = profile.GetID(id_A);
             ab.effects = [];
             ab.intents = [];
 

@@ -17,7 +17,7 @@ namespace Pentacle.Builders
                 return null;
 
             var pa = CreateScriptable<T>();
-            pa.name = $"{profile.Prefix}_{id_PA}";
+            pa.name = profile.GetID(id_PA);
             pa.m_PassiveID = passiveId;
 
             pa._characterDescription = "This passive is not meant for party members.";

@@ -15,7 +15,7 @@ namespace Pentacle.Builders
                 return null;
 
             var w = CreateScriptable<T>();
-            w.name = $"{profile.Prefix}_{id}";
+            w.name = profile.GetID(id);
             w.staticModifiers = [];
 
             return w;

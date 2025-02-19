@@ -25,7 +25,7 @@ namespace Pentacle.Builders
 
             var en = CreateScriptable<T>();
 
-            en.name = $"{profile.Prefix}_{id_EN}";
+            en.name = profile.GetID(id_EN);
 
             en.priority = Priority.Normal;
             en.abilitySelector = MiscDB.RarityAbilitySelector;

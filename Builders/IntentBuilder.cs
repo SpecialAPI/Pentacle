@@ -26,7 +26,7 @@ namespace Pentacle.Builders
                 return string.Empty;
 
             color ??= Color.white;
-            var intentId = $"{profile.Prefix}_{id}";
+            var intentId = profile.GetID(id);
             Intents.AddCustom_Basic_IntentToPool(intentId, new()
             {
                 id = intentId,
@@ -94,7 +94,7 @@ namespace Pentacle.Builders
             if (!ProfileManager.TryGetProfile(callingAssembly, out var profile))
                 return string.Empty;
 
-            var intentId = $"{profile.Prefix}_{id}";
+            var intentId = profile.GetID(id);
             Intents.AddCustom_Damage_IntentToPool(intentId, new()
             {
                 id = intentId,

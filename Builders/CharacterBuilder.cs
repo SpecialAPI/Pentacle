@@ -23,8 +23,8 @@ namespace Pentacle.Builders
                 return null;
 
             var ch = CreateScriptable<T>();
-            ch.name = $"{profile.Prefix}_{id_CH}";
-            ch.entityID = $"{profile.Prefix}_{entityId}";
+            ch.name = profile.GetID(id_CH);
+            ch.entityID = profile.GetID(entityId);
 
             ch.healthColor = Pigments.Purple;
             ch.passiveAbilities = [];
@@ -200,7 +200,7 @@ namespace Pentacle.Builders
             var achId = achievement?.m_eAchievementID ?? string.Empty;
             ch.m_BossAchData.Add(new(bossId, achId));
 
-            var unlock = new UnlockableModData($"{profile.Prefix}_{unlockId}")
+            var unlock = new UnlockableModData(profile.GetID(unlockId))
             {
                 hasQuestCompletion = false,
                 questID = string.Empty,

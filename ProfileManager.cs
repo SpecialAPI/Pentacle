@@ -8,7 +8,7 @@ namespace Pentacle
     {
         private static readonly Dictionary<Assembly, ModProfile> Profiles = [];
 
-        public static ModProfile RegisterMod(Assembly assembly = null)
+        public static ModProfile RegisterMod(string guid, string prefix, Assembly assembly = null)
         {
             assembly ??= Assembly.GetCallingAssembly();
 
@@ -17,7 +17,10 @@ namespace Pentacle
 
             return Profiles[assembly] = new()
             {
-                Assembly = assembly
+                Assembly = assembly,
+
+                Guid = guid,
+                Prefix = prefix,
             };
         }
 
@@ -62,13 +65,9 @@ namespace Pentacle
             Bundle = AssetBundle.LoadFromMemory(ba);
         }
 
-        public void SetGuidAndPrefix(string guid, string prefix)
+        public string GetID(string original)
         {
-            guid ??= "";
-            prefix ??= "";
-
-            Guid = guid;
-            Prefix = prefix;
+            return $"{Prefix}_{original}";
         }
     }
 }

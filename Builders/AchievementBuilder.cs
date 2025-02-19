@@ -16,7 +16,7 @@ namespace Pentacle.Builders
                 return null;
             }
 
-            var ach = new ModdedAchievement_t($"{profile.Prefix}_{ACH_achievementId}", name, description);
+            var ach = new ModdedAchievement_t(profile.GetID(ACH_achievementId), name, description);
             return ach;
         }
 

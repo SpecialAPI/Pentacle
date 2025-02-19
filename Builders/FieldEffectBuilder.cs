@@ -14,8 +14,8 @@ namespace Pentacle.Builders
                 return null;
 
             var fe = CreateScriptable<T>();
-            fe.name = $"{profile.Prefix}_{id_FE}";
-            fe._FieldID = $"{profile.Prefix}_{fieldId_ID}";
+            fe.name = profile.GetID(id_FE);
+            fe._FieldID = profile.GetID(fieldId_ID);
 
             var seInfo = CreateScriptable<SlotStatusEffectInfoSO>();
             seInfo.name = $"{fe.name}Info";
