@@ -9,12 +9,9 @@ namespace Pentacle.Builders
 {
     public static class PassiveBuilder
     {
-        public static T NewPassive<T>(string id_PA, string passiveId, Assembly callingAssembly = null) where T : BasePassiveAbilitySO
+        public static T NewPassive<T>(string id_PA, string passiveId, ModProfile profile = null) where T : BasePassiveAbilitySO
         {
-            callingAssembly ??= Assembly.GetCallingAssembly();
-
-            if (!ProfileManager.TryGetProfile(callingAssembly, out var profile))
-                return null;
+            profile ??= ProfileManager.GetProfile(Assembly.GetCallingAssembly());
 
             var pa = CreateScriptable<T>();
             pa.name = profile.GetID(id_PA);
@@ -33,10 +30,10 @@ namespace Pentacle.Builders
             return pa;
         }
 
-        public static T SetSprite<T>(this T pa, string spriteName, Assembly callingAssembly = null) where T : BasePassiveAbilitySO
+        public static T SetSprite<T>(this T pa, string spriteName, ModProfile profile = null) where T : BasePassiveAbilitySO
         {
-            callingAssembly ??= Assembly.GetCallingAssembly();
-            pa.passiveIcon = ResourceLoader.LoadSprite(spriteName, assembly: callingAssembly);
+            profile ??= ProfileManager.GetProfile(Assembly.GetCallingAssembly());
+            pa.passiveIcon = profile.LoadSprite(spriteName);
 
             return pa;
         }
@@ -48,12 +45,12 @@ namespace Pentacle.Builders
             return pa;
         }
 
-        public static T SetBasicInformation<T>(this T pa, string name, string spriteName, Assembly callingAssembly = null) where T : BasePassiveAbilitySO
+        public static T SetBasicInformation<T>(this T pa, string name, string spriteName, ModProfile profile = null) where T : BasePassiveAbilitySO
         {
-            callingAssembly ??= Assembly.GetCallingAssembly();
+            profile ??= ProfileManager.GetProfile(Assembly.GetCallingAssembly());
 
             pa._passiveName = name;
-            pa.passiveIcon = ResourceLoader.LoadSprite(spriteName, assembly: callingAssembly);
+            pa.passiveIcon = profile.LoadSprite(spriteName);
 
             return pa;
         }

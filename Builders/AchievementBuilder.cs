@@ -7,26 +7,21 @@ namespace Pentacle.Builders
 {
     public static class AchievementBuilder
     {
-        public static ModdedAchievement_t NewAchievement(string ACH_achievementId, string name, string description, Assembly callingAssembly = null)
+        public static ModdedAchievement_t NewAchievement(string ACH_achievementId, string name, string description, ModProfile profile = null)
         {
-            callingAssembly ??= Assembly.GetCallingAssembly();
-
-            if(!ProfileManager.TryGetProfile(callingAssembly, out var profile))
-            {
-                return null;
-            }
+            profile ??= ProfileManager.GetProfile(Assembly.GetCallingAssembly());
 
             var ach = new ModdedAchievement_t(profile.GetID(ACH_achievementId), name, description);
             return ach;
         }
 
-        public static T SetSprites<T>(this T ach, string unlockedSpriteName, string overrideLockedSpriteName = null, Assembly callingAssembly = null) where T : ModdedAchievement_t
+        public static T SetSprites<T>(this T ach, string unlockedSpriteName, string overrideLockedSpriteName = null, ModProfile profile = null) where T : ModdedAchievement_t
         {
-            callingAssembly ??= Assembly.GetCallingAssembly();
+            profile ??= ProfileManager.GetProfile(Assembly.GetCallingAssembly());
 
-            ach.m_unlockedSprite = ResourceLoader.LoadSprite(unlockedSpriteName, assembly: callingAssembly);
+            ach.m_unlockedSprite = profile.LoadSprite(unlockedSpriteName);
             if(!string.IsNullOrEmpty(overrideLockedSpriteName))
-                ach.m_specialLockedSprite = ResourceLoader.LoadSprite(overrideLockedSpriteName, assembly: callingAssembly);
+                ach.m_specialLockedSprite = profile.LoadSprite(overrideLockedSpriteName);
 
             return ach;
         }

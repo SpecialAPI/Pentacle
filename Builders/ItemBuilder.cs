@@ -1,18 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using static TMPro.SpriteAssetUtilities.TexturePacker_JsonArray;
 
 namespace Pentacle.Builders
 {
     public static class ItemBuilder
     {
-        public static T NewItem<T>(string id, Assembly callingAssembly = null) where T : BaseWearableSO
+        public static T NewItem<T>(string id, ModProfile profile = null) where T : BaseWearableSO
         {
-            callingAssembly ??= Assembly.GetCallingAssembly();
-
-            if (!ProfileManager.TryGetProfile(callingAssembly, out var profile))
-                return null;
+            profile ??= ProfileManager.GetProfile(Assembly.GetCallingAssembly());
 
             var w = CreateScriptable<T>();
             w.name = profile.GetID(id);
@@ -42,10 +38,10 @@ namespace Pentacle.Builders
             return w;
         }
 
-        public static T SetSprite<T>(this T w, string spriteName, Assembly callingAssembly = null) where T : BaseWearableSO
+        public static T SetSprite<T>(this T w, string spriteName, ModProfile profile = null) where T : BaseWearableSO
         {
-            callingAssembly ??= Assembly.GetCallingAssembly();
-            w.wearableImage = ResourceLoader.LoadSprite(spriteName, assembly: callingAssembly);
+            profile ??= ProfileManager.GetProfile(Assembly.GetCallingAssembly());
+            w.wearableImage = profile.LoadSprite(spriteName);
 
             return w;
         }
@@ -57,14 +53,14 @@ namespace Pentacle.Builders
             return w;
         }
 
-        public static T SetBasicInformation<T>(this T w, string name, string flavor, string description, string spriteName, Assembly callingAssembly = null) where T : BaseWearableSO
+        public static T SetBasicInformation<T>(this T w, string name, string flavor, string description, string spriteName, ModProfile profile = null) where T : BaseWearableSO
         {
-            callingAssembly ??= Assembly.GetCallingAssembly();
+            profile ??= ProfileManager.GetProfile(Assembly.GetCallingAssembly());
 
             w._itemName = name;
             w._flavourText = flavor;
             w._description = description;
-            w.wearableImage = ResourceLoader.LoadSprite(spriteName, assembly: callingAssembly);
+            w.wearableImage = profile.LoadSprite(spriteName);
 
             return w;
         }
@@ -100,10 +96,10 @@ namespace Pentacle.Builders
             return w;
         }
 
-        public static T AddToTreasure<T>(this T w, string lockedSpriteName, string achievementId = "", Assembly callingAssembly = null) where T : BaseWearableSO
+        public static T AddToTreasure<T>(this T w, string lockedSpriteName, string achievementId = "", ModProfile profile = null) where T : BaseWearableSO
         {
-            callingAssembly ??= Assembly.GetCallingAssembly();
-            ItemUtils.AddItemToTreasureStatsCategoryAndGamePool(w, new(w.name, ResourceLoader.LoadSprite(lockedSpriteName, assembly: callingAssembly), achievementId));
+            profile ??= ProfileManager.GetProfile(Assembly.GetCallingAssembly());
+            ItemUtils.AddItemToTreasureStatsCategoryAndGamePool(w, new(w.name, profile.LoadSprite(lockedSpriteName), achievementId));
 
             return w;
         }
@@ -115,10 +111,10 @@ namespace Pentacle.Builders
             return w;
         }
 
-        public static T AddToShop<T>(this T w, string lockedSpriteName, string achievementId = "", Assembly callingAssembly = null) where T : BaseWearableSO
+        public static T AddToShop<T>(this T w, string lockedSpriteName, string achievementId = "", ModProfile profile = null) where T : BaseWearableSO
         {
-            callingAssembly ??= Assembly.GetCallingAssembly();
-            ItemUtils.AddItemToShopStatsCategoryAndGamePool(w, new(w.name, ResourceLoader.LoadSprite(lockedSpriteName, assembly: callingAssembly), achievementId));
+            profile ??= ProfileManager.GetProfile(Assembly.GetCallingAssembly());
+            ItemUtils.AddItemToShopStatsCategoryAndGamePool(w, new(w.name, profile.LoadSprite(lockedSpriteName), achievementId));
 
             return w;
         }

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using UnityEngine;
+using UnityEngine.Profiling;
 
 namespace Pentacle.Builders
 {
@@ -11,19 +12,16 @@ namespace Pentacle.Builders
         public static readonly Color IntentColor_DamageToEnemy = new(1f, 0f, 0f);
         public static readonly Color IntentColor_DamageToCharcter = new(0.8471f, 0.4549f, 0.898f);
 
-        public static string AddIntent(string id, string spriteName, Color? color = null, Assembly callingAssembly = null)
+        public static string AddIntent(string id, string spriteName, Color? color = null, ModProfile profile = null)
         {
-            callingAssembly ??= Assembly.GetCallingAssembly();
+            profile ??= ProfileManager.GetProfile(Assembly.GetCallingAssembly());
 
-            return AddIntent(id, ResourceLoader.LoadSprite(spriteName, assembly: callingAssembly), color, callingAssembly);
+            return AddIntent(id, profile.LoadSprite(spriteName), color, profile);
         }
 
-        public static string AddIntent(string id, Sprite sprite, Color? color = null, Assembly callingAssembly = null)
+        public static string AddIntent(string id, Sprite sprite, Color? color = null, ModProfile profile = null)
         {
-            callingAssembly ??= Assembly.GetCallingAssembly();
-
-            if (!ProfileManager.TryGetProfile(callingAssembly, out var profile))
-                return string.Empty;
+            profile ??= ProfileManager.GetProfile(Assembly.GetCallingAssembly());
 
             color ??= Color.white;
             var intentId = profile.GetID(id);
@@ -37,62 +35,59 @@ namespace Pentacle.Builders
             return intentId;
         }
 
-        public static void AddStatusEffectIntents(string baseId, StatusEffect_SO status, out string applyIntent, out string removeIntent, Assembly callingAssembly = null)
+        public static void AddStatusEffectIntents(string baseId, StatusEffect_SO status, out string applyIntent, out string removeIntent, ModProfile profile = null)
         {
-            callingAssembly ??= Assembly.GetCallingAssembly();
+            profile ??= ProfileManager.GetProfile(Assembly.GetCallingAssembly());
 
-            applyIntent = AddIntent(baseId, status.EffectInfo.icon, Color.white, callingAssembly);
-            removeIntent = AddIntent($"Rem_{baseId}", status.EffectInfo.icon, IntentColor_StatusRemove, callingAssembly);
+            applyIntent = AddIntent(baseId, status.EffectInfo.icon, Color.white, profile);
+            removeIntent = AddIntent($"Rem_{baseId}", status.EffectInfo.icon, IntentColor_StatusRemove, profile);
         }
 
-        public static void AddFieldEffectIntents(string baseId, FieldEffect_SO field, out string applyIntent, out string removeIntent, Assembly callingAssembly = null)
+        public static void AddFieldEffectIntents(string baseId, FieldEffect_SO field, out string applyIntent, out string removeIntent, ModProfile profile = null)
         {
-            callingAssembly ??= Assembly.GetCallingAssembly();
+            profile ??= ProfileManager.GetProfile(Assembly.GetCallingAssembly());
 
-            applyIntent = AddIntent(baseId, field.EffectInfo.icon, Color.white, callingAssembly);
-            removeIntent = AddIntent($"Rem_{baseId}", field.EffectInfo.icon, IntentColor_StatusRemove, callingAssembly);
+            applyIntent = AddIntent(baseId, field.EffectInfo.icon, Color.white, profile);
+            removeIntent = AddIntent($"Rem_{baseId}", field.EffectInfo.icon, IntentColor_StatusRemove, profile);
         }
 
-        public static void AddPassiveIntents(string baseId, BasePassiveAbilitySO passive, out string addPassiveIntent, out string removePassiveIntent, Assembly callingAssembly = null)
+        public static void AddPassiveIntents(string baseId, BasePassiveAbilitySO passive, out string addPassiveIntent, out string removePassiveIntent, ModProfile profile = null)
         {
-            callingAssembly ??= Assembly.GetCallingAssembly();
+            profile ??= ProfileManager.GetProfile(Assembly.GetCallingAssembly());
 
-            addPassiveIntent = AddIntent(baseId, passive.passiveIcon, Color.white, callingAssembly);
-            removePassiveIntent = AddIntent($"Rem_{baseId}", passive.passiveIcon, IntentColor_StatusRemove, callingAssembly);
+            addPassiveIntent = AddIntent(baseId, passive.passiveIcon, Color.white, profile);
+            removePassiveIntent = AddIntent($"Rem_{baseId}", passive.passiveIcon, IntentColor_StatusRemove, profile);
         }
 
-        public static void AddGenericAddRemoveIntents(string baseId, string spriteName, out string addPassiveIntent, out string removePassiveIntent, Assembly callingAssembly = null)
+        public static void AddGenericAddRemoveIntents(string baseId, string spriteName, out string addPassiveIntent, out string removePassiveIntent, ModProfile profile = null)
         {
-            callingAssembly ??= Assembly.GetCallingAssembly();
+            profile ??= ProfileManager.GetProfile(Assembly.GetCallingAssembly());
 
-            var sprite = ResourceLoader.LoadSprite(spriteName);
-            addPassiveIntent = AddIntent(baseId, sprite, Color.white, callingAssembly);
-            removePassiveIntent = AddIntent($"Rem_{baseId}", sprite, IntentColor_StatusRemove, callingAssembly);
+            var sprite = profile.LoadSprite(spriteName);
+            addPassiveIntent = AddIntent(baseId, sprite, Color.white, profile);
+            removePassiveIntent = AddIntent($"Rem_{baseId}", sprite, IntentColor_StatusRemove, profile);
         }
 
-        public static void AddGenericAddRemoveIntents(string baseId, Sprite sprite, out string addPassiveIntent, out string removePassiveIntent, Assembly callingAssembly = null)
+        public static void AddGenericAddRemoveIntents(string baseId, Sprite sprite, out string addPassiveIntent, out string removePassiveIntent, ModProfile profile = null)
         {
-            callingAssembly ??= Assembly.GetCallingAssembly();
+            profile ??= ProfileManager.GetProfile(Assembly.GetCallingAssembly());
 
-            addPassiveIntent = AddIntent(baseId, sprite, Color.white, callingAssembly);
-            removePassiveIntent = AddIntent($"Rem_{baseId}", sprite, IntentColor_StatusRemove, callingAssembly);
+            addPassiveIntent = AddIntent(baseId, sprite, Color.white, profile);
+            removePassiveIntent = AddIntent($"Rem_{baseId}", sprite, IntentColor_StatusRemove, profile);
         }
 
-        public static string AddDamageIntent(string id, string characterSpriteName, string enemySpriteName, Color? characterColor = null, Color? enemyColor = null, Assembly callingAssembly = null)
+        public static string AddDamageIntent(string id, string characterSpriteName, string enemySpriteName, Color? characterColor = null, Color? enemyColor = null, ModProfile profile = null)
         {
-            callingAssembly ??= Assembly.GetCallingAssembly();
+            profile ??= ProfileManager.GetProfile(Assembly.GetCallingAssembly());
 
-            return AddDamageIntent(id, ResourceLoader.LoadSprite(characterSpriteName, assembly: callingAssembly), ResourceLoader.LoadSprite(enemySpriteName, assembly: callingAssembly), characterColor, enemyColor, callingAssembly);
+            return AddDamageIntent(id, profile.LoadSprite(characterSpriteName), profile.LoadSprite(enemySpriteName), characterColor, enemyColor, profile);
         }
 
-        public static string AddDamageIntent(string id, Sprite characterSprite, Sprite enemySprite, Color? characterColor = null, Color? enemyColor = null, Assembly callingAssembly = null)
+        public static string AddDamageIntent(string id, Sprite characterSprite, Sprite enemySprite, Color? characterColor = null, Color? enemyColor = null, ModProfile profile = null)
         {
             characterColor ??= IntentColor_DamageToCharcter;
             enemyColor ??= IntentColor_DamageToEnemy;
-            callingAssembly ??= Assembly.GetCallingAssembly();
-
-            if (!ProfileManager.TryGetProfile(callingAssembly, out var profile))
-                return string.Empty;
+            profile ??= ProfileManager.GetProfile(Assembly.GetCallingAssembly());
 
             var intentId = profile.GetID(id);
             Intents.AddCustom_Damage_IntentToPool(intentId, new()

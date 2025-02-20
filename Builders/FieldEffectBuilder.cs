@@ -6,12 +6,9 @@ namespace Pentacle.Builders
 {
     public static class FieldEffectBuilder
     {
-        public static T NewFieldEffect<T>(string id_FE, string fieldId_ID, Assembly callingAssembly = null) where T : FieldEffect_SO
+        public static T NewFieldEffect<T>(string id_FE, string fieldId_ID, ModProfile profile = null) where T : FieldEffect_SO
         {
-            callingAssembly ??= Assembly.GetCallingAssembly();
-
-            if (!ProfileManager.TryGetProfile(callingAssembly, out var profile))
-                return null;
+            profile ??= ProfileManager.GetProfile(Assembly.GetCallingAssembly());
 
             var fe = CreateScriptable<T>();
             fe.name = profile.GetID(id_FE);
@@ -42,10 +39,10 @@ namespace Pentacle.Builders
             return fe;
         }
 
-        public static T SetSprite<T>(this T fe, string spriteName, Assembly callingAssembly = null) where T : FieldEffect_SO
+        public static T SetSprite<T>(this T fe, string spriteName, ModProfile profile = null) where T : FieldEffect_SO
         {
-            callingAssembly ??= Assembly.GetCallingAssembly();
-            fe.EffectInfo.icon = ResourceLoader.LoadSprite(spriteName, assembly: callingAssembly);
+            profile ??= ProfileManager.GetProfile(Assembly.GetCallingAssembly());
+            fe.EffectInfo.icon = profile.LoadSprite(spriteName);
 
             return fe;
         }
@@ -57,13 +54,13 @@ namespace Pentacle.Builders
             return fe;
         }
 
-        public static T SetBasicInformation<T>(this T fe, string name, string description, string spriteName, Assembly callingAssembly = null) where T : FieldEffect_SO
+        public static T SetBasicInformation<T>(this T fe, string name, string description, string spriteName, ModProfile profile = null) where T : FieldEffect_SO
         {
-            callingAssembly ??= Assembly.GetCallingAssembly();
+            profile ??= ProfileManager.GetProfile(Assembly.GetCallingAssembly());
 
             fe.EffectInfo._fieldName = name;
             fe.EffectInfo._description = description;
-            fe.EffectInfo.icon = ResourceLoader.LoadSprite(spriteName, assembly: callingAssembly);
+            fe.EffectInfo.icon = profile.LoadSprite(spriteName);
 
             return fe;
         }
@@ -97,12 +94,9 @@ namespace Pentacle.Builders
             return fe;
         }
 
-        public static T SetFieldPrefabs<T>(this T fe, string characterPath, string enemyPath, Assembly callingAssembly = null) where T : FieldEffect_SO
+        public static T SetFieldPrefabs<T>(this T fe, string characterPath, string enemyPath, ModProfile profile = null) where T : FieldEffect_SO
         {
-            callingAssembly ??= Assembly.GetCallingAssembly();
-
-            if (!ProfileManager.TryGetProfile(callingAssembly, out var profile))
-                return fe;
+            profile ??= ProfileManager.GetProfile(Assembly.GetCallingAssembly());
 
             var chPrefab = profile.Bundle.LoadAsset<GameObject>(characterPath);
             var chLayout = chPrefab != null ? chPrefab.GetComponent<CharacterFieldEffectLayout>() : null;

@@ -69,5 +69,10 @@ namespace Pentacle
         {
             return $"{Prefix}_{original}";
         }
+
+        public Sprite LoadSprite(string name, Vector2? pivot = null, int pixelsPerUnit = 32)
+        {
+            return AdvancedResourceLoader.LoadSprite(name, pivot, pixelsPerUnit, Assembly);
+        }
     }
 }

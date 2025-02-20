@@ -1,6 +1,7 @@
 ﻿using Pentacle.Advanced;
 using Pentacle.Tools;
 using System;
+using UnityEngine.Profiling;
 
 namespace Pentacle.Builders
 {
@@ -14,12 +15,9 @@ namespace Pentacle.Builders
         public static Color StoredValueColor_Negative = new(0.8667f, 0f, 0.2157f);
         public static Color StoredValueColor_Rare = new(0.7725f, 0.2667f, 0.8196f);
 
-        public static T NewStoredValue<T>(string id_USD, string storedValueId, Assembly callingAssembly = null) where T : UnitStoreData_BasicSO
+        public static T NewStoredValue<T>(string id_USD, string storedValueId, ModProfile profile = null) where T : UnitStoreData_BasicSO
         {
-            callingAssembly ??= Assembly.GetCallingAssembly();
-
-            if (!ProfileManager.TryGetProfile(callingAssembly, out var profile))
-                return null;
+            profile ??= ProfileManager.GetProfile(Assembly.GetCallingAssembly());
 
             var sv = CreateScriptable<T>();
 

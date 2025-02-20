@@ -9,19 +9,16 @@ namespace Pentacle.Builders
 {
     public static class EnemyBuilder
     {
-        public static AdvancedEnemySO NewEnemy(string id_EN, Assembly callingAssembly = null)
+        public static AdvancedEnemySO NewEnemy(string id_EN, ModProfile profile = null)
         {
-            callingAssembly ??= Assembly.GetCallingAssembly();
+            profile ??= ProfileManager.GetProfile(Assembly.GetCallingAssembly());
 
-            return NewEnemy<AdvancedEnemySO>(id_EN, callingAssembly);
+            return NewEnemy<AdvancedEnemySO>(id_EN, profile);
         }
 
-        public static T NewEnemy<T>(string id_EN, Assembly callingAssembly = null) where T : EnemySO
+        public static T NewEnemy<T>(string id_EN, ModProfile profile = null) where T : EnemySO
         {
-            callingAssembly ??= Assembly.GetCallingAssembly();
-
-            if (!ProfileManager.TryGetProfile(callingAssembly, out var profile))
-                return null;
+            profile ??= ProfileManager.GetProfile(Assembly.GetCallingAssembly());
 
             var en = CreateScriptable<T>();
 
@@ -60,38 +57,38 @@ namespace Pentacle.Builders
             return en;
         }
 
-        public static T SetSpritesBoss<T>(this T en, string combatSpriteName, string overworldSpriteName, string corpseSpriteName, Assembly callingAssembly = null) where T : EnemySO
+        public static T SetSpritesBoss<T>(this T en, string combatSpriteName, string overworldSpriteName, string corpseSpriteName, ModProfile profile = null) where T : EnemySO
         {
-            callingAssembly ??= Assembly.GetCallingAssembly();
+            profile ??= ProfileManager.GetProfile(Assembly.GetCallingAssembly());
 
-            en.enemySprite = ResourceLoader.LoadSprite(combatSpriteName, assembly: callingAssembly);
+            en.enemySprite = profile.LoadSprite(combatSpriteName);
 
             if (!string.IsNullOrEmpty(overworldSpriteName))
-                en.enemyOverworldSprite = ResourceLoader.LoadSprite(overworldSpriteName, new(0.5f, 0f), assembly: callingAssembly);
+                en.enemyOverworldSprite = profile.LoadSprite(overworldSpriteName, new(0.5f, 0f));
             else
                 en.enemyOverworldSprite = en.enemySprite;
 
             if (!string.IsNullOrEmpty(corpseSpriteName))
-                en.enemyOWCorpseSprite = ResourceLoader.LoadSprite(corpseSpriteName, new(0.5f, 0f), assembly: callingAssembly);
+                en.enemyOWCorpseSprite = profile.LoadSprite(corpseSpriteName, new(0.5f, 0f));
             else
                 en.enemyOWCorpseSprite = en.enemyOverworldSprite;
 
             return en;
         }
 
-        public static T SetSprites<T>(this T en, string combatSpriteName, string overworldSpriteName, string corpseSpriteName, Assembly callingAssembly = null) where T : EnemySO
+        public static T SetSprites<T>(this T en, string combatSpriteName, string overworldSpriteName, string corpseSpriteName, ModProfile profile = null) where T : EnemySO
         {
-            callingAssembly ??= Assembly.GetCallingAssembly();
+            profile ??= ProfileManager.GetProfile(Assembly.GetCallingAssembly());
 
-            en.enemySprite = ResourceLoader.LoadSprite(combatSpriteName, new(0.5f, 0f), assembly: callingAssembly);
+            en.enemySprite = profile.LoadSprite(combatSpriteName, new(0.5f, 0f));
 
             if (!string.IsNullOrEmpty(overworldSpriteName))
-                en.enemyOverworldSprite = ResourceLoader.LoadSprite(overworldSpriteName, new(0.5f, 0f), assembly: callingAssembly);
+                en.enemyOverworldSprite = profile.LoadSprite(overworldSpriteName, new(0.5f, 0f));
             else
                 en.enemyOverworldSprite = en.enemySprite;
 
             if(!string.IsNullOrEmpty(corpseSpriteName))
-                en.enemyOWCorpseSprite = ResourceLoader.LoadSprite(corpseSpriteName, new(0.5f, 0f), assembly: callingAssembly);
+                en.enemyOWCorpseSprite = profile.LoadSprite(corpseSpriteName, new(0.5f, 0f));
             else
                 en.enemyOWCorpseSprite = en.enemyOverworldSprite;
 
@@ -125,12 +122,9 @@ namespace Pentacle.Builders
             return en;
         }
 
-        public static T SetEnemyPrefab<T>(this T en, string prefabName, string gibsName = null, Assembly callingAssembly = null) where T : EnemySO
+        public static T SetEnemyPrefab<T>(this T en, string prefabName, string gibsName = null, ModProfile profile = null) where T : EnemySO
         {
-            callingAssembly ??= Assembly.GetCallingAssembly();
-
-            if (!ProfileManager.TryGetProfile(callingAssembly, out var profile) || profile.Bundle == null)
-                return en;
+            profile ??= ProfileManager.GetProfile(Assembly.GetCallingAssembly());
 
             var prefab = profile.Bundle.LoadAsset<GameObject>(prefabName);
             var gibs = (ParticleSystem)null;

@@ -8,19 +8,16 @@ namespace Pentacle.Builders
 {
     public static class CharacterBuilder
     {
-        public static AdvancedCharacterSO NewCharacter(string id_CH, string entityId, Assembly callingAssembly = null)
+        public static AdvancedCharacterSO NewCharacter(string id_CH, string entityId, ModProfile profile = null)
         {
-            callingAssembly ??= Assembly.GetCallingAssembly();
+            profile ??= ProfileManager.GetProfile(Assembly.GetCallingAssembly());
 
-            return NewCharacter<AdvancedCharacterSO>(id_CH, entityId, callingAssembly);
+            return NewCharacter<AdvancedCharacterSO>(id_CH, entityId, profile);
         }
 
-        public static T NewCharacter<T>(string id_CH, string entityId, Assembly callingAssembly = null) where T : CharacterSO
+        public static T NewCharacter<T>(string id_CH, string entityId, ModProfile profile = null) where T : CharacterSO
         {
-            callingAssembly ??= Assembly.GetCallingAssembly();
-
-            if (!ProfileManager.TryGetProfile(callingAssembly, out var profile))
-                return null;
+            profile ??= ProfileManager.GetProfile(Assembly.GetCallingAssembly());
 
             var ch = CreateScriptable<T>();
             ch.name = profile.GetID(id_CH);
@@ -39,15 +36,15 @@ namespace Pentacle.Builders
             return ch;
         }
 
-        public static T SetBasicInformation<T>(this T ch, string name, ManaColorSO healthColor, string frontSpriteName, string backSpriteName, string overworldSpriteName, Assembly callingAssembly = null) where T : CharacterSO
+        public static T SetBasicInformation<T>(this T ch, string name, ManaColorSO healthColor, string frontSpriteName, string backSpriteName, string overworldSpriteName, ModProfile profile = null) where T : CharacterSO
         {
-            callingAssembly ??= Assembly.GetCallingAssembly();
+            profile ??= ProfileManager.GetProfile(Assembly.GetCallingAssembly());
 
             ch._characterName = name;
             ch.healthColor = healthColor;
-            ch.characterSprite = ResourceLoader.LoadSprite(frontSpriteName, assembly: callingAssembly);
-            ch.characterBackSprite = ResourceLoader.LoadSprite(backSpriteName, assembly: callingAssembly);
-            ch.characterOWSprite = ResourceLoader.LoadSprite(overworldSpriteName, new(0.5f, 0f), assembly: callingAssembly);
+            ch.characterSprite = profile.LoadSprite(frontSpriteName);
+            ch.characterBackSprite = profile.LoadSprite(backSpriteName);
+            ch.characterOWSprite = profile.LoadSprite(overworldSpriteName, new(0.5f, 0f));
 
             return ch;
         }
@@ -77,12 +74,13 @@ namespace Pentacle.Builders
             return ch;
         }
 
-        public static T SetSprites<T>(this T ch, string frontSpriteName, string backSpriteName, string overworldSpriteName, Assembly callingAssembly = null) where T : CharacterSO
+        public static T SetSprites<T>(this T ch, string frontSpriteName, string backSpriteName, string overworldSpriteName, ModProfile profile = null) where T : CharacterSO
         {
-            callingAssembly ??= Assembly.GetCallingAssembly();
-            ch.characterSprite = ResourceLoader.LoadSprite(frontSpriteName, assembly: callingAssembly);
-            ch.characterBackSprite = ResourceLoader.LoadSprite(backSpriteName, assembly: callingAssembly);
-            ch.characterOWSprite = ResourceLoader.LoadSprite(overworldSpriteName, new(0.5f, 0f), assembly: callingAssembly);
+            profile ??= ProfileManager.GetProfile(Assembly.GetCallingAssembly());
+
+            ch.characterSprite = profile.LoadSprite(frontSpriteName);
+            ch.characterBackSprite = profile.LoadSprite(backSpriteName);
+            ch.characterOWSprite = profile.LoadSprite(overworldSpriteName, new(0.5f, 0f));
 
             return ch;
         }
@@ -188,14 +186,9 @@ namespace Pentacle.Builders
             return ch;
         }
 
-        public static T AddFinalBossItemUnlock<T>(this T ch, string bossId, string unlockId, ModdedAchievement_t achievement, string unlockedItem, bool automaticallyLockItem = true, Assembly callingAssembly = null) where T : CharacterSO
+        public static T AddFinalBossItemUnlock<T>(this T ch, string bossId, string unlockId, ModdedAchievement_t achievement, string unlockedItem, bool automaticallyLockItem = true, ModProfile profile = null) where T : CharacterSO
         {
-            callingAssembly ??= Assembly.GetCallingAssembly();
-
-            if (!ProfileManager.TryGetProfile(callingAssembly, out var profile))
-            {
-                return ch;
-            }
+            profile ??= ProfileManager.GetProfile(Assembly.GetCallingAssembly());
 
             var achId = achievement?.m_eAchievementID ?? string.Empty;
             ch.m_BossAchData.Add(new(bossId, achId));
@@ -244,12 +237,12 @@ namespace Pentacle.Builders
             return ch;
         }
 
-        public static SelectableCharacterData GenerateMenuCharacter<T>(this T ch, string unlockedSpriteName, string lockedSpriteName = null, Assembly callingAssembly = null) where T : CharacterSO
+        public static SelectableCharacterData GenerateMenuCharacter<T>(this T ch, string unlockedSpriteName, string lockedSpriteName = null, ModProfile profile = null) where T : CharacterSO
         {
-            callingAssembly ??= Assembly.GetCallingAssembly();
-            
-            var unlockedSprite = ResourceLoader.LoadSprite(unlockedSpriteName, assembly: callingAssembly);
-            var lockedSprite = string.IsNullOrEmpty(lockedSpriteName) ? null : ResourceLoader.LoadSprite(lockedSpriteName, assembly: callingAssembly);
+            profile ??= ProfileManager.GetProfile(Assembly.GetCallingAssembly());
+
+            var unlockedSprite = profile.LoadSprite(unlockedSpriteName);
+            var lockedSprite = string.IsNullOrEmpty(lockedSpriteName) ? null : profile.LoadSprite(lockedSpriteName);
 
             return new(ch.name, unlockedSprite, lockedSprite != null ? lockedSprite : unlockedSprite);
         }

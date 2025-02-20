@@ -10,12 +10,9 @@ namespace Pentacle.Builders
     {
         private static readonly Dictionary<string, AbilitySO> AbilityReferences = [];
 
-        public static AbilitySO AbilityReference(string id, Assembly callingAssembly = null)
+        public static AbilitySO AbilityReference(string id, ModProfile profile = null)
         {
-            callingAssembly ??= Assembly.GetCallingAssembly();
-
-            if(!ProfileManager.TryGetProfile(callingAssembly, out var profile))
-                return null;
+            profile ??= ProfileManager.GetProfile(Assembly.GetCallingAssembly());
 
             return AbilityReference(id, profile.Prefix);
         }
@@ -30,19 +27,16 @@ namespace Pentacle.Builders
             return ab;
         }
 
-        public static AdvancedAbilitySO NewAbility(string id_A, Assembly callingAssembly = null)
+        public static AdvancedAbilitySO NewAbility(string id_A, ModProfile profile = null)
         {
-            callingAssembly ??= Assembly.GetCallingAssembly();
+            profile ??= ProfileManager.GetProfile(Assembly.GetCallingAssembly());
 
-            return NewAbility<AdvancedAbilitySO>(id_A, callingAssembly);
+            return NewAbility<AdvancedAbilitySO>(id_A, profile);
         }
 
-        public static T NewAbility<T>(string id_A, Assembly callingAssembly = null) where T : AbilitySO
+        public static T NewAbility<T>(string id_A, ModProfile profile = null) where T : AbilitySO
         {
-            callingAssembly ??= Assembly.GetCallingAssembly();
-
-            if (!ProfileManager.TryGetProfile(callingAssembly, out var profile))
-                return null;
+            profile ??= ProfileManager.GetProfile(Assembly.GetCallingAssembly());
 
             var ab = CreateScriptable<T>();
 
@@ -72,10 +66,10 @@ namespace Pentacle.Builders
             return ab;
         }
 
-        public static T SetSprite<T>(this T ab, string spriteName, Assembly callingAssembly = null) where T : AbilitySO
+        public static T SetSprite<T>(this T ab, string spriteName, ModProfile profile = null) where T : AbilitySO
         {
-            callingAssembly ??= Assembly.GetCallingAssembly();
-            ab.abilitySprite = ResourceLoader.LoadSprite(spriteName, assembly: callingAssembly);
+            profile ??= ProfileManager.GetProfile(Assembly.GetCallingAssembly());
+            ab.abilitySprite = profile.LoadSprite(spriteName);
 
             return ab;
         }
@@ -87,15 +81,15 @@ namespace Pentacle.Builders
             return ab;
         }
 
-        public static T SetBasicInformation<T>(this T ab, string name, string description, string spriteName = null, Assembly callingAssembly = null) where T : AbilitySO
+        public static T SetBasicInformation<T>(this T ab, string name, string description, string spriteName = null, ModProfile profile = null) where T : AbilitySO
         {
             ab._abilityName = name;
             ab._description = description;
 
             if (spriteName != null)
             {
-                callingAssembly ??= Assembly.GetCallingAssembly();
-                ab.abilitySprite = ResourceLoader.LoadSprite(spriteName, assembly: callingAssembly);
+                profile ??= ProfileManager.GetProfile(Assembly.GetCallingAssembly());
+                ab.abilitySprite = profile.LoadSprite(spriteName);
             }
 
             return ab;

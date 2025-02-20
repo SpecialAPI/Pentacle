@@ -1,17 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using UnityEngine.Profiling;
 
 namespace Pentacle.Builders
 {
     public static class StatusEffectBuilder
     {
-        public static T NewStatusEffect<T>(string id_SE, string statusId_ID, Assembly callingAssembly = null) where T : StatusEffect_SO
+        public static T NewStatusEffect<T>(string id_SE, string statusId_ID, ModProfile profile = null) where T : StatusEffect_SO
         {
-            callingAssembly ??= Assembly.GetCallingAssembly();
-
-            if (!ProfileManager.TryGetProfile(callingAssembly, out var profile))
-                return null;
+            profile ??= ProfileManager.GetProfile(Assembly.GetCallingAssembly());
 
             var se = CreateScriptable<T>();
             se.name = profile.GetID(id_SE);
@@ -42,10 +40,10 @@ namespace Pentacle.Builders
             return se;
         }
 
-        public static T SetSprite<T>(this T se, string spriteName, Assembly callingAssembly = null) where T : StatusEffect_SO
+        public static T SetSprite<T>(this T se, string spriteName, ModProfile profile = null) where T : StatusEffect_SO
         {
-            callingAssembly ??= Assembly.GetCallingAssembly();
-            se.EffectInfo.icon = ResourceLoader.LoadSprite(spriteName, assembly: callingAssembly);
+            profile ??= ProfileManager.GetProfile(Assembly.GetCallingAssembly());
+            se.EffectInfo.icon = profile.LoadSprite(spriteName);
 
             return se;
         }
@@ -57,13 +55,13 @@ namespace Pentacle.Builders
             return se;
         }
 
-        public static T SetBasicInformation<T>(this T se, string name, string description, string spriteName, Assembly callingAssembly = null) where T : StatusEffect_SO
+        public static T SetBasicInformation<T>(this T se, string name, string description, string spriteName, ModProfile profile = null) where T : StatusEffect_SO
         {
-            callingAssembly ??= Assembly.GetCallingAssembly();
+            profile ??= ProfileManager.GetProfile(Assembly.GetCallingAssembly());
 
             se.EffectInfo._statusName = name;
             se.EffectInfo._description = description;
-            se.EffectInfo.icon = ResourceLoader.LoadSprite(spriteName, assembly: callingAssembly);
+            se.EffectInfo.icon = profile.LoadSprite(spriteName);
 
             return se;
         }
