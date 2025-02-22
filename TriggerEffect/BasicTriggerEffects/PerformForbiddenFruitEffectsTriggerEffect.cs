@@ -14,7 +14,7 @@ namespace Pentacle.TriggerEffect.BasicTriggerEffects
         public Dictionary<string, List<EffectInfo>> specialForbiddenFruitIdSelfEffects;
         public Dictionary<string, List<EffectInfo>> specialForbiddenFruitIdOtherEffects;
 
-        public override void DoEffect(IUnit sender, object args, TriggeredEffect triggerInfo, object activator = null)
+        public override void DoEffect(IUnit sender, object args, TriggeredEffect triggerInfo, TriggerEffectExtraInfo extraInfo)
         {
             if (args is not ForbiddenFruitSuccessfulMatchInfo ffInfo)
                 return;
@@ -24,7 +24,7 @@ namespace Pentacle.TriggerEffect.BasicTriggerEffects
             var passiveNames = new List<string>();
             var passiveSprites = new List<Sprite>();
 
-            if (activator.TryGetActivatorNameAndSprite(out var selfPassiveName, out var selfPassiveSprite))
+            if (extraInfo.activator.TryGetActivatorNameAndSprite(out var selfPassiveName, out var selfPassiveSprite))
             {
                 unitIds.Add(sender.ID);
                 unitsCharacter.Add(sender.IsUnitCharacter);

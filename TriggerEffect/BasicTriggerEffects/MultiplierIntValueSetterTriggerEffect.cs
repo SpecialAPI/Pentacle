@@ -8,7 +8,7 @@ namespace Pentacle.TriggerEffect.BasicTriggerEffects
     {
         public int multiplier = multiplier;
 
-        public override void DoEffect(IUnit sender, object args, TriggeredEffect triggerInfo, object activator = null)
+        public override void DoEffect(IUnit sender, object args, TriggeredEffect triggerInfo, TriggerEffectExtraInfo extraInfo)
         {
             if (args is DamageReceivedValueChangeException damageReceivedEx)
                 damageReceivedEx.AddModifier(new MultiplyIntValueModifier(false, multiplier));

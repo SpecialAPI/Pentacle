@@ -9,7 +9,7 @@ namespace Pentacle.TriggerEffect.BasicTriggerEffects
     {
         public TriggerEffect effect = effect;
 
-        public override void DoEffect(IUnit sender, object args, TriggeredEffect triggerInfo, object activator = null)
+        public override void DoEffect(IUnit sender, object args, TriggeredEffect triggerInfo, TriggerEffectExtraInfo extraInfo)
         {
             if(effect == null)
                 return;
@@ -17,7 +17,7 @@ namespace Pentacle.TriggerEffect.BasicTriggerEffects
             if (args is not ITargetHolder hold || hold.Target == null)
                 return;
 
-            effect.DoEffect(hold.Target, args, triggerInfo, activator);
+            effect.DoEffect(hold.Target, args, triggerInfo, extraInfo);
         }
     }
 }

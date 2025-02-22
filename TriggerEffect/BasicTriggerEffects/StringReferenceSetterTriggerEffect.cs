@@ -9,7 +9,7 @@ namespace Pentacle.TriggerEffect.BasicTriggerEffects
     {
         public string value = value;
 
-        public override void DoEffect(IUnit sender, object args, TriggeredEffect triggerInfo, object activator = null)
+        public override void DoEffect(IUnit sender, object args, TriggeredEffect triggerInfo, TriggerEffectExtraInfo extraInfo)
         {
             if (!args.TryGetStringReference(out var stringRef))
                 return;

@@ -90,7 +90,7 @@ namespace Pentacle.TriggerEffect
             if (index >= ((triggerEffects?.Count ?? 0) + (connectionEffects?.Count ?? 0) + (disconnectionEffects?.Count ?? 0)) || sender is not IEffectorChecks effector)
                 return;
 
-            var te = GetEffectAtIndex(index, out var connect, out var disconnect);
+            var te = GetEffectAtIndex(index, out _);
 
             if (te == null)
                 return;
@@ -104,7 +104,7 @@ namespace Pentacle.TriggerEffect
                 }
             }
 
-            if (te.immediate || connect || disconnect)
+            if (te.immediate)
                 CustomTrigger(sender, args, index);
 
             else
@@ -116,32 +116,33 @@ namespace Pentacle.TriggerEffect
             if (idx >= ((triggerEffects?.Count ?? 0) + (connectionEffects?.Count ?? 0) + (disconnectionEffects?.Count ?? 0)) || sender is not IUnit caster)
                 return;
 
-            var te = GetEffectAtIndex(idx, out _, out _);
+            var te = GetEffectAtIndex(idx, out var activation);
 
             if (te == null)
                 return;
 
-            te.effect?.DoEffect(caster, args, te, this);
+            te.effect?.DoEffect(caster, args, te, new()
+            {
+                activator = this,
+                getPopupUIAction = null,
+                activation = activation
+            });
         }
 
-        public TriggeredEffect GetEffectAtIndex(int idx, out bool connection, out bool disconnection)
+        public TriggeredEffect GetEffectAtIndex(int idx, out TriggerEffectActivation activation)
         {
-            connection = true;
-            disconnection = false;
+            activation = TriggerEffectActivation.Connection;
 
             if (connectionEffects != null && idx < connectionEffects.Count)
                 return connectionEffects[idx];
 
-            connection = false;
-            disconnection = true;
-
+            activation = TriggerEffectActivation.Disconnection;
             idx -= connectionEffects?.Count ?? 0;
 
             if (disconnectionEffects != null && idx < disconnectionEffects.Count)
                 return disconnectionEffects[idx];
 
-            disconnection = false;
-
+            activation = TriggerEffectActivation.Trigger;
             idx -= disconnectionEffects?.Count ?? 0;
 
             if (triggerEffects != null && idx < triggerEffects.Count)

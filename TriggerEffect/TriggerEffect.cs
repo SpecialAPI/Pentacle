@@ -16,7 +16,30 @@ namespace Pentacle.TriggerEffect
         /// <param name="args">Addiional arguments for the trigger. Can be null.</param>
         /// <param name="triggerInfo">Information about this effect.</param>
         /// <param name="activator">This effect's activator, for example an item or passive that this effect belongs to.</param>
-        public abstract void DoEffect(IUnit sender, object args, TriggeredEffect triggerInfo, object activator = null);
+        public abstract void DoEffect(IUnit sender, object args, TriggeredEffect triggerInfo, TriggerEffectExtraInfo extraInfo);
+
+        public virtual bool ManuallyHandlePopup => false;
+    }
+
+    public class TriggerEffectExtraInfo
+    {
+        public object activator;
+        public Func<int, bool, bool, CombatAction> getPopupUIAction;
+        public TriggerEffectActivation activation;
+
+        public bool TryGetPopupUIAction(int unitId, bool isUnitCharacter, bool consumed, out CombatAction action)
+        {
+            action = getPopupUIAction?.Invoke(unitId, isUnitCharacter, consumed);
+
+            return action != null;
+        }
+    }
+
+    public enum TriggerEffectActivation
+    {
+        Trigger,
+        Connection,
+        Disconnection,
     }
 
     /// <summary>

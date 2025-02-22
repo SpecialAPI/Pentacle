@@ -102,7 +102,7 @@ namespace Pentacle.TriggerEffect
             if (index >= ((triggerEffects?.Count ?? 0) + (connectionEffects?.Count ?? 0) + (disconnectionEffects?.Count ?? 0)) || sender is not IPassiveEffector effector || !effector.CanPassiveTrigger(m_PassiveID))
                 return;
 
-            var te = GetEffectAtIndex(index);
+            var te = GetEffectAtIndex(index, out _);
 
             if (te == null)
                 return;
@@ -128,27 +128,41 @@ namespace Pentacle.TriggerEffect
             if (idx >= ((triggerEffects?.Count ?? 0) + (connectionEffects?.Count ?? 0) + (disconnectionEffects?.Count ?? 0)) || sender is not IPassiveEffector effector || sender is not IUnit caster)
                 return;
 
-            var te = GetEffectAtIndex(idx);
+            var te = GetEffectAtIndex(idx, out var activation);
 
             if (te == null)
                 return;
 
-            if (te.doesPopup)
-                CombatManager.Instance.AddUIAction(new ShowPassiveInformationUIAction(effector.ID, effector.IsUnitCharacter, GetPassiveLocData().text, passiveIcon));
+            if (te.doesPopup && (te.effect == null || !te.effect.ManuallyHandlePopup))
+                CombatManager.Instance.AddUIAction(GetPopupUIAction(effector.ID, effector.IsUnitCharacter, false));
 
-            te.effect?.DoEffect(caster, args, te, this);
+            te.effect.DoEffect(caster, args, te, new()
+            {
+                activator = this,
+                getPopupUIAction = GetPopupUIAction,
+                activation = activation
+            });
         }
 
-        public TriggeredEffect GetEffectAtIndex(int idx)
+        public CombatAction GetPopupUIAction(int id, bool isUnitCharacter, bool consumed)
         {
+            return new ShowPassiveInformationUIAction(id, isUnitCharacter, GetPassiveLocData().text, passiveIcon);
+        }
+
+        public TriggeredEffect GetEffectAtIndex(int idx, out TriggerEffectActivation activation)
+        {
+            activation = TriggerEffectActivation.Connection;
+
             if (connectionEffects != null && idx < connectionEffects.Count)
                 return connectionEffects[idx];
 
+            activation = TriggerEffectActivation.Disconnection;
             idx -= connectionEffects?.Count ?? 0;
 
             if (disconnectionEffects != null && idx < disconnectionEffects.Count)
                 return disconnectionEffects[idx];
 
+            activation = TriggerEffectActivation.Trigger;
             idx -= disconnectionEffects?.Count ?? 0;
 
             if (triggerEffects != null && idx < triggerEffects.Count)

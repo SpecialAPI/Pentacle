@@ -8,14 +8,14 @@ namespace Pentacle.TriggerEffect.BasicTriggerEffects
 {
     public class SetForbiddenFruitCanMatchAndPassiveInformationTriggerEffect : TriggerEffect
     {
-        public override void DoEffect(IUnit sender, object args, TriggeredEffect triggerInfo, object activator = null)
+        public override void DoEffect(IUnit sender, object args, TriggeredEffect triggerInfo, TriggerEffectExtraInfo extraInfo)
         {
             if (args is not ForbiddenFruitCanMatchInfo canMatchInfo || !args.TryGetBoolReference(out var canMatchBoolRef))
                 return;
 
             canMatchBoolRef.value = true;
 
-            if (activator.TryGetActivatorNameAndSprite(out var passiveName, out var passiveSprite))
+            if (extraInfo.activator.TryGetActivatorNameAndSprite(out var passiveName, out var passiveSprite))
             {
                 canMatchInfo.PassiveName.value = passiveName;
                 canMatchInfo.PassiveSprite = passiveSprite;
