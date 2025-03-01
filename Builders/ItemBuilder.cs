@@ -119,6 +119,13 @@ namespace Pentacle.Builders
             return w;
         }
 
+        public static T AddWithoutItemPools<T>(this T w) where T : BaseWearableSO
+        {
+            ItemUtils.JustAddItemSoItCanBeLoaded(w);
+
+            return w;
+        }
+
         public static ExtraAbility_Wearable_SMS ExtraAbilityModifier(CharacterAbility ab)
         {
             var mod = CreateScriptable<ExtraAbility_Wearable_SMS>();
