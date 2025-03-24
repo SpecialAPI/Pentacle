@@ -30,7 +30,7 @@ namespace Pentacle.Tools
         /// <summary>
         /// If ProduceSpecialPigment is true, pigment of this color will be produced instead of the unit's health color.
         /// </summary>
-        public ManaColorSO SpecialPiment;
+        public ManaColorSO SpecialPigment;
         /// <summary>
         /// If true, pigment will be produced even if it normally can't be produced.
         /// </summary>
