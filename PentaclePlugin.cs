@@ -28,6 +28,8 @@ namespace Pentacle
         internal void Start()
         {
             DelayedActions.ProcessPostAwakeActions();
+
+            SpecialDamageReversePatch.Patch();
         }
     }
 }
