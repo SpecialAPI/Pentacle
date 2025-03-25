@@ -370,6 +370,9 @@ namespace Pentacle.Tools
         /// <returns>The given instruction converted to a string.</returns>
         public static string InstructionToString(this Instruction c)
         {
+            if (c == null)
+                return "Null instruction";
+
             try
             {
                 return c.ToString();
@@ -387,7 +390,7 @@ namespace Pentacle.Tools
                 catch { }
             }
 
-            return "This shouldn't be happening";
+            return $"IL_{c.Offset:x4}: {c.OpCode.Name} (This shouldn't be happening)";
         }
 
         /// <summary>

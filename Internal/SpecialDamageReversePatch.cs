@@ -16,6 +16,8 @@ namespace Pentacle.Internal
         private static readonly MethodInfo sd_aedmp = AccessTools.Method(typeof(SpecialDamageReversePatch), nameof(SpecialDamage_ApplyExtraDamageModifierPercentage));
         private static readonly MethodInfo sd_mpc = AccessTools.Method(typeof(SpecialDamageReversePatch), nameof(SpecialDamage_ModifyPigmentColor));
         private static readonly MethodInfo sd_dobdc = AccessTools.Method(typeof(SpecialDamageReversePatch), nameof(SpecialDamage_DisableOnBeingDamagedCall));
+        private static readonly MethodInfo sd_dodc = AccessTools.Method(typeof(SpecialDamageReversePatch), nameof(SpecialDamage_DisableOnDamageCall));
+        private static readonly MethodInfo sd_cm = AccessTools.Method(typeof(SpecialDamageReversePatch), nameof(SpecialDamage_CombatManager));
 
         private static void SpecialDamage_Transpiler(ILContext ctx, MethodBase mthd)
         {
@@ -49,7 +51,11 @@ namespace Pentacle.Internal
                 if (arg < sinfoArgNumber)
                     continue;
 
-                ctx.Instrs[i] = processor.Create(opcode, arg + 1);
+                var newInstr = processor.Create(opcode, arg + 1);
+                var thisInstr = ctx.Instrs[i];
+
+                thisInstr.OpCode = newInstr.OpCode;
+                thisInstr.Operand = newInstr.Operand;
             }
 
             if (!crs.JumpBeforeNext(x => x.MatchCallOrCallvirt<CombatManager>($"get_{nameof(CombatManager.Instance)}")))
@@ -96,6 +102,35 @@ namespace Pentacle.Internal
 
             crs.Emit(OpCodes.Ldarg, sinfoArgNumber);
             crs.Emit(OpCodes.Call, sd_mapa);
+
+            // Need to figure out why MoveType.AfterLabels doesn't work
+            if (!crs.JumpToNext(x => x.MatchCallOrCallvirt<CombatManager>($"get_{nameof(CombatManager.Instance)}")))
+                return;
+
+            var brCrs = new ILCursor(crs);
+
+            if (!brCrs.JumpBeforeNext(x => x.OpCode == OpCodes.Br || x.OpCode == OpCodes.Br_S, 2))
+                return;
+
+            var brInstr = brCrs.Next;
+
+            crs.Emit(OpCodes.Ldarg, sinfoArgNumber);
+            crs.Emit(OpCodes.Call, sd_dodc);
+            crs.Emit(OpCodes.Brtrue, brInstr);
+            crs.Emit(OpCodes.Call, sd_cm);
+        }
+
+        private static bool SpecialDamage_DisableOnDamageCall(CombatManager _, SpecialDamageInfo info)
+        {
+            if(info == null)
+                return false;
+
+            return info.DisableOnDamageCalls;
+        }
+
+        private static CombatManager SpecialDamage_CombatManager()
+        {
+            return CombatManager.Instance;
         }
 
         private static bool SpecialDamage_DisableOnBeingDamagedCall(SpecialDamageInfo info)
