@@ -14,10 +14,12 @@ namespace Pentacle.Internal
         private static readonly MethodInfo sd_mpa = AccessTools.Method(typeof(SpecialDamageReversePatch), nameof(SpecialDamage_ModifyPigmentAmount));
         private static readonly MethodInfo sd_mapa = AccessTools.Method(typeof(SpecialDamageReversePatch), nameof(SpecialDamage_ModifyAddPigmentAction));
         private static readonly MethodInfo sd_aedmp = AccessTools.Method(typeof(SpecialDamageReversePatch), nameof(SpecialDamage_ApplyExtraDamageModifierPercentage));
+        private static readonly MethodInfo sd_mpc = AccessTools.Method(typeof(SpecialDamageReversePatch), nameof(SpecialDamage_ModifyPigmentColor));
+        private static readonly MethodInfo sd_dobdc = AccessTools.Method(typeof(SpecialDamageReversePatch), nameof(SpecialDamage_DisableOnBeingDamagedCall));
 
         private static void SpecialDamage_Transpiler(ILContext ctx, MethodBase mthd)
         {
-            if(ctx == null || mthd == null)
+            if (ctx == null || mthd == null)
                 return;
 
             var crs = new ILCursor(ctx);
@@ -26,7 +28,7 @@ namespace Pentacle.Internal
             var isCharacter = mthd.DeclaringType == typeof(CharacterCombat);
             var sinfoArgNumber = 3;
 
-            for(var i = 0; i < ctx.Instrs.Count; i++)
+            for (var i = 0; i < ctx.Instrs.Count; i++)
             {
                 var instr = ctx.Instrs[i];
                 var opcode = OpCodes.Ldarg;
@@ -34,10 +36,10 @@ namespace Pentacle.Internal
                 if (!instr.MatchLdarg(out var arg))
                 {
                     opcode = OpCodes.Ldarga;
-                    if(!instr.MatchLdarga(out arg))
+                    if (!instr.MatchLdarga(out arg))
                     {
                         opcode = OpCodes.Starg;
-                        if(!instr.MatchStarg(out arg))
+                        if (!instr.MatchStarg(out arg))
                         {
                             continue;
                         }
@@ -50,12 +52,34 @@ namespace Pentacle.Internal
                 ctx.Instrs[i] = processor.Create(opcode, arg + 1);
             }
 
+            if (!crs.JumpBeforeNext(x => x.MatchCallOrCallvirt<CombatManager>($"get_{nameof(CombatManager.Instance)}")))
+                return;
+
+            if (!crs.TryFindNext(out var postNotif, x => x.MatchCallOrCallvirt<CombatManager>(nameof(CombatManager.PostNotification))) || postNotif == null || postNotif.Length <= 0)
+                return;
+
+            var afterPostNotifInstr = postNotif[0].Next.Next;
+
+            crs.Emit(OpCodes.Ldarg, sinfoArgNumber);
+            crs.Emit(OpCodes.Call, sd_dobdc);
+            crs.Emit(OpCodes.Brtrue, afterPostNotifInstr);
+
             if (!crs.JumpBeforeNext(x => x.MatchStloc(3)))
                 return;
 
             crs.Emit(OpCodes.Ldarg, sinfoArgNumber);
             crs.Emit(OpCodes.Ldarg_1);
             crs.Emit(OpCodes.Call, sd_aedmp);
+
+            var matchHealthColor = (Func<Instruction, bool>)(isCharacter
+                ? (Instruction x) => x.MatchCallOrCallvirt<CharacterCombat>($"get_{nameof(CharacterCombat.HealthColor)}")
+                : (Instruction x) => x.MatchCallOrCallvirt<EnemyCombat>($"get_{nameof(EnemyCombat.HealthColor)}"));
+
+            if (!crs.JumpToNext(matchHealthColor))
+                return;
+
+            crs.Emit(OpCodes.Ldarg, sinfoArgNumber);
+            crs.Emit(OpCodes.Call, sd_mpc);
 
             var matchPigmentFromDamage = (Func<Instruction, bool>)(isCharacter
                 ? (Instruction x) => x.MatchCallOrCallvirt<CombatSettings_Data>($"get_{nameof(CombatSettings_Data.CharacterPigmentAmount)}")
@@ -72,6 +96,25 @@ namespace Pentacle.Internal
 
             crs.Emit(OpCodes.Ldarg, sinfoArgNumber);
             crs.Emit(OpCodes.Call, sd_mapa);
+        }
+
+        private static bool SpecialDamage_DisableOnBeingDamagedCall(SpecialDamageInfo info)
+        {
+            if(info == null)
+                return false;
+
+            return info.DisableOnBeingDamagedCalls;
+        }
+
+        private static ManaColorSO SpecialDamage_ModifyPigmentColor(ManaColorSO current, SpecialDamageInfo info)
+        {
+            if(info == null)
+                return current;
+
+            if(!info.ProduceSpecialPigment)
+                return current;
+
+            return info.SpecialPigment;
         }
 
         private static int SpecialDamage_ApplyExtraDamageModifierPercentage(int modAmount, SpecialDamageInfo info, int baseAmount)
