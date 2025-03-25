@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using Mono.Cecil.Cil;
+using Pentacle.Misc;
 
 namespace Pentacle.Internal
 {
@@ -11,6 +12,8 @@ namespace Pentacle.Internal
         internal static bool SpecialDamagePatchDone;
 
         private static readonly MethodInfo sd_mpa = AccessTools.Method(typeof(SpecialDamageReversePatch), nameof(SpecialDamage_ModifyPigmentAmount));
+        private static readonly MethodInfo sd_mapa = AccessTools.Method(typeof(SpecialDamageReversePatch), nameof(SpecialDamage_ModifyAddPigmentAction));
+        private static readonly MethodInfo sd_aedmp = AccessTools.Method(typeof(SpecialDamageReversePatch), nameof(SpecialDamage_ApplyExtraDamageModifierPercentage));
 
         private static void SpecialDamage_Transpiler(ILContext ctx, MethodBase mthd)
         {
@@ -47,6 +50,13 @@ namespace Pentacle.Internal
                 ctx.Instrs[i] = processor.Create(opcode, arg + 1);
             }
 
+            if (!crs.JumpBeforeNext(x => x.MatchStloc(3)))
+                return;
+
+            crs.Emit(OpCodes.Ldarg, sinfoArgNumber);
+            crs.Emit(OpCodes.Ldarg_1);
+            crs.Emit(OpCodes.Call, sd_aedmp);
+
             var matchPigmentFromDamage = (Func<Instruction, bool>)(isCharacter
                 ? (Instruction x) => x.MatchCallOrCallvirt<CombatSettings_Data>($"get_{nameof(CombatSettings_Data.CharacterPigmentAmount)}")
                 : (Instruction x) => x.MatchCallOrCallvirt<CombatSettings_Data>($"get_{nameof(CombatSettings_Data.EnemyPigmentAmount)}"));
@@ -56,6 +66,37 @@ namespace Pentacle.Internal
 
             crs.Emit(OpCodes.Ldarg, sinfoArgNumber);
             crs.Emit(OpCodes.Call, sd_mpa);
+
+            if (!crs.JumpBeforeNext(x => x.MatchLdcI4(0)))
+                return;
+
+            crs.Emit(OpCodes.Ldarg, sinfoArgNumber);
+            crs.Emit(OpCodes.Call, sd_mapa);
+        }
+
+        private static int SpecialDamage_ApplyExtraDamageModifierPercentage(int modAmount, SpecialDamageInfo info, int baseAmount)
+        {
+            if (info == null)
+                return modAmount;
+
+            if (info.ExtraDamageModifierPercentage == 0)
+                return modAmount;
+
+            if (info.ExtraDamageModifierPercentage == -100)
+                return baseAmount;
+
+            return (int)Mathf.LerpUnclamped(baseAmount, modAmount, 1f + (info.ExtraDamageModifierPercentage / 100f));
+        }
+
+        private static IImmediateAction SpecialDamage_ModifyAddPigmentAction(AddManaToManaBarAction curr, SpecialDamageInfo info)
+        {
+            if (info == null)
+                return curr;
+
+            if(!info.ForcePigmentProduction)
+                return curr;
+
+            return new ForceAddPigmentAction(curr._mana, curr._amount, curr._isGeneratorCharacter, curr._id);
         }
 
         private static int SpecialDamage_ModifyPigmentAmount(int curr, SpecialDamageInfo info)
