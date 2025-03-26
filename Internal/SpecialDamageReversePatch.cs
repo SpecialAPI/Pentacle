@@ -28,35 +28,7 @@ namespace Pentacle.Internal
             var processor = ctx.Body.GetILProcessor();
 
             var isCharacter = mthd.DeclaringType == typeof(CharacterCombat);
-            var sinfoArgNumber = 3;
-
-            for (var i = 0; i < ctx.Instrs.Count; i++)
-            {
-                var instr = ctx.Instrs[i];
-                var opcode = OpCodes.Ldarg;
-
-                if (!instr.MatchLdarg(out var arg))
-                {
-                    opcode = OpCodes.Ldarga;
-                    if (!instr.MatchLdarga(out arg))
-                    {
-                        opcode = OpCodes.Starg;
-                        if (!instr.MatchStarg(out arg))
-                        {
-                            continue;
-                        }
-                    }
-                }
-
-                if (arg < sinfoArgNumber)
-                    continue;
-
-                var newInstr = processor.Create(opcode, arg + 1);
-                var thisInstr = ctx.Instrs[i];
-
-                thisInstr.OpCode = newInstr.OpCode;
-                thisInstr.Operand = newInstr.Operand;
-            }
+            var sinfoArgNumber = 9;
 
             if (!crs.JumpBeforeNext(x => x.MatchCallOrCallvirt<CombatManager>($"get_{nameof(CombatManager.Instance)}")))
                 return;
@@ -190,7 +162,7 @@ namespace Pentacle.Internal
 
         [HarmonyPatch(typeof(CharacterCombat), nameof(CharacterCombat.Damage))]
         [HarmonyReversePatch(HarmonyReversePatchType.Snapshot)]
-        internal static DamageInfo SpecialDamage_Characters_ReversePatch(CharacterCombat __instance, int amount, IUnit killer, SpecialDamageInfo sinfo, string deathTypeID, int targetSlotOffset, bool addHealthMana, bool directDamage, bool ignoresShield, string specialDamage)
+        internal static DamageInfo SpecialDamage_Characters_ReversePatch(CharacterCombat __instance, int amount, IUnit killer, string deathTypeID, int targetSlotOffset, bool addHealthMana, bool directDamage, bool ignoresShield, string specialDamage, SpecialDamageInfo sinfo)
         {
             static void ILManipulator(ILContext ctx, MethodBase mthd)
             {
@@ -203,7 +175,7 @@ namespace Pentacle.Internal
 
         [HarmonyPatch(typeof(EnemyCombat), nameof(EnemyCombat.Damage))]
         [HarmonyReversePatch(HarmonyReversePatchType.Snapshot)]
-        internal static DamageInfo SpecialDamage_Enemies_ReversePatch(EnemyCombat __instance, int amount, IUnit killer, SpecialDamageInfo sinfo, string deathTypeID, int targetSlotOffset, bool addHealthMana, bool directDamage, bool ignoresShield, string specialDamage)
+        internal static DamageInfo SpecialDamage_Enemies_ReversePatch(EnemyCombat __instance, int amount, IUnit killer, string deathTypeID, int targetSlotOffset, bool addHealthMana, bool directDamage, bool ignoresShield, string specialDamage, SpecialDamageInfo sinfo)
         {
             static void ILManipulator(ILContext ctx, MethodBase mthd)
             {

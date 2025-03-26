@@ -185,9 +185,9 @@ namespace Pentacle.Tools
             }
 
             if (u is CharacterCombat cc)
-                return SpecialDamageReversePatch.SpecialDamage_Characters_ReversePatch(cc, amount, killer, sinfo, deathType, targetSlotOffset, addHealthMana, directDamage, ignoresShield, damageId);
+                return SpecialDamageReversePatch.SpecialDamage_Characters_ReversePatch(cc, amount, killer, deathType, targetSlotOffset, addHealthMana, directDamage, ignoresShield, damageId, sinfo);
             else if (u is EnemyCombat ec)
-                return SpecialDamageReversePatch.SpecialDamage_Enemies_ReversePatch(ec, amount, killer, sinfo, deathType, targetSlotOffset, addHealthMana, directDamage, ignoresShield, damageId);
+                return SpecialDamageReversePatch.SpecialDamage_Enemies_ReversePatch(ec, amount, killer, deathType, targetSlotOffset, addHealthMana, directDamage, ignoresShield, damageId, sinfo);
 
             Debug.LogError("Trying to do SpecialDanage to a unit that is neither an enemy nor a party member.");
             return default;
