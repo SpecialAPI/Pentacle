@@ -148,6 +148,15 @@ namespace Pentacle.Builders
             return pa;
         }
 
+        public static T AddEffectsToAll<T>(this T pa, params EffectsAndTrigger[] effects) where T : MultiCustomTriggerEffectPassive
+        {
+            pa.triggerEffects.AddRange(effects);
+            pa.connectionEffects.AddRange(effects);
+            pa.disconnectionEffects.AddRange(effects);
+
+            return pa;
+        }
+
         public static readonly string[] CharacterDescriptionInserts =
         [
             "party member",

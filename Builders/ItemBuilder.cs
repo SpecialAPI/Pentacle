@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Pentacle.TriggerEffect;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -85,6 +86,36 @@ namespace Pentacle.Builders
         public static T SetStaticModifiers<T>(this T w, params WearableStaticModifierSetterSO[] modifiers) where T : BaseWearableSO
         {
             w.staticModifiers = modifiers ?? [];
+
+            return w;
+        }
+
+        public static T SetTriggerEffects<T>(this T w, List<EffectsAndTrigger> triggerEffects) where T : MultiCustomTriggerEffectWearable
+        {
+            w.triggerEffects = triggerEffects;
+
+            return w;
+        }
+
+        public static T SetConnectionEffects<T>(this T w, List<TriggeredEffect> connectionEffects) where T : MultiCustomTriggerEffectWearable
+        {
+            w.connectionEffects = connectionEffects;
+
+            return w;
+        }
+
+        public static T SetDisconnectionEffects<T>(this T w, List<TriggeredEffect> disconnectionEffects) where T : MultiCustomTriggerEffectWearable
+        {
+            w.disconnectionEffects = disconnectionEffects;
+
+            return w;
+        }
+
+        public static T AddEffectsToAll<T>(this T w, params EffectsAndTrigger[] effects) where T : MultiCustomTriggerEffectWearable
+        {
+            w.triggerEffects.AddRange(effects);
+            w.connectionEffects.AddRange(effects);
+            w.disconnectionEffects.AddRange(effects);
 
             return w;
         }
