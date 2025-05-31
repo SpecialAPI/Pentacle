@@ -186,37 +186,13 @@ namespace Pentacle.Builders
             return ch;
         }
 
-        public static T AddFinalBossItemUnlock<T>(this T ch, string bossId, string unlockId, ModdedAchievement_t achievement, string unlockedItem, bool automaticallyLockItem = true, ModProfile profile = null) where T : CharacterSO
+        public static T AddFinalBossUnlock<T>(this T ch, string bossId, UnlockableModData unlock) where T : CharacterSO
         {
-            profile ??= ProfileManager.GetProfile(Assembly.GetCallingAssembly());
+            if (unlock == null)
+                return ch;
 
-            var achId = achievement?.m_eAchievementID ?? string.Empty;
-            ch.m_BossAchData.Add(new(bossId, achId));
-
-            var unlock = new UnlockableModData(profile.GetID(unlockId))
-            {
-                hasQuestCompletion = false,
-                questID = string.Empty,
-
-                hasCharacterUnlock = false,
-                character = string.Empty,
-
-                hasItemUnlock = !string.IsNullOrEmpty(unlockedItem),
-                items = [unlockedItem],
-
-                hasModdedAchievementUnlock = achievement != null,
-                moddedAchievementID = achId,
-
-                _HasAchievementUnlock = false,
-            };
-
-            if (automaticallyLockItem)
-            {
-                var item = GetWearable(unlockedItem);
-
-                if (item != null)
-                    item.startsLocked = true;
-            }
+            if(unlock.hasModdedAchievementUnlock)
+                ch.m_BossAchData.Add(new(bossId, unlock.moddedAchievementID));
 
             if (UnlockablesDB.TryGetFinalBossUnlockCheck(bossId, out var check))
                 check.AddUnlockData(ch.entityID, unlock);

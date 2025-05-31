@@ -2,11 +2,14 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using UnityEngine.Profiling;
 
 namespace Pentacle.Builders
 {
     public static class ItemBuilder
     {
+        private static readonly Dictionary<string, ItemModdedUnlockInfo> itemUnlockInfos = [];
+
         public static T NewItem<T>(string id, ModProfile profile = null) where T : BaseWearableSO
         {
             profile ??= ProfileManager.GetProfile(Assembly.GetCallingAssembly());
@@ -39,22 +42,28 @@ namespace Pentacle.Builders
             return w;
         }
 
-        public static T SetSprite<T>(this T w, string spriteName, ModProfile profile = null) where T : BaseWearableSO
+        public static T SetSprite<T>(this T w, string spriteName, string lockedSpriteName = null, ModProfile profile = null) where T : BaseWearableSO
         {
             profile ??= ProfileManager.GetProfile(Assembly.GetCallingAssembly());
             w.wearableImage = profile.LoadSprite(spriteName);
 
+            if(!string.IsNullOrEmpty(lockedSpriteName))
+                w.GetUnlockInfo().lockedSprite = profile.LoadSprite(lockedSpriteName);
+
             return w;
         }
 
-        public static T SetSprite<T>(this T w, Sprite sprite) where T : BaseWearableSO
+        public static T SetSprite<T>(this T w, Sprite sprite, Sprite lockedSprite) where T : BaseWearableSO
         {
             w.wearableImage = sprite;
 
+            if(lockedSprite != null)
+                w.GetUnlockInfo().lockedSprite = lockedSprite;
+
             return w;
         }
 
-        public static T SetBasicInformation<T>(this T w, string name, string flavor, string description, string spriteName, ModProfile profile = null) where T : BaseWearableSO
+        public static T SetBasicInformation<T>(this T w, string name, string flavor, string description, string spriteName, string lockedSpriteName = null, ModProfile profile = null) where T : BaseWearableSO
         {
             profile ??= ProfileManager.GetProfile(Assembly.GetCallingAssembly());
 
@@ -63,15 +72,21 @@ namespace Pentacle.Builders
             w._description = description;
             w.wearableImage = profile.LoadSprite(spriteName);
 
+            if (!string.IsNullOrEmpty(lockedSpriteName))
+                w.GetUnlockInfo().lockedSprite = profile.LoadSprite(lockedSpriteName);
+
             return w;
         }
 
-        public static T SetBasicInformation<T>(this T w, string name, string flavor, string description, Sprite sprite) where T : BaseWearableSO
+        public static T SetBasicInformation<T>(this T w, string name, string flavor, string description, Sprite sprite, Sprite lockedSprite = null) where T : BaseWearableSO
         {
             w._itemName = name;
             w._flavourText = flavor;
             w._description = description;
             w.wearableImage = sprite;
+
+            if (lockedSprite != null)
+                w.GetUnlockInfo().lockedSprite = lockedSprite;
 
             return w;
         }
@@ -111,6 +126,38 @@ namespace Pentacle.Builders
             return w;
         }
 
+        public static ItemModdedUnlockInfo GetUnlockInfo<T>(this T w) where T : BaseWearableSO
+        {
+            if(itemUnlockInfos.TryGetValue(w.name, out var ret))
+                return ret;
+
+            return itemUnlockInfos[w.name] = new(w.name);
+        }
+
+        public static T SetStartsLocked<T>(this T w, bool startsLocked) where T : BaseWearableSO
+        {
+            if(w.startsLocked ==  startsLocked)
+                return w;
+
+            w.startsLocked = startsLocked;
+            var unlockInfo = w.GetUnlockInfo();
+
+            foreach (var category in ItemUnlocksDB.ModdedCategories)
+            {
+                var removeFrom = startsLocked ? category.unlockedItemNames : category.lockedItemNames;
+
+                if (!removeFrom.Remove(unlockInfo))
+                    continue;
+
+                if (startsLocked)
+                    category.lockedItemNames.Add(unlockInfo);
+                else
+                    category.unlockedItemNames.Add(unlockInfo);
+            }
+
+            return w;
+        }
+
         public static T AddEffectsToAll<T>(this T w, params EffectsAndTrigger[] effects) where T : MultiCustomTriggerEffectWearable
         {
             w.triggerEffects.AddRange(effects);
@@ -120,39 +167,67 @@ namespace Pentacle.Builders
             return w;
         }
 
-        public static T AddToTreasure<T>(this T w, Sprite lockedSprite = null, string achievementId = "") where T : BaseWearableSO
+        public static T AddToTreasure<T>(this T w, bool addToItemStats = true) where T : BaseWearableSO
         {
-            ItemUtils.AddItemToTreasureStatsCategoryAndGamePool(w, new(w.name, lockedSprite, achievementId));
+            w.AddWithoutItemPools();
+            ItemPoolDB.AddItemToTreasurePool(w.name);
+
+            if (addToItemStats)
+                w.AddToItemStatsCategory("Treasure", true, "Treasure");
 
             return w;
         }
 
-        public static T AddToTreasure<T>(this T w, string lockedSpriteName, string achievementId = "", ModProfile profile = null) where T : BaseWearableSO
+        public static T AddToShop<T>(this T w, bool addToItemStats = true) where T : BaseWearableSO
         {
-            profile ??= ProfileManager.GetProfile(Assembly.GetCallingAssembly());
-            ItemUtils.AddItemToTreasureStatsCategoryAndGamePool(w, new(w.name, profile.LoadSprite(lockedSpriteName), achievementId));
+            w.AddWithoutItemPools();
+            ItemPoolDB.AddItemToShopPool(w.name);
+
+            if (addToItemStats)
+                w.AddToItemStatsCategory("Shop", true, "Shop");
 
             return w;
         }
 
-        public static T AddToShop<T>(this T w, Sprite lockedSprite = null, string achievementId = "") where T : BaseWearableSO
+        public static T AddToItemStatsCategory<T>(this T w, string categoryId, bool createIfDoesntExist, string createdDisplayName) where T : BaseWearableSO
         {
-            ItemUtils.AddItemToShopStatsCategoryAndGamePool(w, new(w.name, lockedSprite, achievementId));
+            var unlockInfo = w.GetUnlockInfo();
 
-            return w;
-        }
+            foreach(var category in ItemUnlocksDB.ModdedCategories)
+            {
+                if (!category.HasSameID(categoryId))
+                    continue;
 
-        public static T AddToShop<T>(this T w, string lockedSpriteName, string achievementId = "", ModProfile profile = null) where T : BaseWearableSO
-        {
-            profile ??= ProfileManager.GetProfile(Assembly.GetCallingAssembly());
-            ItemUtils.AddItemToShopStatsCategoryAndGamePool(w, new(w.name, profile.LoadSprite(lockedSpriteName), achievementId));
+                if (w.startsLocked)
+                    category.lockedItemNames.Add(unlockInfo);
+                else
+                    category.unlockedItemNames.Add(unlockInfo);
 
+                return w;
+            }
+
+            if (!createIfDoesntExist)
+            {
+                // TODO: add an extra category check in delayed start if initial category check fails
+                return w;
+            }
+
+            var newCategory = new ModdedItemCategory(categoryId, createdDisplayName);
+
+            if (w.startsLocked)
+                newCategory.lockedItemNames.Add(unlockInfo);
+            else
+                newCategory.unlockedItemNames.Add(unlockInfo);
+
+            ItemUnlocksDB.ModdedCategories.Add(newCategory);
             return w;
         }
 
         public static T AddWithoutItemPools<T>(this T w) where T : BaseWearableSO
         {
-            ItemUtils.JustAddItemSoItCanBeLoaded(w);
+            // Check if the item is already added to avoid causing errors
+            if (!LoadedWearables.ContainsKey(w.name))
+                ItemUtils.JustAddItemSoItCanBeLoaded(w);
 
             return w;
         }
