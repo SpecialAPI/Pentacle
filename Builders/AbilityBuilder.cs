@@ -6,6 +6,9 @@ using System.Text;
 
 namespace Pentacle.Builders
 {
+    /// <summary>
+    /// Static class which provides tools for creating abilities.
+    /// </summary>
     public static class AbilityBuilder
     {
         /// <summary>
