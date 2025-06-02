@@ -109,7 +109,7 @@ namespace Pentacle.Builders
         /// </summary>
         /// <typeparam name="T">The class which defines the ability behaviour. Must be a type of AbilitySO.</typeparam>
         /// <param name="ab">The object instance of the ability.</param>
-        /// <param name="spriteName">The name of the sprite image in the project files.\nYou can also give it a full file path if you replace all "/" with "."</param>
+        /// <param name="spriteName">The name of the sprite image in the project files.\nYou can also give it a full file path if you replace all "/" with "."\n.png extension is optional.</param>
         /// <param name="profile">Your mod profile.</param>
         /// <returns>The instance of the ability with its modified sprite.</returns>
         public static T SetSprite<T>(this T ab, string spriteName, ModProfile profile = null) where T : AbilitySO
@@ -139,7 +139,7 @@ namespace Pentacle.Builders
         /// <param name="ab">The object instance of the ability.</param>
         /// <param name="name">The in-game name of the ability.</param>
         /// <param name="description">The in-game description of the ability.</param>
-        /// <param name="spriteName">The name of the sprite image in the project files.\nYou can also give it a full file path if you replace all "/" with "."</param>
+        /// <param name="spriteName">The name of the sprite image in the project files.\nYou can also give it a full file path if you replace all "/" with "."\n.png extension is optional.</param>
         /// <param name="profile">Your mod profile.</param>
         /// <returns>The instance of the ability with all the modified information.</returns>
         public static T SetBasicInformation<T>(this T ab, string name, string description, string spriteName = null, ModProfile profile = null) where T : AbilitySO
