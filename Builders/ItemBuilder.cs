@@ -1,8 +1,10 @@
-﻿using Pentacle.TriggerEffect;
+﻿using Pentacle.Internal;
+using Pentacle.TriggerEffect;
 using System;
 using System.Collections.Generic;
 using System.Text;
 using UnityEngine.Profiling;
+using UnityEngine.UIElements.UIR;
 
 namespace Pentacle.Builders
 {
@@ -241,7 +243,7 @@ namespace Pentacle.Builders
 
             if (!createIfDoesntExist)
             {
-                // TODO: add an extra category check in delayed start if initial category check fails
+                DelayedActions.delayedItemStats.Add((categoryId, unlockInfo));
                 return w;
             }
 
@@ -260,13 +262,13 @@ namespace Pentacle.Builders
         {
             w.AddWithoutItemPools();
 
-            if(!ItemPoolDB.TryGetItemLootListEffect(poolId, out var effect))
+            var lootProbability = new LootItemProbability(w.name, weight);
+
+            if (!ItemPoolDB.TryGetItemLootListEffect(poolId, out var effect))
             {
-                // TODO: add to the loot pool in delayed start if initial loot pool check fails
+                DelayedActions.delayedItemPools.Add((poolId, lootProbability));
                 return w;
             }
-
-            var lootProbability = new LootItemProbability(w.name, weight);
 
             if (w.startsLocked)
                 (effect._lockedLootableItems ??= []).Add(lootProbability);
@@ -274,13 +276,18 @@ namespace Pentacle.Builders
                 (effect._lootableItems ??= []).Add(lootProbability);
 
             // Cache the probability to move it between the locked and unlocked lists if the item gets locked/unlocked after getting added to the pool
-            if(!itemCustomLootPoolCache.TryGetValue(w.name, out var customLootPoolDict))
-                itemCustomLootPoolCache[w.name] = customLootPoolDict = [];
-            if(!customLootPoolDict.TryGetValue(poolId, out var lootProbabilitiesForPool))
-                customLootPoolDict[poolId] = lootProbabilitiesForPool = [];
-            lootProbabilitiesForPool.Add(lootProbability);
+            CacheItemLootPool(w.name, poolId, lootProbability);
 
             return w;
+        }
+
+        internal static void CacheItemLootPool(string itemId, string poolId, LootItemProbability probability)
+        {
+            if (!itemCustomLootPoolCache.TryGetValue(itemId, out var customLootPoolDict))
+                itemCustomLootPoolCache[itemId] = customLootPoolDict = [];
+            if (!customLootPoolDict.TryGetValue(poolId, out var lootProbabilitiesForPool))
+                customLootPoolDict[poolId] = lootProbabilitiesForPool = [];
+            lootProbabilitiesForPool.Add(probability);
         }
 
         public static T AddToFishPool<T>(this T w, int weight, bool fishingRod = true, bool canOfWorms_WelsCatfish = true) where T : BaseWearableSO

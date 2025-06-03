@@ -61,7 +61,16 @@ namespace Pentacle.Builders
                 return ach;
             }
 
-            DelayedActions.delayedAchievements.Add((categoryId, ach.m_eAchievementID));
+            if (!createIfDoesntExist)
+            {
+                DelayedActions.delayedAchievements.Add((categoryId, ach.m_eAchievementID));
+                return ach;
+            }
+
+            var achCategory = new AchievementModdedCategory(categoryId, categoryName);
+            achCategory.achievementNames.Add(ach.m_eAchievementID);
+            achDb.ModdedAchievementCategories.Add(achCategory);
+
             return ach;
         }
     }
