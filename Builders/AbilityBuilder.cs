@@ -13,6 +13,8 @@ namespace Pentacle.Builders
         public static AbilitySO AbilityReference(string id, ModProfile profile = null)
         {
             profile ??= ProfileManager.GetProfile(Assembly.GetCallingAssembly());
+            if (!ProfileManager.EnsureProfileExists(profile))
+                return null;
 
             return AbilityReference(id, profile.Prefix);
         }
@@ -30,6 +32,8 @@ namespace Pentacle.Builders
         public static AdvancedAbilitySO NewAbility(string id_A, ModProfile profile = null)
         {
             profile ??= ProfileManager.GetProfile(Assembly.GetCallingAssembly());
+            if (!ProfileManager.EnsureProfileExists(profile))
+                return null;
 
             return NewAbility<AdvancedAbilitySO>(id_A, profile);
         }
@@ -37,6 +41,8 @@ namespace Pentacle.Builders
         public static T NewAbility<T>(string id_A, ModProfile profile = null) where T : AbilitySO
         {
             profile ??= ProfileManager.GetProfile(Assembly.GetCallingAssembly());
+            if (!ProfileManager.EnsureProfileExists(profile))
+                return null;
 
             var ab = CreateScriptable<T>();
 
@@ -69,6 +75,9 @@ namespace Pentacle.Builders
         public static T SetSprite<T>(this T ab, string spriteName, ModProfile profile = null) where T : AbilitySO
         {
             profile ??= ProfileManager.GetProfile(Assembly.GetCallingAssembly());
+            if (!ProfileManager.EnsureProfileExists(profile))
+                return ab;
+
             ab.abilitySprite = profile.LoadSprite(spriteName);
 
             return ab;
@@ -89,6 +98,9 @@ namespace Pentacle.Builders
             if (spriteName != null)
             {
                 profile ??= ProfileManager.GetProfile(Assembly.GetCallingAssembly());
+                if (!ProfileManager.EnsureProfileExists(profile))
+                    return ab;
+
                 ab.abilitySprite = profile.LoadSprite(spriteName);
             }
 

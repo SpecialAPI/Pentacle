@@ -3,6 +3,7 @@ using Pentacle.CustomFogs;
 using HarmonyLib;
 using System;
 using Pentacle.Internal;
+using BepInEx.Logging;
 
 namespace Pentacle
 {
@@ -15,6 +16,7 @@ namespace Pentacle
         public const string MOD_PREFIX = "Pentacle";
 
         internal static Harmony HarmonyInstance;
+        internal static ManualLogSource PentacleLogger = BepInEx.Logging.Logger.CreateLogSource("Pentacle");
 
         internal void Awake()
         {

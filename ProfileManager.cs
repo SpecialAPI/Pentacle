@@ -36,6 +36,15 @@ namespace Pentacle
 
             return null;
         }
+
+        internal static bool EnsureProfileExists(ModProfile profile)
+        {
+            if (profile != null)
+                return true;
+
+            PentacleLogger.LogError($"Profile doesn't exist! Use ProfileManager.RegisterMod to add a Pentacle profile for your mod.\n{Environment.StackTrace}");
+            return false;
+        }
     }
 
     public class ModProfile

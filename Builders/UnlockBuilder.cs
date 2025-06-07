@@ -9,6 +9,8 @@ namespace Pentacle.Builders
         public static UnlockableModData NewUnlock(string id, ModProfile profile = null)
         {
             profile ??= ProfileManager.GetProfile(Assembly.GetCallingAssembly());
+            if (!ProfileManager.EnsureProfileExists(profile))
+                return null;
 
             return new UnlockableModData(profile.GetID(id));
         }

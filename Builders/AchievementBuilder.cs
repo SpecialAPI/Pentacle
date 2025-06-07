@@ -10,6 +10,8 @@ namespace Pentacle.Builders
         public static ModdedAchievement_t NewAchievement(string ACH_achievementId, string name, string description, ModProfile profile = null)
         {
             profile ??= ProfileManager.GetProfile(Assembly.GetCallingAssembly());
+            if (!ProfileManager.EnsureProfileExists(profile))
+                return null;
 
             var ach = new ModdedAchievement_t(profile.GetID(ACH_achievementId), name, description);
             return ach;
@@ -18,6 +20,8 @@ namespace Pentacle.Builders
         public static T SetSprites<T>(this T ach, string unlockedSpriteName, string overrideLockedSpriteName = null, ModProfile profile = null) where T : ModdedAchievement_t
         {
             profile ??= ProfileManager.GetProfile(Assembly.GetCallingAssembly());
+            if (!ProfileManager.EnsureProfileExists(profile))
+                return ach;
 
             ach.m_unlockedSprite = profile.LoadSprite(unlockedSpriteName);
             if(!string.IsNullOrEmpty(overrideLockedSpriteName))

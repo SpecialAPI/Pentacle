@@ -9,6 +9,8 @@ namespace Pentacle.Builders
         public static T NewFieldEffect<T>(string id_FE, string fieldId_ID, ModProfile profile = null) where T : FieldEffect_SO
         {
             profile ??= ProfileManager.GetProfile(Assembly.GetCallingAssembly());
+            if (!ProfileManager.EnsureProfileExists(profile))
+                return null;
 
             var fe = CreateScriptable<T>();
             fe.name = profile.GetID(id_FE);
@@ -42,6 +44,9 @@ namespace Pentacle.Builders
         public static T SetSprite<T>(this T fe, string spriteName, ModProfile profile = null) where T : FieldEffect_SO
         {
             profile ??= ProfileManager.GetProfile(Assembly.GetCallingAssembly());
+            if (!ProfileManager.EnsureProfileExists(profile))
+                return fe;
+
             fe.EffectInfo.icon = profile.LoadSprite(spriteName);
 
             return fe;
@@ -57,6 +62,8 @@ namespace Pentacle.Builders
         public static T SetBasicInformation<T>(this T fe, string name, string description, string spriteName, ModProfile profile = null) where T : FieldEffect_SO
         {
             profile ??= ProfileManager.GetProfile(Assembly.GetCallingAssembly());
+            if (!ProfileManager.EnsureProfileExists(profile))
+                return fe;
 
             fe.EffectInfo._fieldName = name;
             fe.EffectInfo._description = description;
@@ -97,6 +104,8 @@ namespace Pentacle.Builders
         public static T SetFieldPrefabs<T>(this T fe, string characterPath, string enemyPath, ModProfile profile = null) where T : FieldEffect_SO
         {
             profile ??= ProfileManager.GetProfile(Assembly.GetCallingAssembly());
+            if (!ProfileManager.EnsureProfileExists(profile))
+                return fe;
 
             var chPrefab = profile.Bundle.LoadAsset<GameObject>(characterPath);
             var chLayout = chPrefab != null ? chPrefab.GetComponent<CharacterFieldEffectLayout>() : null;

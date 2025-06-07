@@ -18,6 +18,8 @@ namespace Pentacle.Builders
         public static T NewStoredValue<T>(string id_USD, string storedValueId, ModProfile profile = null) where T : UnitStoreData_BasicSO
         {
             profile ??= ProfileManager.GetProfile(Assembly.GetCallingAssembly());
+            if (!ProfileManager.EnsureProfileExists(profile))
+                return null;
 
             var sv = CreateScriptable<T>();
 

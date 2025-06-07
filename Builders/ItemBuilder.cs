@@ -20,6 +20,8 @@ namespace Pentacle.Builders
         public static T NewItem<T>(string id, ModProfile profile = null) where T : BaseWearableSO
         {
             profile ??= ProfileManager.GetProfile(Assembly.GetCallingAssembly());
+            if (!ProfileManager.EnsureProfileExists(profile))
+                return null;
 
             var w = CreateScriptable<T>();
             w.name = profile.GetID(id);
@@ -52,6 +54,9 @@ namespace Pentacle.Builders
         public static T SetSprite<T>(this T w, string spriteName, string lockedSpriteName = null, ModProfile profile = null) where T : BaseWearableSO
         {
             profile ??= ProfileManager.GetProfile(Assembly.GetCallingAssembly());
+            if (!ProfileManager.EnsureProfileExists(profile))
+                return w;
+
             w.wearableImage = profile.LoadSprite(spriteName);
 
             if(!string.IsNullOrEmpty(lockedSpriteName))
@@ -73,6 +78,8 @@ namespace Pentacle.Builders
         public static T SetBasicInformation<T>(this T w, string name, string flavor, string description, string spriteName, string lockedSpriteName = null, ModProfile profile = null) where T : BaseWearableSO
         {
             profile ??= ProfileManager.GetProfile(Assembly.GetCallingAssembly());
+            if (!ProfileManager.EnsureProfileExists(profile))
+                return w;
 
             w._itemName = name;
             w._flavourText = flavor;
