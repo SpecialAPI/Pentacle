@@ -186,7 +186,7 @@ namespace Pentacle.Builders
         /// <typeparam name="T">A custom character type. Must be a type of CharacterSO.</typeparam>
         /// <param name="ch">The object instance of the character.</param>
         /// <param name="passives">(Infinitely repeatable) The passive abilities of the character, as BasePassiveAbilitySO objects.</param>
-        /// <returns></returns>
+        /// <returns>The instance of the character with the new sounds.</returns>
         public static T AddPassives<T>(this T ch, params BasePassiveAbilitySO[] passives) where T : CharacterSO
         {
             ch.passiveAbilities ??= [];
@@ -194,7 +194,13 @@ namespace Pentacle.Builders
 
             return ch;
         }
-
+        /// <summary>
+        /// Adds a list of CharacterRankedData objects as level data to the character.
+        /// </summary>
+        /// <typeparam name="T">A custom character type. Must be a type of CharacterSO.</typeparam>
+        /// <param name="ch">The object instance of the character.</param>
+        /// <param name="rankedData">(Infinitely repeatable) The level data to add, as CharacterRankedData objects.</param>
+        /// <returns>The instance of the character.</returns>
         public static T AddRankedData<T>(this T ch, params CharacterRankedData[] rankedData) where T : CharacterSO
         {
             ch.rankedData ??= [];
@@ -205,17 +211,24 @@ namespace Pentacle.Builders
         /// <summary>
         /// Sets whether the character physically moves during overworld transitions or just appears in the right place (like Leviat or Gospel)
         /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="ch"></param>
-        /// <param name="moves"></param>
-        /// <returns></returns>
+        /// <typeparam name="T">A custom character type. Must be a type of CharacterSO.</typeparam>
+        /// <param name="ch">The object instance of the character.</param>
+        /// <param name="moves">Whether the character should move during overworld transitions or not.</param>
+        /// <returns>The instance of the character.</returns>
         public static T SetMovesOnOverworld<T>(this T ch, bool moves) where T : CharacterSO
         {
             ch.movesOnOverworld = moves;
 
             return ch;
         }
-
+        /// <summary>
+        /// Sets up and adds level data to the character.
+        /// </summary>
+        /// <typeparam name="T">A custom character type. Must be a type of CharacterSO.</typeparam>
+        /// <param name="ch">The object instance of the character.</param>
+        /// <param name="ranks">How many levels the character should have.</param>
+        /// <param name="rankSetup">A delegate that sets up one level of the character.<para>The first argument is the 0-indexed level number, the second argumet is the 1-indexed level number. The delgate needs to return the CharacterRankedData object for the level given to it.</para></param>
+        /// <returns>The instance of the character.</returns>
         public static T RankedDataSetup<T>(this T ch, int ranks, Func<int, int, CharacterRankedData> rankSetup) where T : CharacterSO
         {
             ch.rankedData ??= [];
@@ -231,12 +244,23 @@ namespace Pentacle.Builders
 
             return ch;
         }
-
+        /// <summary>
+        /// Returns a value from the given array with an index equal to the current character level. Only works in RankedDataSetup.
+        /// </summary>
+        /// <typeparam name="T">The type of values in the array.</typeparam>
+        /// <param name="rankValues">The array of values to choose from.</param>
+        /// <returns>A value from the array for the current character level.</returns>
         public static T RankedValue<T>(params T[] rankValues)
         {
             return rankValues[Mathf.Clamp(_rank, 0, rankValues.Length - 1)];
         }
-
+        /// <summary>
+        /// Returns a value from the given array with an index equal to the given character level.
+        /// </summary>
+        /// <typeparam name="T">The type of values in the array.</typeparam>
+        /// <param name="rank">The character level to choose a value for.</param>
+        /// <param name="rankValues">The array of values to choose from.</param>
+        /// <returns>A value from the array for the given character level.</returns>
         public static T RankedValueManual<T>(int rank, params T[] rankValues)
         {
             return rankValues[Mathf.Clamp(rank, 0, rankValues.Length - 1)];
@@ -244,10 +268,10 @@ namespace Pentacle.Builders
         /// <summary>
         /// Sets the "basic ability", i.e. slap or slap equivalent of the character.
         /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="ch"></param>
-        /// <param name="basicAbility"></param>
-        /// <returns></returns>
+        /// <typeparam name="T">A custom character type. Must be a type of CharacterSO.</typeparam>
+        /// <param name="ch">The object instance of the character.</param>
+        /// <param name="basicAbility">The ability this character will use as a slap equivlaent.</param>
+        /// <returns>The instance of the character.</returns>
         public static T SetBasicAbility<T>(this T ch, CharacterAbility basicAbility) where T : CharacterSO
         {
             ch.basicCharAbility = basicAbility;
@@ -255,13 +279,13 @@ namespace Pentacle.Builders
             return ch;
         }
         /// <summary>
-        /// Sets whether the character uses all of its abilities (like Longliver) or uses a Slap or Slap equivalent in place of their 1st.
+        /// Sets whether the character uses all of its abilities (like Longliver) or has sets. Also sets whether the character uses slap (or a slap equivalent ability) or not.
         /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="ch"></param>
-        /// <param name="usesAllAbilities"></param>
-        /// <param name="usesBasicAbility"></param>
-        /// <returns></returns>
+        /// <typeparam name="T">A custom character type. Must be a type of CharacterSO.</typeparam>
+        /// <param name="ch">The object instance of the character.</param>
+        /// <param name="usesAllAbilities">If true, this character will use all abilities at once. If false, this character will use sets.</param>
+        /// <param name="usesBasicAbility">If true, this character will use slap (or a slap equivalent ability).</param>
+        /// <returns>The instance of the character.</returns>
         public static T SetAbilityUsage<T>(this T ch, bool usesAllAbilities, bool usesBasicAbility) where T : CharacterSO
         {
             ch.usesAllAbilities = usesAllAbilities;
@@ -269,7 +293,13 @@ namespace Pentacle.Builders
 
             return ch;
         }
-
+        /// <summary>
+        /// Adds unit types to this character (such as being considered a fish).
+        /// </summary>
+        /// <typeparam name="T">A custom character type. Must be a type of CharacterSO.</typeparam>
+        /// <param name="ch">The object instance of the character.</param>
+        /// <param name="unitTypes">(Infinitely Repeatable) Unit types to add to this character.</param>
+        /// <returns>The instance of the character.</returns>
         public static T AddUnitTypes<T>(this T ch, params string[] unitTypes) where T : CharacterSO
         {
             ch.unitTypes ??= [];
@@ -277,7 +307,13 @@ namespace Pentacle.Builders
 
             return ch;
         }
-
+        /// <summary>
+        /// Adds a (list of) hidden effects to the character.
+        /// </summary>
+        /// <typeparam name="T">A custom character type. Must be a type of AdvancedCharacterSO.</typeparam>
+        /// <param name="ch">The object instance of the character.</param>
+        /// <param name="hiddenEffects">(Infinitely repeatable) The hidden effects of the character, as HiddenEffectSO objects.</param>
+        /// <returns>The instance of the character with the new sounds.</returns>
         public static T AddHiddenEffects<T>(this T ch, params HiddenEffectSO[] hiddenEffects) where T : AdvancedCharacterSO
         {
             ch.hiddenEffects ??= [];
@@ -285,7 +321,14 @@ namespace Pentacle.Builders
 
             return ch;
         }
-
+        /// <summary>
+        /// Adds unlock data for a final boss to this character.
+        /// </summary>
+        /// <typeparam name="T">A custom character type. Must be a type of AdvancedCharacterSO.</typeparam>
+        /// <param name="ch">The object instance of the character.</param>
+        /// <param name="bossId">The BossID of the final boss the unlock is for.</param>
+        /// <param name="unlock">The unlock data as a UnlockableModData object.</param>
+        /// <returns>The instance of the character.</returns>
         public static T AddFinalBossUnlock<T>(this T ch, string bossId, UnlockableModData unlock) where T : CharacterSO
         {
             if (unlock == null)
@@ -301,7 +344,14 @@ namespace Pentacle.Builders
 
             return ch;
         }
-
+        /// <summary>
+        /// Adds the character to the Character Database.
+        /// </summary>
+        /// <typeparam name="T">A custom character type. Must be a type of AdvancedCharacterSO.</typeparam>
+        /// <param name="ch">The object instance of the character.</param>
+        /// <param name="appearsInShops">Determines whether the character should appear in fool shops.</param>
+        /// <param name="locked">Determines whether the character is locked by default.</param>
+        /// <returns>The instance of the character.</returns>
         public static T AddToDatabase<T>(this T ch, bool appearsInShops = true, bool locked = false) where T : CharacterSO
         {
             ch.m_StartsLocked = locked;
@@ -312,7 +362,15 @@ namespace Pentacle.Builders
 
             return ch;
         }
-
+        /// <summary>
+        /// Generates menu character data for the character.
+        /// </summary>
+        /// <typeparam name="T">A custom character type. Must be a type of AdvancedCharacterSO.</typeparam>
+        /// <param name="ch">The object instance of the character.</param>
+        /// <param name="unlockedSpriteName">The name of the image file for the unlocked menu sprite.<para />.png extension is optional.</param>
+        /// <param name="lockedSpriteName">The name of the image file for the locked menu sprite.<para />.png extension is optional.</param>
+        /// <param name="profile">Your mod profile.</param>
+        /// <returns>The generated SelectableCharacterData object.</returns>
         public static SelectableCharacterData GenerateMenuCharacter<T>(this T ch, string unlockedSpriteName, string lockedSpriteName = null, ModProfile profile = null) where T : CharacterSO
         {
             profile ??= ProfileManager.GetProfile(Assembly.GetCallingAssembly());
@@ -322,26 +380,48 @@ namespace Pentacle.Builders
 
             return new(ch.name, unlockedSprite, lockedSprite != null ? lockedSprite : unlockedSprite);
         }
-
+        /// <summary>
+        /// Generates menu character data for the character.
+        /// </summary>
+        /// <typeparam name="T">A custom character type. Must be a type of AdvancedCharacterSO.</typeparam>
+        /// <param name="ch">The object instance of the character.</param>
+        /// <param name="unlockedSprite">The Sprite object of the unlocked menu sprite.</param>
+        /// <param name="lockedSprite">The Sprite object of the locked menu sprite.</param>
+        /// <returns>The generated SelectableCharacterData object.</returns>
         public static SelectableCharacterData GenerateMenuCharacter<T>(this T ch, Sprite unlockedSprite, Sprite lockedSprite = null) where T : CharacterSO
         {
             return new(ch.name, unlockedSprite, lockedSprite != null ? lockedSprite : unlockedSprite);
         }
-
+        /// <summary>
+        /// Adds the menu character data to the menu character database.
+        /// </summary>
+        /// <typeparam name="T">The menu character data's type.</typeparam>
+        /// <param name="selCh">The object instance of the menu character data.</param>
+        /// <returns>The instance of the menu character data</returns>
         public static T AddToDatabase<T>(this T selCh) where T : SelectableCharacterData
         {
             CharacterDB.SelectableCharacters.Add(selCh);
 
             return selCh;
         }
-
+        /// <summary>
+        /// Makes all sets of the character be considered as offense for selection bias purposes.
+        /// </summary>
+        /// <typeparam name="T">The menu character data's type.</typeparam>
+        /// <param name="selCh">The object instance of the menu character data.</param>
+        /// <returns>The instance of the menu character data</returns>
         public static T SetAsFullDPS<T>(this T selCh) where T : SelectableCharacterData
         {
             CharacterDB._dpsCharacters.Add(new(selCh.CharacterName), new([]));
 
             return selCh;
         }
-
+        /// <summary>
+        /// Makes all sets of the character be considered as support for selection bias purposes.
+        /// </summary>
+        /// <typeparam name="T">The menu character data's type.</typeparam>
+        /// <param name="selCh">The object instance of the menu character data.</param>
+        /// <returns>The instance of the menu character data</returns>
         public static T SetAsFullSupport<T>(this T selCh) where T : SelectableCharacterData
         {
             CharacterDB._supportCharacters.Add(new(selCh.CharacterName), new([]));
