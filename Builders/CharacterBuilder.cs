@@ -6,15 +6,32 @@ using System.Text;
 
 namespace Pentacle.Builders
 {
+    /// <summary>
+    /// Static class which provides tools for creating custom Fools.
+    /// </summary>
     public static class CharacterBuilder
     {
+        /// <summary>
+        /// Creates a basic Character using the game's base character class.
+        /// </summary>
+        /// <param name="id_CH">The string ID of the character.</param>
+        /// <param name="entityId">A second string ID for your character. Probably just best to set it the same as id_CH but, don't ask me why it exists but you need it.</param>
+        /// <param name="profile">Your mod profile.</param>
+        /// <returns>An object instance of the created character.</returns>
         public static AdvancedCharacterSO NewCharacter(string id_CH, string entityId, ModProfile profile = null)
         {
             profile ??= ProfileManager.GetProfile(Assembly.GetCallingAssembly());
 
             return NewCharacter<AdvancedCharacterSO>(id_CH, entityId, profile);
         }
-
+        /// <summary>
+        /// Creates a character defined by a custom class behaviour.
+        /// </summary>
+        /// <typeparam name="T">A custom character type. Must be a type of CharacterSO.</typeparam>
+        /// <param name="id_CH">The string ID of the character.</param>
+        /// <param name="entityId">A second string ID for your character. Probably just best to set it the same as id_CH but, don't ask me why it exists but you need it.</param>
+        /// <param name="profile">Your mod profile.</param>
+        /// <returns>An object instance of the created character.</returns>
         public static T NewCharacter<T>(string id_CH, string entityId, ModProfile profile = null) where T : CharacterSO
         {
             profile ??= ProfileManager.GetProfile(Assembly.GetCallingAssembly());
@@ -35,7 +52,18 @@ namespace Pentacle.Builders
 
             return ch;
         }
-
+        /// <summary>
+        /// General method for setting the main traits of a character - name, health colour, and sprites.
+        /// </summary>
+        /// <typeparam name="T">A custom character type. Must be a type of CharacterSO.</typeparam>
+        /// <param name="ch">The object instance of the character.</param>
+        /// <param name="name">The display name of the character.</param>
+        /// <param name="healthColor">The colour (and thus pigment production on direct damage) of the character's health.</param>
+        /// <param name="frontSpriteName">The name of the image file for the character front-facing sprite (that shows when you select them in combat).<para />.png extension is optional.</param>
+        /// <param name="backSpriteName">The name of the image file for the character back-facing sprite (the default combat sprite).<para />.png extension is optional.</param>
+        /// <param name="overworldSpriteName">The name of the image file for the character overworld sprite.<para />.png extension is optional.</param>
+        /// <param name="profile"></param>
+        /// <returns>The object instance of the character with all the relevant information set.</returns>
         public static T SetBasicInformation<T>(this T ch, string name, ManaColorSO healthColor, string frontSpriteName, string backSpriteName, string overworldSpriteName, ModProfile profile = null) where T : CharacterSO
         {
             profile ??= ProfileManager.GetProfile(Assembly.GetCallingAssembly());
@@ -48,7 +76,17 @@ namespace Pentacle.Builders
 
             return ch;
         }
-
+        /// <summary>
+        /// General method for setting the main traits of a character - name, health colour, and sprites.
+        /// </summary>
+        /// <typeparam name="T">A custom character type. Must be a type of CharacterSO.</typeparam>
+        /// <param name="ch">The object instance of the character.</param>
+        /// <param name="name">The display name of the character.</param>
+        /// <param name="healthColor">The colour (and thus pigment production on direct damage) of the character's health.</param>
+        /// <param name="frontSprite">The Sprite object of the character front-facing sprite (that shows when you select them in combat).</param>
+        /// <param name="backSprite">The Sprite object of the character back-facing sprite (the default combat sprite).</param>
+        /// <param name="overworldSprite">The Sprite object of the character overworld sprite.</param>
+        /// <returns>The object instance of the character with all the relevant information set.</returns>
         public static T SetBasicInformation<T>(this T ch, string name, ManaColorSO healthColor, Sprite frontSprite, Sprite backSprite, Sprite overworldSprite) where T : CharacterSO
         {
             ch._characterName = name;
@@ -59,21 +97,42 @@ namespace Pentacle.Builders
 
             return ch;
         }
-
+        /// <summary>
+        /// Sets the in-game name of the character.
+        /// </summary>
+        /// <typeparam name="T">A custom character type. Must be a type of CharacterSO.</typeparam>
+        /// <param name="ch">The object instance of the character.</param>
+        /// <param name="name">The display name of the character.</param>
+        /// <returns>The object instance of the character with the new name.</returns>
         public static T SetName<T>(this T ch, string name) where T : CharacterSO
         {
             ch._characterName = name;
 
             return ch;
         }
-
+        /// <summary>
+        /// Sets the health colour of the character.
+        /// </summary>
+        /// <typeparam name="T">A custom character type. Must be a type of CharacterSO.</typeparam>
+        /// <param name="ch">The object instance of the character.</param>
+        /// <param name="color">The health colour of the character.</param>
+        /// <returns>The object instance of the character with the new health colour.</returns>
         public static T SetHealthColor<T>(this T ch, ManaColorSO color) where T : CharacterSO
         {
             ch.healthColor = color;
 
             return ch;
         }
-
+        /// <summary>
+        /// Sets all the basic relevant sprites of a character for overworld and in-battle use.
+        /// </summary>
+        /// <typeparam name="T">A custom character type. Must be a type of CharacterSO.</typeparam>
+        /// <param name="ch">The object instance of the character.</param>
+        /// <param name="frontSpriteName">The name of the image file for the character front-facing sprite (that shows when you select them in combat).<para />.png extension is optional.</param>
+        /// <param name="backSpriteName">The name of the image file for the character back-facing sprite (the default combat sprite).<para />.png extension is optional.</param>
+        /// <param name="overworldSpriteName">The name of the image file for the character overworld sprite.<para />.png extension is optional.</param>
+        /// <param name="profile">Your mod profile.</param>
+        /// <returns>The instance of the character with the new sprites.</returns>
         public static T SetSprites<T>(this T ch, string frontSpriteName, string backSpriteName, string overworldSpriteName, ModProfile profile = null) where T : CharacterSO
         {
             profile ??= ProfileManager.GetProfile(Assembly.GetCallingAssembly());
@@ -84,7 +143,15 @@ namespace Pentacle.Builders
 
             return ch;
         }
-
+        /// <summary>
+        /// Sets all the basic relevant sprites of a character for overworld and in-battle use.
+        /// </summary>
+        /// <typeparam name="T">A custom character type. Must be a type of CharacterSO.</typeparam>
+        /// <param name="ch">The object instance of the character.</param>
+        /// <param name="frontSprite">The Sprite object of the character front-facing sprite (that shows when you select them in combat).</param>
+        /// <param name="backSprite">The Sprite object of the character back-facing sprite (the default combat sprite).</param>
+        /// <param name="overworldSprite">The Sprite object of the character overworld sprite.</param>
+        /// <returns>The instance of the character with the new sprites.</returns>
         public static T SetSprites<T>(this T ch, Sprite frontSprite, Sprite backSprite, Sprite overworldSprite) where T : CharacterSO
         {
             ch.characterSprite = frontSprite;
@@ -93,7 +160,15 @@ namespace Pentacle.Builders
 
             return ch;
         }
-
+        /// <summary>
+        /// Sets the basic sound events for character related events.
+        /// </summary>
+        /// <typeparam name="T">A custom character type. Must be a type of CharacterSO.</typeparam>
+        /// <param name="ch">The object instance of the character.</param>
+        /// <param name="damageSound">The name of the sound which plays on the character taking damage.</param>
+        /// <param name="deathSound">The name of the sound which plays on the character dying.</param>
+        /// <param name="dialogueSound">The name of the sound which plays on the character speaking during dialogue.</param>
+        /// <returns>The instance of the character with the new sounds.</returns>
         public static T SetSounds<T>(this T ch, string damageSound, string deathSound, string dialogueSound) where T : CharacterSO
         {
             if(damageSound != null)
@@ -105,7 +180,13 @@ namespace Pentacle.Builders
 
             return ch;
         }
-
+        /// <summary>
+        /// Adds a (list of) passive effects to the character.
+        /// </summary>
+        /// <typeparam name="T">A custom character type. Must be a type of CharacterSO.</typeparam>
+        /// <param name="ch">The object instance of the character.</param>
+        /// <param name="passives">(Infinitely repeatable) The passive abilities of the character, as BasePassiveAbilitySO objects.</param>
+        /// <returns></returns>
         public static T AddPassives<T>(this T ch, params BasePassiveAbilitySO[] passives) where T : CharacterSO
         {
             ch.passiveAbilities ??= [];
@@ -121,7 +202,13 @@ namespace Pentacle.Builders
 
             return ch;
         }
-
+        /// <summary>
+        /// Sets whether the character physically moves during overworld transitions or just appears in the right place (like Leviat or Gospel)
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="ch"></param>
+        /// <param name="moves"></param>
+        /// <returns></returns>
         public static T SetMovesOnOverworld<T>(this T ch, bool moves) where T : CharacterSO
         {
             ch.movesOnOverworld = moves;
@@ -154,14 +241,27 @@ namespace Pentacle.Builders
         {
             return rankValues[Mathf.Clamp(rank, 0, rankValues.Length - 1)];
         }
-
+        /// <summary>
+        /// Sets the "basic ability", i.e. slap or slap equivalent of the character.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="ch"></param>
+        /// <param name="basicAbility"></param>
+        /// <returns></returns>
         public static T SetBasicAbility<T>(this T ch, CharacterAbility basicAbility) where T : CharacterSO
         {
             ch.basicCharAbility = basicAbility;
 
             return ch;
         }
-
+        /// <summary>
+        /// Sets whether the character uses all of its abilities (like Longliver) or uses a Slap or Slap equivalent in place of their 1st.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="ch"></param>
+        /// <param name="usesAllAbilities"></param>
+        /// <param name="usesBasicAbility"></param>
+        /// <returns></returns>
         public static T SetAbilityUsage<T>(this T ch, bool usesAllAbilities, bool usesBasicAbility) where T : CharacterSO
         {
             ch.usesAllAbilities = usesAllAbilities;
