@@ -15,6 +15,8 @@ namespace Pentacle.Builders
         public static string AddIntent(string id, string spriteName, Color? color = null, ModProfile profile = null)
         {
             profile ??= ProfileManager.GetProfile(Assembly.GetCallingAssembly());
+            if (!ProfileManager.EnsureProfileExists(profile))
+                return string.Empty;
 
             return AddIntent(id, profile.LoadSprite(spriteName), color, profile);
         }
@@ -22,6 +24,8 @@ namespace Pentacle.Builders
         public static string AddIntent(string id, Sprite sprite, Color? color = null, ModProfile profile = null)
         {
             profile ??= ProfileManager.GetProfile(Assembly.GetCallingAssembly());
+            if (!ProfileManager.EnsureProfileExists(profile))
+                return string.Empty;
 
             color ??= Color.white;
             var intentId = profile.GetID(id);
@@ -37,7 +41,12 @@ namespace Pentacle.Builders
 
         public static void AddStatusEffectIntents(string baseId, StatusEffect_SO status, out string applyIntent, out string removeIntent, ModProfile profile = null)
         {
+            applyIntent = string.Empty;
+            removeIntent = string.Empty;
+
             profile ??= ProfileManager.GetProfile(Assembly.GetCallingAssembly());
+            if (!ProfileManager.EnsureProfileExists(profile))
+                return;
 
             applyIntent = AddIntent(baseId, status.EffectInfo.icon, Color.white, profile);
             removeIntent = AddIntent($"Rem_{baseId}", status.EffectInfo.icon, IntentColor_StatusRemove, profile);
@@ -45,7 +54,12 @@ namespace Pentacle.Builders
 
         public static void AddFieldEffectIntents(string baseId, FieldEffect_SO field, out string applyIntent, out string removeIntent, ModProfile profile = null)
         {
+            applyIntent = string.Empty;
+            removeIntent = string.Empty;
+
             profile ??= ProfileManager.GetProfile(Assembly.GetCallingAssembly());
+            if (!ProfileManager.EnsureProfileExists(profile))
+                return;
 
             applyIntent = AddIntent(baseId, field.EffectInfo.icon, Color.white, profile);
             removeIntent = AddIntent($"Rem_{baseId}", field.EffectInfo.icon, IntentColor_StatusRemove, profile);
@@ -53,32 +67,49 @@ namespace Pentacle.Builders
 
         public static void AddPassiveIntents(string baseId, BasePassiveAbilitySO passive, out string addPassiveIntent, out string removePassiveIntent, ModProfile profile = null)
         {
+            addPassiveIntent = string.Empty;
+            removePassiveIntent = string.Empty;
+
             profile ??= ProfileManager.GetProfile(Assembly.GetCallingAssembly());
+            if (!ProfileManager.EnsureProfileExists(profile))
+                return;
 
             addPassiveIntent = AddIntent(baseId, passive.passiveIcon, Color.white, profile);
             removePassiveIntent = AddIntent($"Rem_{baseId}", passive.passiveIcon, IntentColor_StatusRemove, profile);
         }
 
-        public static void AddGenericAddRemoveIntents(string baseId, string spriteName, out string addPassiveIntent, out string removePassiveIntent, ModProfile profile = null)
+        public static void AddGenericAddRemoveIntents(string baseId, string spriteName, out string addIntent, out string removeIntent, ModProfile profile = null)
         {
+            addIntent = string.Empty;
+            removeIntent = string.Empty;
+
             profile ??= ProfileManager.GetProfile(Assembly.GetCallingAssembly());
+            if (!ProfileManager.EnsureProfileExists(profile))
+                return;
 
             var sprite = profile.LoadSprite(spriteName);
-            addPassiveIntent = AddIntent(baseId, sprite, Color.white, profile);
-            removePassiveIntent = AddIntent($"Rem_{baseId}", sprite, IntentColor_StatusRemove, profile);
+            addIntent = AddIntent(baseId, sprite, Color.white, profile);
+            removeIntent = AddIntent($"Rem_{baseId}", sprite, IntentColor_StatusRemove, profile);
         }
 
-        public static void AddGenericAddRemoveIntents(string baseId, Sprite sprite, out string addPassiveIntent, out string removePassiveIntent, ModProfile profile = null)
+        public static void AddGenericAddRemoveIntents(string baseId, Sprite sprite, out string addIntent, out string removeIntent, ModProfile profile = null)
         {
-            profile ??= ProfileManager.GetProfile(Assembly.GetCallingAssembly());
+            addIntent = string.Empty;
+            removeIntent = string.Empty;
 
-            addPassiveIntent = AddIntent(baseId, sprite, Color.white, profile);
-            removePassiveIntent = AddIntent($"Rem_{baseId}", sprite, IntentColor_StatusRemove, profile);
+            profile ??= ProfileManager.GetProfile(Assembly.GetCallingAssembly());
+            if (!ProfileManager.EnsureProfileExists(profile))
+                return;
+
+            addIntent = AddIntent(baseId, sprite, Color.white, profile);
+            removeIntent = AddIntent($"Rem_{baseId}", sprite, IntentColor_StatusRemove, profile);
         }
 
         public static string AddDamageIntent(string id, string characterSpriteName, string enemySpriteName, Color? characterColor = null, Color? enemyColor = null, ModProfile profile = null)
         {
             profile ??= ProfileManager.GetProfile(Assembly.GetCallingAssembly());
+            if (!ProfileManager.EnsureProfileExists(profile))
+                return string.Empty;
 
             return AddDamageIntent(id, profile.LoadSprite(characterSpriteName), profile.LoadSprite(enemySpriteName), characterColor, enemyColor, profile);
         }
@@ -88,6 +119,8 @@ namespace Pentacle.Builders
             characterColor ??= IntentColor_DamageToCharcter;
             enemyColor ??= IntentColor_DamageToEnemy;
             profile ??= ProfileManager.GetProfile(Assembly.GetCallingAssembly());
+            if (!ProfileManager.EnsureProfileExists(profile))
+                return string.Empty;
 
             var intentId = profile.GetID(id);
             Intents.AddCustom_Damage_IntentToPool(intentId, new()

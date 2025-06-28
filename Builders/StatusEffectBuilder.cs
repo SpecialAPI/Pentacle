@@ -10,6 +10,8 @@ namespace Pentacle.Builders
         public static T NewStatusEffect<T>(string id_SE, string statusId_ID, ModProfile profile = null) where T : StatusEffect_SO
         {
             profile ??= ProfileManager.GetProfile(Assembly.GetCallingAssembly());
+            if (!ProfileManager.EnsureProfileExists(profile))
+                return null;
 
             var se = CreateScriptable<T>();
             se.name = profile.GetID(id_SE);
@@ -43,6 +45,9 @@ namespace Pentacle.Builders
         public static T SetSprite<T>(this T se, string spriteName, ModProfile profile = null) where T : StatusEffect_SO
         {
             profile ??= ProfileManager.GetProfile(Assembly.GetCallingAssembly());
+            if (!ProfileManager.EnsureProfileExists(profile))
+                return se;
+
             se.EffectInfo.icon = profile.LoadSprite(spriteName);
 
             return se;
@@ -58,6 +63,8 @@ namespace Pentacle.Builders
         public static T SetBasicInformation<T>(this T se, string name, string description, string spriteName, ModProfile profile = null) where T : StatusEffect_SO
         {
             profile ??= ProfileManager.GetProfile(Assembly.GetCallingAssembly());
+            if (!ProfileManager.EnsureProfileExists(profile))
+                return se;
 
             se.EffectInfo._statusName = name;
             se.EffectInfo._description = description;

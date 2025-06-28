@@ -12,6 +12,8 @@ namespace Pentacle.Builders
         public static T NewPassive<T>(string id_PA, string passiveId, ModProfile profile = null) where T : BasePassiveAbilitySO
         {
             profile ??= ProfileManager.GetProfile(Assembly.GetCallingAssembly());
+            if (!ProfileManager.EnsureProfileExists(profile))
+                return null;
 
             var pa = CreateScriptable<T>();
             pa.name = profile.GetID(id_PA);
@@ -33,6 +35,9 @@ namespace Pentacle.Builders
         public static T SetSprite<T>(this T pa, string spriteName, ModProfile profile = null) where T : BasePassiveAbilitySO
         {
             profile ??= ProfileManager.GetProfile(Assembly.GetCallingAssembly());
+            if (!ProfileManager.EnsureProfileExists(profile))
+                return pa;
+
             pa.passiveIcon = profile.LoadSprite(spriteName);
 
             return pa;
@@ -48,6 +53,8 @@ namespace Pentacle.Builders
         public static T SetBasicInformation<T>(this T pa, string name, string spriteName, ModProfile profile = null) where T : BasePassiveAbilitySO
         {
             profile ??= ProfileManager.GetProfile(Assembly.GetCallingAssembly());
+            if (!ProfileManager.EnsureProfileExists(profile))
+                return pa;
 
             pa._passiveName = name;
             pa.passiveIcon = profile.LoadSprite(spriteName);

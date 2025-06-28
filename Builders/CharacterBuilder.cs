@@ -21,6 +21,8 @@ namespace Pentacle.Builders
         public static AdvancedCharacterSO NewCharacter(string id_CH, string entityId, ModProfile profile = null)
         {
             profile ??= ProfileManager.GetProfile(Assembly.GetCallingAssembly());
+            if (!ProfileManager.EnsureProfileExists(profile))
+                return null;
 
             return NewCharacter<AdvancedCharacterSO>(id_CH, entityId, profile);
         }
@@ -36,6 +38,8 @@ namespace Pentacle.Builders
         public static T NewCharacter<T>(string id_CH, string entityId, ModProfile profile = null) where T : CharacterSO
         {
             profile ??= ProfileManager.GetProfile(Assembly.GetCallingAssembly());
+            if (!ProfileManager.EnsureProfileExists(profile))
+                return null;
 
             var ch = CreateScriptable<T>();
             ch.name = profile.GetID(id_CH);
@@ -69,6 +73,8 @@ namespace Pentacle.Builders
         public static T SetBasicInformation<T>(this T ch, string name, ManaColorSO healthColor, string frontSpriteName, string backSpriteName, string overworldSpriteName, ModProfile profile = null) where T : CharacterSO
         {
             profile ??= ProfileManager.GetProfile(Assembly.GetCallingAssembly());
+            if (!ProfileManager.EnsureProfileExists(profile))
+                return ch;
 
             ch._characterName = name;
             ch.healthColor = healthColor;
@@ -142,6 +148,8 @@ namespace Pentacle.Builders
         public static T SetSprites<T>(this T ch, string frontSpriteName, string backSpriteName, string overworldSpriteName, ModProfile profile = null) where T : CharacterSO
         {
             profile ??= ProfileManager.GetProfile(Assembly.GetCallingAssembly());
+            if (!ProfileManager.EnsureProfileExists(profile))
+                return ch;
 
             ch.characterSprite = profile.LoadSprite(frontSpriteName);
             ch.characterBackSprite = profile.LoadSprite(backSpriteName);
@@ -395,6 +403,8 @@ namespace Pentacle.Builders
         public static SelectableCharacterData GenerateMenuCharacter<T>(this T ch, string unlockedSpriteName, string lockedSpriteName = null, ModProfile profile = null) where T : CharacterSO
         {
             profile ??= ProfileManager.GetProfile(Assembly.GetCallingAssembly());
+            if (!ProfileManager.EnsureProfileExists(profile))
+                return null;
 
             var unlockedSprite = profile.LoadSprite(unlockedSpriteName);
             var lockedSprite = string.IsNullOrEmpty(lockedSpriteName) ? null : profile.LoadSprite(lockedSpriteName);

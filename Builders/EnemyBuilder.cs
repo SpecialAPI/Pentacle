@@ -12,6 +12,8 @@ namespace Pentacle.Builders
         public static AdvancedEnemySO NewEnemy(string id_EN, ModProfile profile = null)
         {
             profile ??= ProfileManager.GetProfile(Assembly.GetCallingAssembly());
+            if (!ProfileManager.EnsureProfileExists(profile))
+                return null;
 
             return NewEnemy<AdvancedEnemySO>(id_EN, profile);
         }
@@ -19,6 +21,8 @@ namespace Pentacle.Builders
         public static T NewEnemy<T>(string id_EN, ModProfile profile = null) where T : EnemySO
         {
             profile ??= ProfileManager.GetProfile(Assembly.GetCallingAssembly());
+            if (!ProfileManager.EnsureProfileExists(profile))
+                return null;
 
             var en = CreateScriptable<T>();
 
@@ -60,6 +64,8 @@ namespace Pentacle.Builders
         public static T SetSpritesBoss<T>(this T en, string combatSpriteName, string overworldSpriteName, string corpseSpriteName, ModProfile profile = null) where T : EnemySO
         {
             profile ??= ProfileManager.GetProfile(Assembly.GetCallingAssembly());
+            if (!ProfileManager.EnsureProfileExists(profile))
+                return en;
 
             en.enemySprite = profile.LoadSprite(combatSpriteName);
 
@@ -79,6 +85,8 @@ namespace Pentacle.Builders
         public static T SetSprites<T>(this T en, string combatSpriteName, string overworldSpriteName, string corpseSpriteName, ModProfile profile = null) where T : EnemySO
         {
             profile ??= ProfileManager.GetProfile(Assembly.GetCallingAssembly());
+            if (!ProfileManager.EnsureProfileExists(profile))
+                return en;
 
             en.enemySprite = profile.LoadSprite(combatSpriteName, new(0.5f, 0f));
 
@@ -125,6 +133,8 @@ namespace Pentacle.Builders
         public static T SetEnemyPrefab<T>(this T en, string prefabName, string gibsName = null, ModProfile profile = null) where T : EnemySO
         {
             profile ??= ProfileManager.GetProfile(Assembly.GetCallingAssembly());
+            if (!ProfileManager.EnsureProfileExists(profile))
+                return en;
 
             var prefab = profile.Bundle.LoadAsset<GameObject>(prefabName);
             var gibs = (ParticleSystem)null;

@@ -21,6 +21,8 @@ namespace Pentacle.Builders
         public static ModdedAchievement_t NewAchievement(string ACH_achievementId, string name, string description, ModProfile profile = null)
         {
             profile ??= ProfileManager.GetProfile(Assembly.GetCallingAssembly());
+            if (!ProfileManager.EnsureProfileExists(profile))
+                return null;
 
             var ach = new ModdedAchievement_t(profile.GetID(ACH_achievementId), name, description);
             return ach;
@@ -38,6 +40,8 @@ namespace Pentacle.Builders
         public static T SetSprites<T>(this T ach, string unlockedSpriteName, string overrideLockedSpriteName = null, ModProfile profile = null) where T : ModdedAchievement_t
         {
             profile ??= ProfileManager.GetProfile(Assembly.GetCallingAssembly());
+            if (!ProfileManager.EnsureProfileExists(profile))
+                return ach;
 
             ach.m_unlockedSprite = profile.LoadSprite(unlockedSpriteName);
             if(!string.IsNullOrEmpty(overrideLockedSpriteName))
@@ -105,7 +109,16 @@ namespace Pentacle.Builders
                 return ach;
             }
 
-            DelayedActions.delayedAchievements.Add((categoryId, ach.m_eAchievementID));
+            if (!createIfDoesntExist)
+            {
+                DelayedActions.delayedAchievements.Add((categoryId, ach.m_eAchievementID));
+                return ach;
+            }
+
+            var achCategory = new AchievementModdedCategory(categoryId, categoryName);
+            achCategory.achievementNames.Add(ach.m_eAchievementID);
+            achDb.ModdedAchievementCategories.Add(achCategory);
+
             return ach;
         }
     }

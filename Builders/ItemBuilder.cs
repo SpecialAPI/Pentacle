@@ -1,8 +1,10 @@
-﻿using Pentacle.TriggerEffect;
+﻿using Pentacle.Internal;
+using Pentacle.TriggerEffect;
 using System;
 using System.Collections.Generic;
 using System.Text;
 using UnityEngine.Profiling;
+using UnityEngine.UIElements.UIR;
 
 namespace Pentacle.Builders
 {
@@ -10,9 +12,16 @@ namespace Pentacle.Builders
     {
         private static readonly Dictionary<string, ItemModdedUnlockInfo> itemUnlockInfos = [];
 
+        // I really hate that I have to do this but I'm afraid the other solution is even worse (iterating through all loot pools each time)
+        // Dictionary 1 keys: item ids
+        // Dictionary 2 keys: custom loot pool ids
+        private static readonly Dictionary<string, Dictionary<string, List<LootItemProbability>>> itemCustomLootPoolCache = [];
+
         public static T NewItem<T>(string id, ModProfile profile = null) where T : BaseWearableSO
         {
             profile ??= ProfileManager.GetProfile(Assembly.GetCallingAssembly());
+            if (!ProfileManager.EnsureProfileExists(profile))
+                return null;
 
             var w = CreateScriptable<T>();
             w.name = profile.GetID(id);
@@ -45,6 +54,9 @@ namespace Pentacle.Builders
         public static T SetSprite<T>(this T w, string spriteName, string lockedSpriteName = null, ModProfile profile = null) where T : BaseWearableSO
         {
             profile ??= ProfileManager.GetProfile(Assembly.GetCallingAssembly());
+            if (!ProfileManager.EnsureProfileExists(profile))
+                return w;
+
             w.wearableImage = profile.LoadSprite(spriteName);
 
             if(!string.IsNullOrEmpty(lockedSpriteName))
@@ -66,6 +78,8 @@ namespace Pentacle.Builders
         public static T SetBasicInformation<T>(this T w, string name, string flavor, string description, string spriteName, string lockedSpriteName = null, ModProfile profile = null) where T : BaseWearableSO
         {
             profile ??= ProfileManager.GetProfile(Assembly.GetCallingAssembly());
+            if (!ProfileManager.EnsureProfileExists(profile))
+                return w;
 
             w._itemName = name;
             w._flavourText = flavor;
@@ -142,6 +156,7 @@ namespace Pentacle.Builders
             w.startsLocked = startsLocked;
             var unlockInfo = w.GetUnlockInfo();
 
+            // Move the item between the locked and unlocked itemstats lists
             foreach (var category in ItemUnlocksDB.ModdedCategories)
             {
                 var removeFrom = startsLocked ? category.unlockedItemNames : category.lockedItemNames;
@@ -153,6 +168,33 @@ namespace Pentacle.Builders
                     category.lockedItemNames.Add(unlockInfo);
                 else
                     category.unlockedItemNames.Add(unlockInfo);
+            }
+
+            // Move the item between the locked and unlocked custom loot pool lists
+            if(itemCustomLootPoolCache.TryGetValue(w.name, out var customLootPoolDict))
+            {
+                foreach(var kvp in customLootPoolDict)
+                {
+                    var lootPoolId = kvp.Key;
+                    var probabilities = kvp.Value;
+
+                    if(!ItemPoolDB.TryGetItemLootListEffect(lootPoolId, out var effect))
+                        continue;
+
+                    var removeFrom = startsLocked ? effect._lootableItems : effect._lockedLootableItems;
+
+                    if (removeFrom == null || removeFrom.Count <= 0)
+                        continue;
+
+                    var addTo = startsLocked ? (effect._lockedLootableItems ??= []) : (effect._lootableItems ??= []);
+                    foreach(var prob in probabilities)
+                    {
+                        if(!removeFrom.Remove(prob))
+                            continue;
+
+                        addTo.Add(prob);
+                    }
+                }
             }
 
             return w;
@@ -208,7 +250,7 @@ namespace Pentacle.Builders
 
             if (!createIfDoesntExist)
             {
-                // TODO: add an extra category check in delayed start if initial category check fails
+                DelayedActions.delayedItemStats.Add((categoryId, unlockInfo));
                 return w;
             }
 
@@ -220,6 +262,48 @@ namespace Pentacle.Builders
                 newCategory.unlockedItemNames.Add(unlockInfo);
 
             ItemUnlocksDB.ModdedCategories.Add(newCategory);
+            return w;
+        }
+
+        public static T AddToCustomItemPool<T>(this T w, string poolId, int weight) where T : BaseWearableSO
+        {
+            w.AddWithoutItemPools();
+
+            var lootProbability = new LootItemProbability(w.name, weight);
+
+            if (!ItemPoolDB.TryGetItemLootListEffect(poolId, out var effect))
+            {
+                DelayedActions.delayedItemPools.Add((poolId, lootProbability));
+                return w;
+            }
+
+            if (w.startsLocked)
+                (effect._lockedLootableItems ??= []).Add(lootProbability);
+            else
+                (effect._lootableItems ??= []).Add(lootProbability);
+
+            // Cache the probability to move it between the locked and unlocked lists if the item gets locked/unlocked after getting added to the pool
+            CacheItemLootPool(w.name, poolId, lootProbability);
+
+            return w;
+        }
+
+        internal static void CacheItemLootPool(string itemId, string poolId, LootItemProbability probability)
+        {
+            if (!itemCustomLootPoolCache.TryGetValue(itemId, out var customLootPoolDict))
+                itemCustomLootPoolCache[itemId] = customLootPoolDict = [];
+            if (!customLootPoolDict.TryGetValue(poolId, out var lootProbabilitiesForPool))
+                customLootPoolDict[poolId] = lootProbabilitiesForPool = [];
+            lootProbabilitiesForPool.Add(probability);
+        }
+
+        public static T AddToFishPool<T>(this T w, int weight, bool fishingRod = true, bool canOfWorms_WelsCatfish = true) where T : BaseWearableSO
+        {
+            if (fishingRod)
+                w.AddToCustomItemPool(PoolList_GameIDs.FishingRod.ToString(), weight);
+            if (canOfWorms_WelsCatfish)
+                w.AddToCustomItemPool(PoolList_GameIDs.CanOfWorms_WelsCatfish.ToString(), weight);
+
             return w;
         }
 
