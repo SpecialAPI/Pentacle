@@ -126,7 +126,7 @@ namespace Pentacle.Builders
         /// </summary>
         /// <typeparam name="T">The character's custom type. Must either be CharacterSO or a subclass of CharacterSO.</typeparam>
         /// <param name="ch">The object instance of the character.</param>
-        /// <param name="healthColor">The pigment colour of the character's health.</param>
+        /// <param name="color">The pigment colour of the character's health.</param>
         /// <returns>The instance of the character, for method chaining.</returns>
         public static T SetHealthColor<T>(this T ch, ManaColorSO color) where T : CharacterSO
         {
