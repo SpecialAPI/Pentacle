@@ -6,6 +6,9 @@ using UnityEngine.Profiling;
 
 namespace Pentacle.Builders
 {
+    /// <summary>
+    /// Static class which provides tools for creating custom ability intents.
+    /// </summary>
     public static class IntentBuilder
     {
         /// <summary>
