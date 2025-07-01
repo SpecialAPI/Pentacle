@@ -7,6 +7,9 @@ using System.Text;
 
 namespace Pentacle.Builders
 {
+    /// <summary>
+    /// Static class which provides tools for creating custom passives.
+    /// </summary>
     public static class PassiveBuilder
     {
         /// <summary>

@@ -7,6 +7,9 @@ using UnityEngine.Assertions;
 
 namespace Pentacle.Builders
 {
+    /// <summary>
+    /// Static class which provides tools for creating custom enemies.
+    /// </summary>
     public static class EnemyBuilder
     {
         /// <summary>

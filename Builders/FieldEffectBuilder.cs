@@ -4,6 +4,9 @@ using System.Text;
 
 namespace Pentacle.Builders
 {
+    /// <summary>
+    /// Static class which provides tools for creating custom field effects.
+    /// </summary>
     public static class FieldEffectBuilder
     {
         /// <summary>
