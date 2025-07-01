@@ -292,6 +292,7 @@ namespace Pentacle.Builders
             return pa;
         }
 
+        // This should be changed to internal
         public static readonly string[] CharacterDescriptionInserts =
         [
             "party member",
@@ -301,6 +302,9 @@ namespace Pentacle.Builders
             "enemies",
         ];
 
+        /// <summary>
+        /// The types of inserts that can be used in the description templates for AutoSetDescriptions and DoPassiveDescriptionAutoInserts.
+        /// </summary>
         public enum DescriptionInsert
         {
             ally,
