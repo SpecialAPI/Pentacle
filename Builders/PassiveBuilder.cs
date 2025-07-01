@@ -295,8 +295,7 @@ namespace Pentacle.Builders
             return pa;
         }
 
-        // This should be changed to internal
-        public static readonly string[] CharacterDescriptionInserts =
+        internal static readonly string[] CharacterDescriptionInserts =
         [
             "party member",
             "enemy",
