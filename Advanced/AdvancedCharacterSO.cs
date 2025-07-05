@@ -6,12 +6,12 @@ using System.Text;
 namespace Pentacle.Advanced
 {
     /// <summary>
-    /// An advanced version of CharacterSO with more options.
+    /// An extended version of the CharacterSO class.
     /// </summary>
     public class AdvancedCharacterSO : CharacterSO
     {
         /// <summary>
-        /// This character's hidden effects.
+        /// A list of this character's hidden passive effects.
         /// </summary>
         public List<HiddenEffectSO> hiddenEffects = [];
     }
