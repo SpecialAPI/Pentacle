@@ -40,6 +40,12 @@ namespace Pentacle.Advanced
         /// </summary>
         public Func<UnitStoreDataHolder, bool> customDisplayCondition;
 
+        /// <summary>
+        /// Determines how this stored value should be displayed.
+        /// </summary>
+        /// <param name="holder">The holder for this stored value's current value.</param>
+        /// <param name="result">Determines what string should be displayed for this stored value.</param>
+        /// <returns>True if this stored value should be displayed, false otherwise.</returns>
         public override bool TryGetUnitStoreDataToolTip(UnitStoreDataHolder holder, out string result)
         {
             var display = MeetsCondition(holder);
@@ -52,6 +58,11 @@ namespace Pentacle.Advanced
             return display;
         }
 
+        /// <summary>
+        /// Gets this stored value's display string with color formatting.
+        /// </summary>
+        /// <param name="holder">The holder for this stored value's current value.</param>
+        /// <returns>The string display for this stored value with color formatting.</returns>
         public virtual string FormatStoredValue(UnitStoreDataHolder holder)
         {
             var str = GetString(holder);
@@ -62,16 +73,31 @@ namespace Pentacle.Advanced
             return str.Colorize(GetColor(holder));
         }
 
+        /// <summary>
+        /// Gets this stored value's display string. This method doesn't apply color formatting to the display, FormatStoredValue() is used for that instead.
+        /// </summary>
+        /// <param name="holder">The holder for this stored value's current value.</param>
+        /// <returns>The string display for this stored value without color formatting.</returns>
         public virtual string GetString(UnitStoreDataHolder holder)
         {
             return dynamicString?.Invoke(holder) ?? string.Format(staticString, holder.m_MainData);
         }
 
+        /// <summary>
+        /// Gets the display color for this stored value from its value.
+        /// </summary>
+        /// <param name="holder">The holder for this stored value's current value.</param>
+        /// <returns>The display color for this stored value.</returns>
         public virtual Color GetColor(UnitStoreDataHolder holder)
         {
             return dynamicColor?.Invoke(holder) ?? color;
         }
 
+        /// <summary>
+        /// Checks if this stored value's display condition is met.
+        /// </summary>
+        /// <param name="holder">The holder for this stored value's current value.</param>
+        /// <returns>True if this stored value should be displayed, false otherwise.</returns>
         public virtual bool MeetsCondition(UnitStoreDataHolder holder)
         {
             return customDisplayCondition?.Invoke(holder) ?? IntTools.MeetsIntCondition(holder.m_MainData, displayCondition);
