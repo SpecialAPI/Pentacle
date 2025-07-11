@@ -27,7 +27,7 @@ namespace Pentacle.Advanced.BrutalAPI
         /// <summary>
         /// Creates a new AdvancedCharacterSO character.
         /// </summary>
-        /// <param name="displayName">The display name of the character.</param>
+        /// <param name="displayName">The in-game display name of the character.</param>
         /// <param name="id_CH">The string ID of the character. Naming convention: CharacterName_CH</param>
         public Character_Advanced(string displayName, string id_CH) : base("_", "_")
         {
