@@ -5,18 +5,18 @@ using System.Text;
 namespace Pentacle.Advanced.BrutalAPI
 {
     /// <summary>
-    /// An advanced version of Character that has more options.
+    /// An extended version of BrutalAPI's Character builder that creates characters using Pentacle's AdvancedCharacterSO class.
     /// </summary>
     [HarmonyPatch]
     public class Character_Advanced : Character
     {
         /// <summary>
-        /// This character builder's character object as AdvancedCharacterSO.
+        /// This character builder's AdvancedCharacterSO character object.
         /// </summary>
         public AdvancedCharacterSO advancedCharacter;
 
         /// <summary>
-        /// Gets or sets this character's hidden effects.
+        /// Gets or sets this character's hidden passive effects.
         /// </summary>
         public List<HiddenEffectSO> HiddenEffects
         {
@@ -25,10 +25,10 @@ namespace Pentacle.Advanced.BrutalAPI
         }
 
         /// <summary>
-        /// Makes a new Advanced Character with id_CH as its id and displayName as its in-game name.
+        /// Creates a new AdvancedCharacterSO character.
         /// </summary>
-        /// <param name="displayName">This character's in-game name.</param>
-        /// <param name="id_CH">This character's internal id.</param>
+        /// <param name="displayName">The in-game display name of the character.</param>
+        /// <param name="id_CH">The string ID of the character. Naming convention: CharacterName_CH</param>
         public Character_Advanced(string displayName, string id_CH) : base("_", "_")
         {
             character = advancedCharacter = ScriptableObject.CreateInstance<AdvancedCharacterSO>();

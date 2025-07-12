@@ -5,18 +5,18 @@ using System.Text;
 namespace Pentacle.Advanced.BrutalAPI
 {
     /// <summary>
-    /// An advanced version of Enemy that has more options.
+    /// An extended version of BrutalAPI's Enemy builder that creates enemies using Pentacle's AdvancedEnemySO class.
     /// </summary>
     [HarmonyPatch]
     public class Enemy_Advanced : Enemy
     {
         /// <summary>
-        /// This enemy builder's enemy object as AdvancedEnemySO.
+        /// This enemy builder's AdvancedEnemySO enemy object.
         /// </summary>
         public AdvancedEnemySO advancedEnemy;
 
         /// <summary>
-        /// Gets or sets this enemy's hidden effects.
+        /// Gets or sets this enemy's hidden passive effects.
         /// </summary>
         public List<HiddenEffectSO> HiddenEffects
         {
@@ -25,10 +25,10 @@ namespace Pentacle.Advanced.BrutalAPI
         }
 
         /// <summary>
-        /// Makes a new Advanced Enemy with id_EN as its id and displayName as its in-game name.
+        /// Creates a new AdvancedEnemySO enemy.
         /// </summary>
-        /// <param name="displayName">This enemy's in-game name.</param>
-        /// <param name="id_EN">THis enemy's internal id.</param>
+        /// <param name="displayName">The in-game display name of the enemy.</param>
+        /// <param name="id_EN">The string ID of the enemy. Naming convention: EnemyName_EN</param>
         public Enemy_Advanced(string displayName, string id_EN) : base("_", "_")
         {
             enemy = advancedEnemy = ScriptableObject.CreateInstance<AdvancedEnemySO>();
