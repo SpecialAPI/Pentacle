@@ -7,56 +7,79 @@ namespace Pentacle.CustomEvent
     public static class CustomTriggers
     {
         /// <summary>
-        /// Same as TriggerCalls.OnAbilityUsed, but sends an AbilityUsedContext as args.
+        /// Gets sent to a unit after it perform an ability (like TriggerCals.OnAbilityUsed).
+        /// <para>Sends an AbilityUsedContext as args, providing extra info about the ability that was performed.</para>
         /// </summary>
         public static readonly string OnAbilityPerformedContext = $"{MOD_PREFIX}_AbilityPerformedContext";
         /// <summary>
-        /// Triggers before on a unit before it performs an ability. Sends an AbilityUsedContext as args.
+        /// Gets sent to a unit when it uses an ability, before the abiity's effects happen.
+        /// <para>Sends an AbilityUsedContext as args, providing extra info about the ability that is being performed.</para>
         /// </summary>
         public static readonly string OnBeforeAbilityEffects = $"{MOD_PREFIX}_BeforeAbilityEffects";
         /// <summary>
-        /// Triggers on CharacterCombat.SetUpDefaultAbilities(). Sends an IntegerReference as args which can be modified to change the rank of the character's abilities.
+        /// Gets sent to a character when its abilities get initialized.
+        /// <para>Sends an IntegerReference with value equal to the character's actual level as args. The value of the IntegerReference can be modified to change which level the character's abilities will be.</para>
         /// </summary>
         public static readonly string ModifyAbilityRank = $"{MOD_PREFIX}_ModifyAbilityRank";
         /// <summary>
-        /// Triggers to modify how much wrong pigment is used by an ability. Sends an IntegerReference as args which can be modified to change the amount of wrong pigment.
+        /// Gets sent to a character when calculating the amount of wrong pigment used for an ability.
+        /// <para>Sends an IntegerReference with value equal to the actual amount of wrong pigment as args. The value of the IntegerReference can be modified to change the amount of wrong pigment used for the ability.</para>
         /// </summary>
         public static readonly string ModifyWrongPigmentAmount = $"{MOD_PREFIX}_ModifyWrongPigmentAmount";
         /// <summary>
-        /// Triggers to modify how much wrong pigment is displayed in the UI. Sends an IntegerReference as args which can be modified to change the amount of wrong pigment.
+        /// Gets sent to a character when calculating the amount of wrong pigment in the cost slots of the perform ability button.
+        /// <para>Sends an IntegerReference with value equal to the actual amount of wrong pigment as args. The value of the IntegerReference can be modified to change the button's displayed amount of wrong pigment.</para>
         /// </summary>
         public static readonly string ModifyWrongPigmentAmount_UI = $"{MOD_PREFIX}_ModifyWrongPigmentAmount_UI";
         /// <summary>
-        /// Triggers when the lucky pigment roll succeeds and lucky pigment is successfully produced. Sends an IntegerReference as args, whose value is the amount of lucky pigment produced.
+        /// Gets sent to all enemies and characters when lucky pigment gets produced.
+        /// <para>Sends an IntegerReference with value equal to the amount of lucky pigment produced as args. This IntegerReference is only meant for getting that amount, its value should not be modified.</para>
         /// </summary>
         public static readonly string OnLuckyPigmentSuccess = $"{MOD_PREFIX}_OnLuckyPigmentSuccess";
         /// <summary>
-        /// Triggers when the lucky pigment roll fails. This doesn't happen if the pigment bar is full.
+        /// Gets sent to all enemies and characters when the lucky pigment chance fails. This trigger doesn't get sent if the pigment bar is full.
+        /// <para>Sends null as args.</para>
         /// </summary>
         public static readonly string OnLuckyPigmentFailure = $"{MOD_PREFIX}_OnLuckyPigmentFailure";
         /// <summary>
-        /// Triggers to check if pigment can be produced. Sends a CanProducePigmentColorReference as args, whose BooleanReference can be modified to change if pigment can be produced.
+        /// Gets sent to all enemies and characters when checking if a pigment color can be produced.
+        /// <para>Sends a CanProducePigmentColorReference, providing info about the pigment color. The CanProducePigmentColorReference's BooleanReference's value can be modified to change if the pigment color can be produced.</para>
         /// </summary>
         public static readonly string CanProducePigmentColor = $"{MOD_PREFIX}_CanProducePigmentColor";
+        /// <summary>
+        /// Gets sent to all enemies and party members when any enemy or party member gets moved (this includes both manual and non-manual movement).
+        /// <para>Sends an OnAnyoneMovedContext as args, providing info about the moved unit and their slot before moving.</para>
+        /// </summary>
         public static readonly string OnAnyoneMoved = $"{MOD_PREFIX}_OnAnyoneMoved";
+        /// <summary>
+        /// Gets sent to an enemy when an enemy rolls which abilities it will perform.
+        /// <para>Sends an empty <see cref="List{int}"/> as args. If ability indexes are added to this list, the abilities the enemy rolls will be replaced with abilities of those indexes. -1 (or any other invalid ability index) can be added to the list to make the enemy not roll any abilities at all (as long as no valid ability indexes are in the list).</para>
+        /// </summary>
         public static readonly string OverrideEnemyAbilityUsage = $"{MOD_PREFIX}_OverrideEnemyAbilityUsage";
+        /// <summary>
+        /// Gets sent to all enemies, characters and slots at the start of the player's turn.
+        /// <para>Sends null as args.</para>
+        /// </summary>
         public static readonly string OnPlayerTurnStartUniversal = $"{MOD_PREFIX}_OnPlayerTurnStartUniversal";
 
-        /// <summary>
-        /// Triggers when processing forbidden fruit to get a unit's forbidden fruit ID. Sends a StringReference as args which can be modifed to set a unit's forbidden fruit ID.
-        /// </summary>
         public static readonly string GetForbiddenFruitID = $"{MOD_PREFIX}_GetForbiddenFruitID";
-        /// <summary>
-        /// Triggers to check whether this unit can form a Forbidden Fruit match with another unit. Sends a ForbiddenFruitMatchInfo as args whose BooleanReference can be modified to set if the match can be formed.
-        /// </summary>
         public static readonly string CanForbiddenFruitMatch = $"{MOD_PREFIX}_CanForbiddenFruitMatch";
-        /// <summary>
-        /// Triggers on the first unit of a successful forbidden fruit match. Sends a ForbiddenFruitMatchInfo as args for information about the other match unit.
-        /// </summary>
         public static readonly string TriggerForbiddenFruit = $"{MOD_PREFIX}_TriggerForbiddenFruit";
 
+        /// <summary>
+        /// Gets sent to all enemies and party members when a status effect is applied to a unit who doesn't already have it.
+        /// <para>Sends a TargetedStatusEffectApplication as args, providing info about the unit who the status effect was applied to, the status effect and the applied amount.</para>
+        /// </summary>
         public static readonly string StatusEffectFirstAppliedToAnyone = $"{MOD_PREFIX}_StatusEffectFirstApliedToAnyone";
+        /// <summary>
+        /// Gets sent to all enemies and party members when a status effect is applied to a unit.
+        /// <para>Sends a TargetedStatusEffectApplication as args, providing info about the unit who the status effect was applied to, the status effect and the applied amount.</para>
+        /// </summary>
         public static readonly string StatusEffectAppliedToAnyone = $"{MOD_PREFIX}_StatusEffectAppliedToAnyone";
+        /// <summary>
+        /// Gets sent to all enemies and party members when a status effect is either applied to a unit who already has it or when is increased in amount through other means.
+        /// <para>Sends a TargetedStatusEffectApplication as args, providing info about the unit who the status effect was applied to, the status effect and the applied amount.</para>
+        /// </summary>
         public static readonly string StatusEffectIncreasedOnAnyone = $"{MOD_PREFIX}_StatusEffectIncreasedOnAnyone";
 
         // TODO:
