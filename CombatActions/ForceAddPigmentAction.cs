@@ -5,12 +5,12 @@ using System.Text;
 namespace Pentacle.Misc
 {
     /// <summary>
-    /// Produces a given amount of the given pigment, even if the pigment can't normally be produced.
+    /// An immediate action that produces a certain amount of the given pigment color, even if pigment of that color can't normally be produced.
     /// </summary>
-    /// <param name="pigment">The pigment color to produce.</param>
-    /// <param name="amount">How much pigment should be produced?</param>
-    /// <param name="isGeneratorCharacter">Is the unit visually producing the pigment a character?</param>
-    /// <param name="id">The id of the unit visually producing the pigment.</param>
+    /// <param name="pigment">The pigment color that should be produced, as a ManaColorSO object.</param>
+    /// <param name="amount">The amount of pigment that should be produced.</param>
+    /// <param name="isGeneratorCharacter">Determines whether the pigment will be visually produced by a character or an enemy.</param>
+    /// <param name="id">The id of the unit that will be visually producing the pigment.</param>
     public class ForceAddPigmentAction(ManaColorSO pigment, int amount, bool isGeneratorCharacter, int id) : IImmediateAction
     {
         public void Execute(CombatStats stats)
