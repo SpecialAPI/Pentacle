@@ -45,15 +45,15 @@ namespace Pentacle.CustomEvent
         /// <summary>
         /// Triggers when processing forbidden fruit to get a unit's forbidden fruit ID. Sends a StringReference as args which can be modifed to set a unit's forbidden fruit ID.
         /// </summary>
-        public static readonly string GetForbiddenFruitID = $"{MOD_PREFIX}_GetForbiddenFruitID";
+        //public static readonly string GetForbiddenFruitID = $"{MOD_PREFIX}_GetForbiddenFruitID";
         /// <summary>
         /// Triggers to check whether this unit can form a Forbidden Fruit match with another unit. Sends a ForbiddenFruitMatchInfo as args whose BooleanReference can be modified to set if the match can be formed.
         /// </summary>
-        public static readonly string CanForbiddenFruitMatch = $"{MOD_PREFIX}_CanForbiddenFruitMatch";
+        //public static readonly string CanForbiddenFruitMatch = $"{MOD_PREFIX}_CanForbiddenFruitMatch";
         /// <summary>
         /// Triggers on the first unit of a successful forbidden fruit match. Sends a ForbiddenFruitMatchInfo as args for information about the other match unit.
         /// </summary>
-        public static readonly string TriggerForbiddenFruit = $"{MOD_PREFIX}_TriggerForbiddenFruit";
+        //public static readonly string TriggerForbiddenFruit = $"{MOD_PREFIX}_TriggerForbiddenFruit";
 
         public static readonly string StatusEffectFirstAppliedToAnyone = $"{MOD_PREFIX}_StatusEffectFirstApliedToAnyone";
         public static readonly string StatusEffectAppliedToAnyone = $"{MOD_PREFIX}_StatusEffectAppliedToAnyone";
