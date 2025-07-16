@@ -8,7 +8,7 @@ using Yarn.Unity;
 namespace Pentacle.CustomFogs
 {
     [HarmonyPatch]
-    public class FogsCustomBossPatches
+    internal static class FogsCustomBossPatches
     {
         private const string FOGS_DIALOGUE_PROGRAM = "NPC_Fogs_Dialog";
         private const string FOGS_DIALOGUE_START_NODE = "Fogs.End.Start";
