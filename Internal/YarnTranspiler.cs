@@ -1,10 +1,9 @@
-﻿using Pentacle.Internal;
-using Google.Protobuf.Collections;
+﻿using Google.Protobuf.Collections;
 using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace Pentacle.CustomFogs
+namespace Pentacle.Internal
 {
     [HarmonyPatch]
     internal static class YarnTranspiler

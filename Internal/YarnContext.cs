@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace Pentacle.CustomFogs
+namespace Pentacle.Internal
 {
     internal class YarnContext
     {

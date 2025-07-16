@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace Pentacle.CustomFogs
+namespace Pentacle.Internal
 {
     internal class YarnCursor
     {
@@ -13,13 +13,13 @@ namespace Pentacle.CustomFogs
 
         public Yarn.Instruction Next
         {
-            get => (Index < Instructions.Count && Index >= 0) ? Instructions[Index] : null;
+            get => Index < Instructions.Count && Index >= 0 ? Instructions[Index] : null;
             set => Goto(value);
         }
 
         public Yarn.Instruction Previous
         {
-            get => ((Index - 1) < Instructions.Count && Index >= 0) ? Instructions[Index - 1] : null;
+            get => Index - 1 < Instructions.Count && Index >= 0 ? Instructions[Index - 1] : null;
             set => Goto(value, MoveType.After);
         }
 
