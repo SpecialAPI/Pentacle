@@ -62,9 +62,9 @@ namespace Pentacle.CustomEvent
         /// </summary>
         public static readonly string OnPlayerTurnStartUniversal = $"{MOD_PREFIX}_OnPlayerTurnStartUniversal";
 
-        public static readonly string GetForbiddenFruitID = $"{MOD_PREFIX}_GetForbiddenFruitID";
-        public static readonly string CanForbiddenFruitMatch = $"{MOD_PREFIX}_CanForbiddenFruitMatch";
-        public static readonly string TriggerForbiddenFruit = $"{MOD_PREFIX}_TriggerForbiddenFruit";
+        //public static readonly string GetForbiddenFruitID = $"{MOD_PREFIX}_GetForbiddenFruitID";
+        //public static readonly string CanForbiddenFruitMatch = $"{MOD_PREFIX}_CanForbiddenFruitMatch";
+        //public static readonly string TriggerForbiddenFruit = $"{MOD_PREFIX}_TriggerForbiddenFruit";
 
         /// <summary>
         /// Gets sent to all enemies and party members when a status effect is applied to a unit who doesn't already have it.

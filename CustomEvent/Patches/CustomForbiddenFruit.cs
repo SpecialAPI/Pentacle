@@ -1,4 +1,7 @@
-﻿using Pentacle.CustomEvent.Args;
+﻿// Disabled for now, will be readded at some point after release.
+
+/*
+using Pentacle.CustomEvent.Args;
 using Pentacle.Tools;
 using System;
 using System.Collections.Generic;
@@ -141,3 +144,4 @@ namespace Pentacle.CustomEvent.Patches
         }
     }
 }
+*/

@@ -24,7 +24,7 @@ namespace Pentacle
             HarmonyInstance.PatchAll();
 
             UnitExtTools.BuildUnitExtData();
-            FogsCustomBossManager.AddFogsTranspiler();
+            FogsCustomBossPatches.AddFogsTranspiler();
         }
 
         internal void Start()
