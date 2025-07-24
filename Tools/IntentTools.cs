@@ -4,8 +4,16 @@ using System.Text;
 
 namespace Pentacle.Tools
 {
+    /// <summary>
+    /// Static class that provides intent-related tools,
+    /// </summary>
     public static class IntentTools
     {
+        /// <summary>
+        /// Returns an intent for dealing a certain amount of damage.
+        /// </summary>
+        /// <param name="damage">The amount of damage for the intent.</param>
+        /// <returns>The intent type for dealing the given amount of damage.</returns>
         public static string IntentForDamage(int damage)
         {
             return damage switch
@@ -20,6 +28,11 @@ namespace Pentacle.Tools
             };
         }
 
+        /// <summary>
+        /// Returns an intent for healing a certain amount of health.
+        /// </summary>
+        /// <param name="healing">The amount of healing for the intent.</param>
+        /// <returns>The intent type for healing the given amount of health.</returns>
         public static string IntentForHealing(int healing)
         {
             return healing switch
@@ -32,6 +45,12 @@ namespace Pentacle.Tools
             };
         }
 
+        /// <summary>
+        /// Shorthand for creating an IntentTargetInfo.
+        /// </summary>
+        /// <param name="target">The targeting that determines where the intents will be displayed on the field.</param>
+        /// <param name="intents">Intent types that will be displayed on the targeted slots.</param>
+        /// <returns>The created IntentTargetInfo object.</returns>
         public static IntentTargetInfo TargetIntent(BaseCombatTargettingSO target, params string[] intents)
         {
             return new()
