@@ -5,8 +5,14 @@ using System.Text;
 
 namespace Pentacle.EffectorConditions
 {
+    /// <summary>
+    /// An effector condition that checks if a string stored in a StringReference args matches any string in this condition's matchStrings list.
+    /// </summary>
     public class StringReferenceMatchesAnyEffectorCondition : EffectorConditionSO
     {
+        /// <summary>
+        /// The list of strings that will be checked. If any string in this list matches the value of the StringReference args, this condition will be met.
+        /// </summary>
         public List<string> matchStrings;
 
         public override bool MeetCondition(IEffectorChecks effector, object args)
