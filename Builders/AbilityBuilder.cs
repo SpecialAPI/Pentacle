@@ -11,39 +11,49 @@ namespace Pentacle.Builders
     /// </summary>
     public static class AbilityBuilder
     {
-        // Not touching the documentation for these yet because I want to completely change how they work later
         /// <summary>
-        /// Dictionary which maps out an ability's string ID to it's class info.
+        /// Get a "reference" to an ability of the given type, even before that ability is created. This only works on abilities made on the same mod profile.
+        /// <para>More specifically, if the ability isn't created when this method is called, this method creates and returns an empty ability object of the given type. When the ability is created, instead of creating a new ability object to modify, this empty ability object will be modified instead.</para>
+        /// <para>The empty ability objects created by this method should not be modified. This method should only be used for referencing ability objects, not modifying them.</para>
         /// </summary>
-        private static readonly Dictionary<string, AbilitySO> AbilityReferences = [];
-        /// <summary>
-        /// Retrieve an AbilitySO object that corresponds to the ability ID.
-        /// </summary>
-        /// <param name="id">String ID of the ability, a.k.a its name.</param>
+        /// <typeparam name="T">The ability's custom type. Must either be AbilitySO or a subclass of AbilitySO.</typeparam>
+        /// <param name="id">The ID of the ability to reference.</param>
         /// <param name="profile">Your mod profile.</param>
-        /// <returns>The target AbilitySO object.</returns>
-        public static AbilitySO AbilityReference(string id, ModProfile profile = null)
+        /// <returns>A "reference" to the ability with the given ID.</returns>
+        public static T AbilityReference<T>(string id, ModProfile profile = null) where T : AbilitySO
         {
             profile ??= ProfileManager.GetProfile(Assembly.GetCallingAssembly());
             if (!ProfileManager.EnsureProfileExists(profile))
                 return null;
 
-            return AbilityReference(id, profile.Prefix);
-        }
-        /// <summary>
-        /// Retrieve an AbilitySO object that corresponds to the ability ID.
-        /// </summary>
-        /// <param name="id">String ID of the ability, a.k.a its name.</param>
-        /// <param name="prefix">String prefix of your mod.</param>
-        /// <returns>The target AbilitySO object.</returns>
-        public static AbilitySO AbilityReference(string id, string prefix)
-        {
-            var key = $"{prefix}_{id}";
+            if(!profile.abilityReferences.TryGetValue(typeof(T), out var abReferencesForType))
+                profile.abilityReferences[typeof(T)] = abReferencesForType = [];
 
-            if (!AbilityReferences.TryGetValue(key, out var ab))
+            if (!abReferencesForType.TryGetValue(id, out var ab))
+            {
+                var newAb = CreateScriptable<T>();
+                abReferencesForType[id] = newAb;
+                return newAb;
+            }
+
+            return (T)ab;
+        }
+
+        /// <summary>
+        /// Get a "reference" to an AdvancedAbilitySO ability, even before that ability is created. This only works on abilities made on the same mod profile.
+        /// <para>More specifically, if the ability isn't created when this method is called, this method creates and returns an empty AdvancedAbilitySO object. When the ability is created, instead of creating a new ability object to modify, this empty ability object will be modified instead.</para>
+        /// <para>The empty ability objects created by this method should not be modified. This method should only be used for referencing ability objects, not modifying them.</para>
+        /// </summary>
+        /// <param name="id">The ID of the ability to reference.</param>
+        /// <param name="profile">Your mod profile.</param>
+        /// <returns>A "reference" to the ability with the given ID.</returns>
+        public static AdvancedAbilitySO AdvancedAbilityReference(string id, ModProfile profile = null)
+        {
+            profile ??= ProfileManager.GetProfile(Assembly.GetCallingAssembly());
+            if (!ProfileManager.EnsureProfileExists(profile))
                 return null;
 
-            return ab;
+            return AbilityReference<AdvancedAbilitySO>(id, profile);
         }
 
         /// <summary>
@@ -74,8 +84,7 @@ namespace Pentacle.Builders
             if (!ProfileManager.EnsureProfileExists(profile))
                 return null;
 
-            var ab = CreateScriptable<T>();
-
+            var ab = GetOrCreateNewAbilityReference<T>(id_A, profile);
             ab.name = profile.GetID(id_A);
             ab.effects = [];
             ab.intents = [];
@@ -83,9 +92,29 @@ namespace Pentacle.Builders
             ab.priority = Priority.Normal;
             ab.abilitySprite = EnemyDB.DefaultAbilitySprite;
 
-            AbilityReferences[ab.name] = ab;
-
             return ab;
+        }
+
+        private static T GetOrCreateNewAbilityReference<T>(string id, ModProfile profile) where T : AbilitySO
+        {
+            if (!profile.abilityReferences.TryGetValue(typeof(T), out var abReferencesForType))
+                profile.abilityReferences[typeof(T)] = abReferencesForType = [];
+
+            var exists = !abReferencesForType.TryGetValue(id, out var ab);
+            if (exists && !string.IsNullOrEmpty(ab.name))
+            {
+                PentacleLogger.LogWarning($"{profile.Guid}: Replacing an ability reference with the ID {id} because it's not empty. You should not create abilities with duplicate IDs or modify empty ability references.");
+                exists = false;
+            }
+
+            if (!exists)
+            {
+                var newAb = CreateScriptable<T>();
+                abReferencesForType[id] = newAb;
+                return newAb;
+            }
+
+            return (T)ab;
         }
 
         /// <summary>

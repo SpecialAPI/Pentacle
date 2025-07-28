@@ -53,6 +53,7 @@ namespace Pentacle
         internal AssetBundle Bundle;
         internal string Guid = "";
         internal string Prefix = "";
+        internal Dictionary<Type, Dictionary<string, AbilitySO>> abilityReferences = [];
 
         public void SetAssetBundle(AssetBundle bundle)
         {
