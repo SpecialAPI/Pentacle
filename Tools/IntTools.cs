@@ -108,16 +108,6 @@ namespace Pentacle.Tools
         Divide
     }
 
-    // Why is this here?
-    public enum BoolOperation
-    {
-        Set,
-
-        Or,
-        And,
-        Xor
-    }
-
     /// <summary>
     /// Types of integer conditions that can be used for IntTools.MeetsIntCondition.
     /// </summary>
