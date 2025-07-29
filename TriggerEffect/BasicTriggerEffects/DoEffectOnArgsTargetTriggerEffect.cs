@@ -1,4 +1,5 @@
 ﻿using Pentacle.CustomEvent.Args;
+using Pentacle.Tools;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -15,7 +16,7 @@ namespace Pentacle.TriggerEffect.BasicTriggerEffects
             if(effect == null)
                 return;
 
-            if (args is not IUnitHolder hold || hold[index] is not IUnit unit)
+            if (!ValueReferenceTools.TryGetUnitHolder(args, out var hold) || hold[index] is not IUnit unit)
                 return;
 
             effect.DoEffect(unit, args, triggerInfo, extraInfo);

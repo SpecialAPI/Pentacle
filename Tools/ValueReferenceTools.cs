@@ -12,14 +12,14 @@ namespace Pentacle.Tools
         {
             boolHolder = args switch
             {
-                BooleanReference br                 => new BooleanReferenceHolder(br),
-                BooleanWithTriggerReference bwtr    => new BooleanWithTriggerReferenceHolder(bwtr),
-                IBoolHolder bh                      => bh,
-                StatusFieldApplication sfa          => new StatusFieldApplicationHolder(sfa),
+                IBoolHolder bh                              => bh,
+                BooleanReference br                         => new BooleanReferenceHolder(br),
+                BooleanWithTriggerReference bwtr            => new BooleanWithTriggerReferenceHolder(bwtr),
+                StatusFieldApplication sfa                  => new StatusFieldApplicationHolder(sfa),
                 DamageReceivedValueChangeException drex     => new DamageReceivedValueChangeExceptionHolder(drex),
                 HealingReceivedValueChangeException hrex    => new HealingReceivedValueChangeExceptionHolder(hrex),
 
-                _                                   => null
+                _                                           => null
             };
 
             return boolHolder != null;
@@ -29,9 +29,9 @@ namespace Pentacle.Tools
         {
             intHolder = args switch
             {
-                IntegerReference ir             => new IntegerReferenceHolder(ir),
-                IIntHolder ih                   => ih,
-                StatusFieldApplication sfa      => new StatusFieldApplicationHolder(sfa),
+                IIntHolder ih                               => ih,
+                IntegerReference ir                         => new IntegerReferenceHolder(ir),
+                StatusFieldApplication sfa                  => new StatusFieldApplicationHolder(sfa),
 
                 _                       => null
             };
@@ -43,15 +43,31 @@ namespace Pentacle.Tools
         {
             stringHolder = args switch
             {
-                StringReference sr              => new StringReferenceHolder(sr),
-                IStringHolder sh                => sh,
-                StatusFieldApplication sfa      => new StatusFieldApplicationHolder(sfa),
+                IStringHolder sh                            => sh,
+                StringReference sr                          => new StringReferenceHolder(sr),
+                StatusFieldApplication sfa                  => new StatusFieldApplicationHolder(sfa),
                 DamageReceivedValueChangeException drex     => new DamageReceivedValueChangeExceptionHolder(drex),
 
-                _                       => null
+                _                                           => null
             };
 
             return stringHolder != null;
+        }
+
+        public static bool TryGetUnitHolder(object args, out IUnitHolder unitHolder)
+        {
+            unitHolder = args switch
+            {
+                IUnitHolder uh                              => uh,
+                DamageDealtValueChangeException ddex        => new DamageDealtValueChangeExceptionHolder(ddex),
+                DamageReceivedValueChangeException drex     => new DamageReceivedValueChangeExceptionHolder(drex),
+                HealingDealtValueChangeException hdex       => new HealingDealtValueChangeExceptionHolder(hdex),
+                HealingReceivedValueChangeException hrex    => new HealingReceivedValueChangeExceptionHolder(hrex),
+
+                _                                           => null
+            };
+
+            return unitHolder != null;
         }
 
         public static bool TryGetValueChangeException(object args, out IValueChangeException exception)
