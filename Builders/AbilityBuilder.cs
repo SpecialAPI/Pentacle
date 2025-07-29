@@ -100,7 +100,7 @@ namespace Pentacle.Builders
             if (!profile.abilityReferences.TryGetValue(typeof(T), out var abReferencesForType))
                 profile.abilityReferences[typeof(T)] = abReferencesForType = [];
 
-            var exists = !abReferencesForType.TryGetValue(id, out var ab);
+            var exists = abReferencesForType.TryGetValue(id, out var ab);
             if (exists && !string.IsNullOrEmpty(ab.name))
             {
                 PentacleLogger.LogWarning($"{profile.Guid}: Replacing an ability reference with the ID {id} because it's not empty. You should not create abilities with duplicate IDs or modify empty ability references.");
