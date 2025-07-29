@@ -42,6 +42,8 @@ namespace Pentacle.CustomEvent.Args.BasegameReferenceHolders
             set => PentacleLogger.LogWarning($"HealingReceivedValueChangeExceptionHolder's bool values are read-only.");
         }
 
+        bool IValueChangeException.DamageDealt => false;
+
         void IValueChangeException.AddModifier(IntValueModifier modifier)
         {
             exception.AddModifier(modifier);

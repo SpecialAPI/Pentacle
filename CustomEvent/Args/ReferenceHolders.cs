@@ -30,6 +30,8 @@ namespace Pentacle.CustomEvent.Args
 
     public interface IValueChangeException
     {
+        bool DamageDealt { get; }
+
         void AddModifier(IntValueModifier modifier);
         int GetModifiedValue();
     }

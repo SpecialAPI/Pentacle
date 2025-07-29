@@ -31,6 +31,8 @@ namespace Pentacle.CustomEvent.Args.BasegameReferenceHolders
             }
         }
 
+        bool IValueChangeException.DamageDealt => true;
+
         void IValueChangeException.AddModifier(IntValueModifier modifier)
         {
             exception.AddModifier(modifier);

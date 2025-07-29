@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Pentacle.Tools;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -10,14 +11,10 @@ namespace Pentacle.TriggerEffect.BasicTriggerEffects
 
         public override void DoEffect(IUnit sender, object args, TriggeredEffect triggerInfo, TriggerEffectExtraInfo extraInfo)
         {
-            if (args is DamageReceivedValueChangeException damageReceivedEx)
-                damageReceivedEx.AddModifier(new MultiplyIntValueModifier(false, multiplier));
+            if (!ValueReferenceTools.TryGetValueChangeException(args, out var exception))
+                return;
 
-            else if (args is DamageDealtValueChangeException damageDealtEx)
-                damageDealtEx.AddModifier(new MultiplyIntValueModifier(true, multiplier));
-
-            else if (args is IntValueChangeException intEx)
-                intEx.AddModifier(new MultiplyIntValueModifier(false, multiplier));
+            exception.AddModifier(new MultiplyIntValueModifier(exception.DamageDealt, multiplier));
         }
     }
 }

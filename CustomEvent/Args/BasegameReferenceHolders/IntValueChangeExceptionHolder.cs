@@ -17,5 +17,7 @@ namespace Pentacle.CustomEvent.Args.BasegameReferenceHolders
         {
             return exception.GetModifiedValue();
         }
+
+        bool IValueChangeException.DamageDealt => false;
     }
 }
