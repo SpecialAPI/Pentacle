@@ -5,16 +5,17 @@ using System.Text;
 
 namespace Pentacle.TriggerEffect.BasicTriggerEffects
 {
-    public class BoolReferenceSetterTriggerffect(bool value) : TriggerEffect
+    public class BoolHolderSetterTriggerffect(bool value, int index = 0) : TriggerEffect
     {
         public bool value = value;
+        public int index = index;
 
         public override void DoEffect(IUnit sender, object args, TriggeredEffect triggerInfo, TriggerEffectExtraInfo extraInfo)
         {
-            if (!args.TryGetBoolReference(out var boolRef))
+            if (!ValueReferenceTools.TryGetBoolHolder(args, out var boolHolder))
                 return;
 
-            boolRef.value = value;
+            boolHolder[index] = value;
         }
     }
 }

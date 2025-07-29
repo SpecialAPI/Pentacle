@@ -1,4 +1,5 @@
-﻿using System;
+﻿/*
+using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -19,3 +20,4 @@ namespace Pentacle.CustomEvent.Args
         public Sprite OtherUnitPassiveSprite = otherUnitPassiveSprite;
     }
 }
+*/

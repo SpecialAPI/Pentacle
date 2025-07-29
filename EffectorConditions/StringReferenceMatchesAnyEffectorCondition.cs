@@ -20,12 +20,12 @@ namespace Pentacle.EffectorConditions
             if (matchStrings == null || matchStrings.Count <= 0)
                 return false;
 
-            if(!args.TryGetStringReference(out var stringRef))
+            if(!ValueReferenceTools.TryGetStringHolder(args, out var stringRef))
                 return false;
 
             foreach(var s in matchStrings)
             {
-                if (stringRef.value == s)
+                if (stringRef.Value == s)
                     return true;
             }
 

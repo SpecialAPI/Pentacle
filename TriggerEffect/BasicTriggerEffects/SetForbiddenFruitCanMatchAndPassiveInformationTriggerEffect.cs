@@ -1,4 +1,5 @@
-﻿using Pentacle.CustomEvent.Args;
+﻿/*
+using Pentacle.CustomEvent.Args;
 using Pentacle.Tools;
 using System;
 using System.Collections.Generic;
@@ -23,3 +24,4 @@ namespace Pentacle.TriggerEffect.BasicTriggerEffects
         }
     }
 }
+*/

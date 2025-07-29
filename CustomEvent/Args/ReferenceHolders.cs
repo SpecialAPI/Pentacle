@@ -4,63 +4,27 @@ using System.Text;
 
 namespace Pentacle.CustomEvent.Args
 {
-    public interface IBoolReferenceHolder
+    public interface IBoolHolder
     {
-        BooleanReference BoolReference { get; }
+        bool Value { get; set; }
+        bool this[int index] { get; set; }
     }
 
-    public interface IIntReferenceHolder
+    public interface IIntHolder
     {
-        IntegerReference IntReference { get; }
+        int Value { get; set; }
+        int this[int index] { get; set; }
     }
 
-    public interface IStringReferenceHolder
+    public interface IStringHolder
     {
-        StringReference StringReference { get; }
+        string Value { get; set; }
+        string this[int index] { get; set; }
     }
 
-    public interface ITargetHolder
+    public interface IUnitHolder
     {
-        public IUnit Target { get; }
-    }
-
-    public abstract class BasicBoolReferenceHolder(BooleanReference boolRef) : IBoolReferenceHolder
-    {
-        public BooleanReference BoolReference => boolRef;
-    }
-
-    public abstract class BasicIntReferenceHolder(IntegerReference intRef) : IIntReferenceHolder
-    {
-        public IntegerReference IntReference => intRef;
-    }
-
-    public abstract class BasicStringReferenceHolder(StringReference stringRef) : IStringReferenceHolder
-    {
-        public StringReference StringReference => stringRef;
-    }
-
-    public abstract class BasicBoolAndIntReferenceHolder(BooleanReference boolRef, IntegerReference intRef) : IBoolReferenceHolder, IIntReferenceHolder
-    {
-        public BooleanReference BoolReference => boolRef;
-        public IntegerReference IntReference => intRef;
-    }
-
-    public abstract class BasicIntAndStringReferenceHolder(IntegerReference intRef, StringReference stringRef) : IIntReferenceHolder, IStringReferenceHolder
-    {
-        public IntegerReference IntReference => intRef;
-        public StringReference StringReference => stringRef;
-    }
-
-    public abstract class BasicBoolAndStringReferenceHolder(BooleanReference boolRef, StringReference stringRef) : IBoolReferenceHolder, IStringReferenceHolder
-    {
-        public BooleanReference BoolReference => boolRef;
-        public StringReference StringReference => stringRef;
-    }
-
-    public abstract class BasicBoolAndIntAndStringReferenceHolder(BooleanReference boolRef, IntegerReference intRef, StringReference stringRef) : IBoolReferenceHolder, IIntReferenceHolder, IStringReferenceHolder
-    {
-        public BooleanReference BoolReference => boolRef;
-        public IntegerReference IntReference => intRef;
-        public StringReference StringReference => stringRef;
+        IUnit Value { get; set; }
+        IUnit this[int index] { get; set; }
     }
 }

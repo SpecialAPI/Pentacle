@@ -4,8 +4,31 @@ using System.Text;
 
 namespace Pentacle.CustomEvent.Args
 {
-    public class OnAnyoneMovedContext(IntegerReference slotRef, IUnit movedUnit) : BasicIntReferenceHolder(slotRef), ITargetHolder
+    public class OnAnyoneMovedContext(int oldSlot, IUnit movedUnit) : IIntHolder, IUnitHolder
     {
-        public IUnit Target => movedUnit;
+        public int oldSlot = oldSlot;
+        public IUnit movedUnit = movedUnit;
+
+        int IIntHolder.Value
+        {
+            get => oldSlot;
+            set => oldSlot = value;
+        }
+        int IIntHolder.this[int index]
+        {
+            get => oldSlot;
+            set => oldSlot = value;
+        }
+
+        IUnit IUnitHolder.Value
+        {
+            get => movedUnit;
+            set => movedUnit = value;
+        }
+        IUnit IUnitHolder.this[int index]
+        {
+            get => movedUnit;
+            set => movedUnit = value;
+        }
     }
 }

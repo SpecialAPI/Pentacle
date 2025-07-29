@@ -31,7 +31,7 @@ namespace Pentacle.CustomEvent.Patches
         private static void AnyoneMoved_TriggerEvent(IUnit unit, int oldsid)
         {
             foreach (var kvp in CombatManager.Instance._stats.UnitsOnField())
-                CombatManager.Instance.PostNotification(CustomTriggers.OnAnyoneMoved, kvp, new OnAnyoneMovedContext(new(oldsid), unit));
+                CombatManager.Instance.PostNotification(CustomTriggers.OnAnyoneMoved, kvp, new OnAnyoneMovedContext(oldsid, unit));
         }
     }
 }

@@ -7,61 +7,47 @@ namespace Pentacle.Tools
 {
     public static class ValueReferenceTools
     {
-        public static bool TryGetBoolReference(this object args, out BooleanReference boolRef)
+        public static bool TryGetBoolHolder(object args, out IBoolHolder boolHolder)
         {
-            boolRef = null;
-
-            if(args is BooleanReference br)
+            boolHolder = args switch
             {
-                boolRef = br;
-                return true;
-            }
+                BooleanReference br                 => new BooleanReferenceHolder(br),
+                BooleanWithTriggerReference bwtr    => new BooleanWithTriggerReferenceHolder(bwtr),
+                IBoolHolder bh                      => bh,
+                StatusFieldApplication sfa          => new StatusFieldApplicationHolder(sfa),
 
-            if(args is IBoolReferenceHolder brh)
-            {
-                boolRef = brh.BoolReference;
-                return true;
-            }
+                _                                   => null
+            };
 
-            return false;
+            return boolHolder != null;
         }
 
-        public static bool TryGetIntReference(this object args, out IntegerReference intRef)
+        public static bool TryGetIntHolder(object args, out IIntHolder intHolder)
         {
-            intRef = null;
-
-            if (args is IntegerReference ir)
+            intHolder = args switch
             {
-                intRef = ir;
-                return true;
-            }
+                IntegerReference ir             => new IntegerReferenceHolder(ir),
+                IIntHolder ih                   => ih,
+                StatusFieldApplication sfa      => new StatusFieldApplicationHolder(sfa),
 
-            if (args is IIntReferenceHolder irh)
-            {
-                intRef = irh.IntReference;
-                return true;
-            }
+                _                       => null
+            };
 
-            return false;
+            return intHolder != null;
         }
 
-        public static bool TryGetStringReference(this object args, out StringReference stringRef)
+        public static bool TryGetStringHolder(object args, out IStringHolder stringHolder)
         {
-            stringRef = null;
-
-            if (args is StringReference sr)
+            stringHolder = args switch
             {
-                stringRef = sr;
-                return true;
-            }
+                StringReference sr              => new StringReferenceHolder(sr),
+                IStringHolder sh                => sh,
+                StatusFieldApplication sfa      => new StatusFieldApplicationHolder(sfa),
 
-            if (args is IStringReferenceHolder srh)
-            {
-                stringRef = srh.StringReference;
-                return true;
-            }
+                _                       => null
+            };
 
-            return false;
+            return stringHolder != null;
         }
     }
 }

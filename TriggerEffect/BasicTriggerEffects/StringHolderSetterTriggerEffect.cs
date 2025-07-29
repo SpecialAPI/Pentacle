@@ -5,16 +5,17 @@ using System.Text;
 
 namespace Pentacle.TriggerEffect.BasicTriggerEffects
 {
-    public class StringReferenceSetterTriggerEffect(string value) : TriggerEffect
+    public class StringHolderSetterTriggerEffect(string value, int index = 0) : TriggerEffect
     {
         public string value = value;
+        public int index = index;
 
         public override void DoEffect(IUnit sender, object args, TriggeredEffect triggerInfo, TriggerEffectExtraInfo extraInfo)
         {
-            if (!args.TryGetStringReference(out var stringRef))
+            if (!ValueReferenceTools.TryGetStringHolder(args, out var stringRef))
                 return;
 
-            stringRef.value = value;
+            stringRef[index] = value;
         }
     }
 }

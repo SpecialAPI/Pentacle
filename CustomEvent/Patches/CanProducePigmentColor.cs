@@ -48,12 +48,12 @@ namespace Pentacle.CustomEvent.Patches
             if (pigment == null)
                 return curr;
 
-            var boolref = new CanProducePigmentColorReference(pigment, new BooleanReference(curr));
+            var boolref = new CanProducePigmentColorReference(pigment, curr);
 
             foreach (var u in CombatManager.Instance._stats.UnitsOnField())
                 CombatManager.Instance.PostNotification(CustomTriggers.CanProducePigmentColor, u, boolref);
 
-            return boolref.BoolReference.value;
+            return boolref.canProduce;
         }
     }
 }
