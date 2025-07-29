@@ -27,4 +27,10 @@ namespace Pentacle.CustomEvent.Args
         IUnit Value { get; set; }
         IUnit this[int index] { get; set; }
     }
+
+    public interface IValueChangeException
+    {
+        void AddModifier(IntValueModifier modifier);
+        int GetModifiedValue();
+    }
 }
