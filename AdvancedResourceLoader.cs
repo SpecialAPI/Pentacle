@@ -16,7 +16,9 @@ namespace Pentacle
             if (tex == null)
                 return null;
 
-            return Sprite.Create(tex, new Rect(0f, 0f, tex.width, tex.height), pivot ?? new Vector2(0.5f, 0.5f), pixelsperunit);
+            var sprite = Sprite.Create(tex, new Rect(0f, 0f, tex.width, tex.height), pivot ?? new Vector2(0.5f, 0.5f), pixelsperunit);
+            sprite.name = tex.name;
+            return sprite;
         }
 
         public static Texture2D LoadTexture(string name, Assembly assembly = null)
@@ -30,6 +32,7 @@ namespace Pentacle
 
             tex.LoadImage(ba);
             tex.filterMode = FilterMode.Point;
+            tex.name = name;
 
             return tex;
         }
