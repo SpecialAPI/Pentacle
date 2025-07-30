@@ -59,7 +59,7 @@ namespace Pentacle.Builders
         /// <summary>
         /// Creates a new ability using Pentacle's custom AdvancedAbilitySO class.
         /// </summary>
-        /// <param name="id_A">The string ID of the ability. Naming convention: AbilityName_AB</param>
+        /// <param name="id_A">The string ID of the ability. Naming convention: AbilityName_A</param>
         /// <param name="profile">Your mod profile.</param>
         /// <returns>An object instance of the created ability.</returns>
         public static AdvancedAbilitySO NewAbility(string id_A, ModProfile profile = null)
@@ -75,7 +75,7 @@ namespace Pentacle.Builders
         /// Creates a new ability of the given custom class.
         /// </summary>
         /// <typeparam name="T">The custom type for the created ability. Must either be AbilitySO or a subclass of AbilitySO.</typeparam>
-        /// <param name="id_A">The string ID of the ability. Naming convention: AbilityName_AB</param>
+        /// <param name="id_A">The string ID of the ability. Naming convention: AbilityName_A</param>
         /// <param name="profile">Your mod profile.</param>
         /// <returns>An object instance of the created ability.</returns>
         public static T NewAbility<T>(string id_A, ModProfile profile = null) where T : AbilitySO
