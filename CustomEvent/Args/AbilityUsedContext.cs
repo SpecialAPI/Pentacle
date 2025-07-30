@@ -5,20 +5,22 @@ using System.Text;
 namespace Pentacle.CustomEvent.Args
 {
     /// <summary>
-    /// Used as args by various custom triggers, contains the information about a performed ability.
+    /// Provides information about an ability that's being performed.
+    /// <para>Sent as args by CustomTriggers.OnAbilityPerformedContext and CustomTriggers.OnBeforeAbilityEffects.</para>
     /// </summary>
     public class AbilityUsedContext
     {
         /// <summary>
-        /// Index of the performed ability in the unit's abilities list.
+        /// The index of the ability that's being performed in the Abilities list of the unit performing it.
         /// </summary>
         public int abilityIndex;
         /// <summary>
-        /// The performed ability.
+        /// The AbilitySO object of the ability being performed.
         /// </summary>
         public AbilitySO ability;
         /// <summary>
-        /// The cost used for the ability. Null for enemies.
+        /// The pigment that was used for the ability's cost.
+        /// <para>Null for enemies.</para>
         /// </summary>
         public FilledManaCost[] cost;
     }
