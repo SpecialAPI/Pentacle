@@ -6,9 +6,10 @@ namespace Pentacle.CustomEvent.Args
 {
     /// <summary>
     /// Provides information about a moved unit.
+    /// <para>Sent as args by CustomTriggers.OnAnyoneMoved.</para>
     /// </summary>
-    /// <param name="oldSlot"></param>
-    /// <param name="movedUnit"></param>
+    /// <param name="oldSlot">The unit's SlotID before they were moved.</param>
+    /// <param name="movedUnit">The unit that was moved.</param>
     public class OnAnyoneMovedContext(int oldSlot, IUnit movedUnit) : IIntHolder, IUnitHolder
     {
         /// <summary>

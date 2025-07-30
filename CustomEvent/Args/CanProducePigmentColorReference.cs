@@ -8,8 +8,8 @@ namespace Pentacle.CustomEvent.Args
     /// Used to modify whether a certain pigment color can be produced or not.
     /// <para>Sent as args by CustomTriggers.CanProducePigmentColor.</para>
     /// </summary>
-    /// <param name="pigment"></param>
-    /// <param name="canProduce"></param>
+    /// <param name="pigment">The pigment color whose ability to be produced is being modified.</param>
+    /// <param name="canProduce">Whether the pigment color can currently be produced or not.</param>
     public class CanProducePigmentColorReference(ManaColorSO pigment, bool canProduce) : IBoolHolder
     {
         /// <summary>
