@@ -8,20 +8,20 @@ namespace Pentacle.CustomEvent.Args
     /// Provides information about an ability that's being performed.
     /// <para>Sent as args by CustomTriggers.OnAbilityPerformedContext and CustomTriggers.OnBeforeAbilityEffects.</para>
     /// </summary>
-    public class AbilityUsedContext
+    public class AbilityUsedContext(int abilityIndex, AbilitySO ability, FilledManaCost[] cost = null)
     {
         /// <summary>
         /// The index of the ability that's being performed in the Abilities list of the unit performing it.
         /// </summary>
-        public int abilityIndex;
+        public readonly int abilityIndex = abilityIndex;
         /// <summary>
         /// The AbilitySO object of the ability being performed.
         /// </summary>
-        public AbilitySO ability;
+        public readonly AbilitySO ability = ability;
         /// <summary>
         /// The pigment that was used for the ability's cost.
         /// <para>Null for enemies.</para>
         /// </summary>
-        public FilledManaCost[] cost;
+        public readonly FilledManaCost[] cost = cost;
     }
 }

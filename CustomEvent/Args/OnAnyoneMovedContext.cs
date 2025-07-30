@@ -15,32 +15,32 @@ namespace Pentacle.CustomEvent.Args
         /// <summary>
         /// The unit's SlotID before they were moved.
         /// </summary>
-        public int oldSlot = oldSlot;
+        public readonly int oldSlot = oldSlot;
         /// <summary>
         /// The unit that was moved.
         /// </summary>
-        public IUnit movedUnit = movedUnit;
+        public readonly IUnit movedUnit = movedUnit;
 
         int IIntHolder.Value
         {
             get => oldSlot;
-            set => oldSlot = value;
+            set => PentacleLogger.LogWarning("OnAnyoneMovedContext's int value is read-only.");
         }
         int IIntHolder.this[int index]
         {
             get => oldSlot;
-            set => oldSlot = value;
+            set => PentacleLogger.LogWarning("OnAnyoneMovedContext's int value is read-only.");
         }
 
         IUnit IUnitHolder.Value
         {
             get => movedUnit;
-            set => movedUnit = value;
+            set => PentacleLogger.LogWarning("OnAnyoneMovedContext's Unit value is read-only.");
         }
         IUnit IUnitHolder.this[int index]
         {
             get => movedUnit;
-            set => movedUnit = value;
+            set => PentacleLogger.LogWarning("OnAnyoneMovedContext's Unit value is read-only.");
         }
     }
 }

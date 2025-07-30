@@ -16,25 +16,25 @@ namespace Pentacle.CustomEvent.Args
         /// <summary>
         /// The unit that the status effect was applied to.
         /// </summary>
-        public IUnit unit = unit;
+        public readonly IUnit unit = unit;
         /// <summary>
         /// The applied status effect, as a StatusEffect_SO object.
         /// </summary>
-        public StatusEffect_SO statusEffect = statusEffect;
+        public readonly StatusEffect_SO statusEffect = statusEffect;
         /// <summary>
         /// The amount of the status effect that was applied.
         /// </summary>
-        public int amountToApply = amountToApply;
+        public readonly int amountToApply = amountToApply;
 
         IUnit IUnitHolder.Value
         {
             get => unit;
-            set => unit = value;
+            set => PentacleLogger.LogWarning("TargetedStatusEffectApplication's Unit value is read-only.");
         }
         IUnit IUnitHolder.this[int index]
         {
             get => unit;
-            set => unit = value;
+            set => PentacleLogger.LogWarning("TargetedStatusEffectApplication's Unit value is read-only.");
         }
     }
 }

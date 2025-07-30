@@ -15,7 +15,7 @@ namespace Pentacle.CustomEvent.Args
         /// <summary>
         /// The pigment color whose ability to be produced is being modified.
         /// </summary>
-        public ManaColorSO pigment = pigment;
+        public readonly ManaColorSO pigment = pigment;
         /// <summary>
         /// Whether the pigment color can currently be produced or not. This value can be changed to modify whether that pigment color is producible or not.
         /// </summary>

@@ -57,48 +57,28 @@ namespace Pentacle.CustomEvent.Patches
 
         private static EffectAction BeforeAbilityEffects_Character_TriggerEvent(EffectAction curr, CharacterCombat ch, int abilityIdx, AbilitySO ability, FilledManaCost[] cost)
         {
-            CombatManager.Instance.AddRootAction(new AbilityContextNotifyAction(ch, CustomTriggers.OnBeforeAbilityEffects, new()
-            {
-                ability = ability,
-                abilityIndex = abilityIdx,
-                cost = cost
-            }));
+            CombatManager.Instance.AddRootAction(new AbilityContextNotifyAction(ch, CustomTriggers.OnBeforeAbilityEffects, new(abilityIdx, ability, cost)));
 
             return curr;
         }
 
         private static EffectAction BeforeAbilityEffects_Enemy_TriggerEvent(EffectAction curr, EnemyCombat en, int abilityIdx, AbilitySO ability)
         {
-            CombatManager.Instance.AddRootAction(new AbilityContextNotifyAction(en, CustomTriggers.OnBeforeAbilityEffects, new()
-            {
-                ability = ability,
-                abilityIndex = abilityIdx,
-                cost = null
-            }));
+            CombatManager.Instance.AddRootAction(new AbilityContextNotifyAction(en, CustomTriggers.OnBeforeAbilityEffects, new(abilityIdx, ability, null)));
 
             return curr;
         }
 
         private static EndAbilityAction AbilityPerformedContext_Character_TriggerEvent(EndAbilityAction curr, CharacterCombat ch, int abilityIdx, AbilitySO ability, FilledManaCost[] cost)
         {
-            CombatManager.Instance.AddRootAction(new AbilityContextNotifyAction(ch, CustomTriggers.OnAbilityPerformedContext, new()
-            {
-                ability = ability,
-                abilityIndex = abilityIdx,
-                cost = cost
-            }));
+            CombatManager.Instance.AddRootAction(new AbilityContextNotifyAction(ch, CustomTriggers.OnAbilityPerformedContext, new(abilityIdx, ability, cost)));
 
             return curr;
         }
 
         private static EndAbilityAction AbilityPerformedContext_Enemy_TriggerEvent(EndAbilityAction curr, EnemyCombat en, int abilityIdx, AbilitySO ability)
         {
-            CombatManager.Instance.AddRootAction(new AbilityContextNotifyAction(en, CustomTriggers.OnBeforeAbilityEffects, new()
-            {
-                ability = ability,
-                abilityIndex = abilityIdx,
-                cost = null
-            }));
+            CombatManager.Instance.AddRootAction(new AbilityContextNotifyAction(en, CustomTriggers.OnBeforeAbilityEffects, new(abilityIdx, ability, null)));
 
             return curr;
         }
