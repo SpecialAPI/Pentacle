@@ -4,9 +4,20 @@ using System.Text;
 
 namespace Pentacle.CustomEvent.Args
 {
+    /// <summary>
+    /// Provides information about a moved unit.
+    /// </summary>
+    /// <param name="oldSlot"></param>
+    /// <param name="movedUnit"></param>
     public class OnAnyoneMovedContext(int oldSlot, IUnit movedUnit) : IIntHolder, IUnitHolder
     {
+        /// <summary>
+        /// The unit's SlotID before they were moved.
+        /// </summary>
         public int oldSlot = oldSlot;
+        /// <summary>
+        /// The unit that was moved.
+        /// </summary>
         public IUnit movedUnit = movedUnit;
 
         int IIntHolder.Value
