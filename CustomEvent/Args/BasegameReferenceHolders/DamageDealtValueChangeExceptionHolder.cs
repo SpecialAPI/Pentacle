@@ -17,18 +17,12 @@ namespace Pentacle.CustomEvent.Args.BasegameReferenceHolders
 
                 _ => null
             };
-            set
-            {
-                PentacleLogger.LogWarning($"DamageDealtValueChangeExceptionHolder's Unit values are read-only.");
-            }
+            set => PentacleLogger.LogWarning($"DamageDealtValueChangeExceptionHolder's Unit values are read-only.");
         }
         IUnit IUnitHolder.Value
         {
             get => exception.damagedUnit;
-            set
-            {
-                PentacleLogger.LogWarning($"DamageDealtValueChangeExceptionHolder's Unit values are read-only.");
-            }
+            set => PentacleLogger.LogWarning($"DamageDealtValueChangeExceptionHolder's Unit values are read-only.");
         }
 
         bool IValueChangeException.DamageDealt => true;
