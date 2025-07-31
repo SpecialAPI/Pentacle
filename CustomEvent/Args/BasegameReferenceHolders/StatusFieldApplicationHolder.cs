@@ -15,10 +15,10 @@
             };
             set
             {
-                if(index == 0)
+                if (index == 0)
                     statusFieldApplication.canBeApplied = value;
-                else if(index == 1)
-                    statusFieldApplication.isStatusPositive = value;
+                else if (index == 1)
+                    PentacleLogger.LogWarning($"StatusFieldApplicationHolder's second bool value is read-only.");
             }
         }
         bool IBoolHolder.Value
@@ -41,12 +41,12 @@
         string IStringHolder.this[int index]
         {
             get => statusFieldApplication.statusID;
-            set => statusFieldApplication.statusID = value;
+            set => PentacleLogger.LogWarning($"StatusFieldApplicationHolder's string value is read-only.");
         }
         string IStringHolder.Value
         {
             get => statusFieldApplication.statusID;
-            set => statusFieldApplication.statusID = value;
+            set => PentacleLogger.LogWarning($"StatusFieldApplicationHolder's string value is read-only.");
         }
     }
 }
