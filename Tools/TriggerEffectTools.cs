@@ -6,7 +6,7 @@ namespace Pentacle.Tools
 {
     public static class TriggerEffectTools
     {
-        public static bool TryGetActivatorNameAndSprite(this object activator, out string name, out Sprite sprite)
+        public static bool TryGetActivatorNameAndSprite(object activator, out string name, out Sprite sprite)
         {
             if (activator is BasePassiveAbilitySO pass)
             {
