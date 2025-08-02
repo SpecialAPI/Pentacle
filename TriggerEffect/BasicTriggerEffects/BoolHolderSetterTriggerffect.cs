@@ -9,8 +9,8 @@ namespace Pentacle.TriggerEffect.BasicTriggerEffects
     /// A trigger effect that sets the value of a boolean holder stored in args.
     /// <para>See <see cref="ValueReferenceTools.TryGetBoolHolder"/> for more information.</para>
     /// </summary>
-    /// <param name="value"></param>
-    /// <param name="index"></param>
+    /// <param name="value">The new value for the boolean holder.</param>
+    /// <param name="index">The index for the value that should be set.<para>See <see cref="ValueReferenceTools.TryGetBoolHolder"/> for more information.</para></param>
     public class BoolHolderSetterTriggerffect(bool value, int index = 0) : TriggerEffect
     {
         /// <summary>
