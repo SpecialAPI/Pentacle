@@ -5,12 +5,12 @@ using System.Text;
 namespace Pentacle.UnitExtension
 {
     /// <summary>
-    /// Extended variables for a IUnit.
+    /// Class that provides extended variables for a unit in combat.
     /// </summary>
     public class UnitExt
     {
         /// <summary>
-        /// The pigment colors used by this unit for the ability they're currently performed. This list is always empty for enemies.
+        /// The pigment colors used by this unit for the ability they're currently performing. This list is always empty for enemies.
         /// </summary>
         public readonly List<ManaColorSO> PigmentUsedForAbility = [];
 
@@ -19,7 +19,7 @@ namespace Pentacle.UnitExtension
         /// </summary>
         public readonly List<ManaColorSO> HealthColors;
         /// <summary>
-        /// This unit's current health color option.
+        /// The index of this unit's current health color option.
         /// </summary>
         public int HealthColorIndex = 0;
 
