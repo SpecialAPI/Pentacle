@@ -4,6 +4,9 @@ using System.Text;
 
 namespace Pentacle.UnitExtension
 {
+    /// <summary>
+    /// Static class that provides tools related to unit extension.
+    /// </summary>
     [HarmonyPatch]
     public static class UnitExtTools
     {
@@ -22,11 +25,12 @@ namespace Pentacle.UnitExtension
             MiscDB.AddNewUnitStoreData(dat.name, dat);
         }
 
+
         /// <summary>
-        /// Gets the extended variables class for this unit.
+        /// Returns an object containing extended variables for a certain unit.
         /// </summary>
-        /// <param name="unit">The unit to get the extended class for.</param>
-        /// <returns>Extended variables class for this unit.</returns>
+        /// <param name="unit">The unit to whose extended variables will be returned.</param>
+        /// <returns>An object containing extended variables for the input unit.</returns>
         public static UnitExt Ext(this IUnit unit)
         {
             if(unit == null || unit.Equals(null))
