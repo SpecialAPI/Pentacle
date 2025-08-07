@@ -13,6 +13,7 @@ namespace Pentacle.Misc
     /// <param name="id">The id of the unit that will be visually producing the pigment.</param>
     public class ForceAddPigmentAction(ManaColorSO pigment, int amount, bool isGeneratorCharacter, int id) : IImmediateAction
     {
+        /// <inheritdoc/>
         public void Execute(CombatStats stats)
         {
             if (pigment == null)

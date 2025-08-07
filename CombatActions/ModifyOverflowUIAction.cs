@@ -12,6 +12,7 @@ namespace Pentacle.CombatActions
     /// <param name="pigment">The new pigment colors for the pigments in those slots. This list's length should match the length of <paramref name="pigment"/>.</param>
     public class ModifyOverflowUIAction(List<int> slots, List<ManaColorSO> pigment) : CombatAction
     {
+        /// <inheritdoc/>
         public override IEnumerator Execute(CombatStats stats)
         {
             yield return stats.combatUI.ModifyOverflowPigment(slots, pigment);

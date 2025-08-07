@@ -15,6 +15,7 @@ namespace Pentacle.EffectorConditions
         /// </summary>
         public List<string> matchStrings;
 
+        /// <inheritdoc/>
         public override bool MeetCondition(IEffectorChecks effector, object args)
         {
             if (matchStrings == null || matchStrings.Count <= 0)
