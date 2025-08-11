@@ -8,15 +8,15 @@ using Pentacle.Internal;
 namespace Pentacle.Tools
 {
     /// <summary>
-    /// IUnit-related extension methods.
+    /// Static class that proides IUnit-related extensions and tools.
     /// </summary>
     public static class IUnitExtensions
     {
         /// <summary>
-        /// Gets the abilities from a generic unit.
+        /// Returns the list of this unit's combat abilities.
         /// </summary>
         /// <param name="unit">The unit to get the abilities from.</param>
-        /// <returns>A list of the unit's abilities.</returns>
+        /// <returns>A list of the input unit's abilities.</returns>
         public static List<CombatAbility> Abilities(this IUnit unit)
         {
             if (unit is CharacterCombat cc)
@@ -28,6 +28,11 @@ namespace Pentacle.Tools
             return [];
         }
 
+        /// <summary>
+        /// Returns the list of this unit's extra abilities.
+        /// </summary>
+        /// <param name="unit">The unit to get the extra abilities from.</param>
+        /// <returns>A list of the input unit's extra abilities.</returns>
         public static List<ExtraAbilityInfo> ExtraAbilities(this IUnit unit)
         {
             if (unit is CharacterCombat cc)
@@ -40,15 +45,24 @@ namespace Pentacle.Tools
         }
 
         /// <summary>
-        /// Gets the slot id of the last slot occupied by a unit.
+        /// Gets the slot ID of the rightmost slot occupied by this unit.
         /// </summary>
-        /// <param name="u">The target unit.</param>
-        /// <returns>The unit's last slot id.</returns>
+        /// <param name="u">The unit to get the last slot ID from.</param>
+        /// <returns>The slot ID of the rightmost slot occupied by the input unit.</returns>
         public static int LastSlotId(this IUnit u)
         {
             return u.SlotID + u.Size - 1;
         }
 
+        /// <summary>
+        /// Gets the distance between two units.
+        /// <para>If the first unit is on the right of the second unit, this returns the difference between the slot IDs of the first unit's leftmost slot and the second unit's rightmost slot.</para>
+        /// <para>If the first unit is on the left of the second unit, this returns the difference between the slot IDs of the first unit's rightmost slot and the second unit's leftmost slot.</para>
+        /// <para>If the two units are opposing, this returns 0. See <see cref="IsOpposing(IUnit, IUnit)"/>.</para>
+        /// </summary>
+        /// <param name="a">The first unit.</param>
+        /// <param name="b">The second unit.</param>
+        /// <returns>The distance between the two units.</returns>
         public static int DistanceBetween(this IUnit a, IUnit b)
         {
             if (a == null || b == null)
@@ -69,6 +83,12 @@ namespace Pentacle.Tools
             return 0;
         }
 
+        /// <summary>
+        /// Checks if two units are opposing. The units are considered opposing if at least 1 of the slots occupied by the first unit is in front of a slot occupied by the second unit.
+        /// </summary>
+        /// <param name="a">The first unit.</param>
+        /// <param name="b">The second unit.</param>
+        /// <returns>True if the units are opposing, false otherwise.</returns>
         public static bool IsOpposing(this IUnit a, IUnit b)
         {
             if (a == null || b == null || a.IsUnitCharacter == b.IsUnitCharacter)
@@ -83,6 +103,12 @@ namespace Pentacle.Tools
             return aFirst <= bLast && bFirst <= aLast;
         }
 
+        /// <summary>
+        /// Checks if the first unit is to the right of the second unit. This returns true if the first unit's leftmost slot is to the right of the second unit's rightmost slot.
+        /// </summary>
+        /// <param name="a">The first unit.</param>
+        /// <param name="b">The second unit.</param>
+        /// <returns>True if the first unit is to the right of the second unit, false otherwise.</returns>
         public static bool IsRightOf(this IUnit a, IUnit b)
         {
             if (a == null || b == null)
@@ -94,6 +120,12 @@ namespace Pentacle.Tools
             return bLast < aFirst;
         }
 
+        /// <summary>
+        /// Checks if the first unit is to the left of the second unit. This returns true if the first unit's rightmost slot is to the left of the second unit's leftmost slot.
+        /// </summary>
+        /// <param name="a">The first unit.</param>
+        /// <param name="b">The second unit.</param>
+        /// <returns>True if the first unit is to the left of the second unit, false otherwise.</returns>
         public static bool IsLeftOf(this IUnit a, IUnit b)
         {
             if (a == null || b == null)
@@ -105,6 +137,12 @@ namespace Pentacle.Tools
             return bFirst > aLast;
         }
 
+        /// <summary>
+        /// Attempts to move a unit by 1 slot.
+        /// </summary>
+        /// <param name="unit">The unit that should be moved.</param>
+        /// <param name="toRight">Determines whether this will move the unit to the right or left.</param>
+        /// <returns>True if the movement was successful, false otherwise.</returns>
         public static bool TryMoveUnit(this IUnit unit, bool toRight)
         {
             if (unit == null)
@@ -119,6 +157,12 @@ namespace Pentacle.Tools
             return slots.CanEnemiesSwap(unit.SlotID, unit.SlotID + move, out var firstSlotSwap, out var secondSlotSwap) && slots.SwapEnemies(unit.SlotID, firstSlotSwap, unit.SlotID + move, secondSlotSwap, true);
         }
 
+        /// <summary>
+        /// Attempts to remove a character's held item in combat. This will not destroy or unequip the item outside of combat.
+        /// <para>This method does nothing for enemies.</para>
+        /// </summary>
+        /// <param name="unit">The unit whose item should be unequipped.</param>
+        /// <returns>True if the item was successfully unequipped, false otherwise. Always returns false for enemies.</returns>
         public static bool TryUnequipItem(this IUnit unit)
         {
             if(!unit.HasUsableItem)
@@ -163,19 +207,19 @@ namespace Pentacle.Tools
         }
 
         /// <summary>
-        /// Damages the given unit. Can be given extra info to further configure the damage.
+        /// An extended version of <see cref="IUnit.Damage(int, IUnit, string, int, bool, bool, bool, string)"/>. This method can be given extra information about how the damage should be dealt.
         /// </summary>
-        /// <param name="u">The unit to damage.</param>
-        /// <param name="amount">How much damage will be dealt.</param>
+        /// <param name="u">The unit that will be damaged.</param>
+        /// <param name="amount">The amount of damage to deal.</param>
         /// <param name="killer">The unit dealing the damage.</param>
         /// <param name="deathType">The damage's death type.</param>
-        /// <param name="sinfo">Extra damage info.</param>
-        /// <param name="targetSlotOffset">The offset of the hit slot from the unit's first slot.</param>
-        /// <param name="addHealthMana">Should this damage produce pigment?</param>
-        /// <param name="directDamage">Is this damage direct or indirect?</param>
-        /// <param name="ignoresShield">Does this damage ignore shield?</param>
-        /// <param name="damageId">Special id for the damage. If empty, will be automatically set based on how much damage was dealt.</param>
-        /// <returns>The info for the dealt damage.</returns>
+        /// <param name="sinfo">Extra information about how the damage should be dealt.</param>
+        /// <param name="targetSlotOffset">The offset of the hit slot from the unit's first slot. If this number is negative, the damage will be applied to all of the unit's slots.</param>
+        /// <param name="addHealthMana">If false, the damage won't produce pigment.</param>
+        /// <param name="directDamage">If true, the damage will be considered direct. If false, the damage will be considered indirect.</param>
+        /// <param name="ignoresShield">If true, the damage will ignore shield on the unit's slots.</param>
+        /// <param name="damageId">The ID of the damage's type. If this argument is empty, the damage's type will be determined by how much damage is dealt instead.</param>
+        /// <returns>A DamageInfo that stores how much damage was dealt and whether it was fatal or not.</returns>
         public static DamageInfo SpecialDamage(this IUnit u, int amount, IUnit killer, SpecialDamageInfo sinfo, string deathType, int targetSlotOffset = -1, bool addHealthMana = true, bool directDamage = true, bool ignoresShield = false, string damageId = "")
         {
             if (!SpecialDamageReversePatch.SpecialDamagePatchDone)
@@ -193,6 +237,17 @@ namespace Pentacle.Tools
             return default;
         }
 
+        /// <summary>
+        /// Deals fake damage to a unit. This will trigger all the damage-related notifications, but won't change the unit's health or produce pigment.
+        /// </summary>
+        /// <param name="u">The unit that will be dealt fake damage.</param>
+        /// <param name="amount">The amount of fake damage to deal.</param>
+        /// <param name="killer">The unit dealing the fake damage.</param>
+        /// <param name="targetSlotOffset">The offset of the hit slot from the unit's first slot. If this number is negative, the fake damage will be applied to all of the unit's slots.</param>
+        /// <param name="directDamage">If true, the fake damage will be considered direct. If false, the fake damage will be considered indirect.</param>
+        /// <param name="ignoresShield">If true, the fake damage will ignore shield on the unit's slots.</param>
+        /// <param name="specialDamage">The ID of the fake damage's type. If this argument is empty, the fake damage's type will be determined by how much damage is dealt instead.</param>
+        /// <returns>How much fake damage was dealt, taking damage modifiers and current health into account.</returns>
         public static int Threaten(this IUnit u, int amount, IUnit killer, int targetSlotOffset = -1, bool directDamage = true, bool ignoresShield = false, string specialDamage = "")
         {
             var firstSlot = u.SlotID;
