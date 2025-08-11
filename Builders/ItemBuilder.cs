@@ -205,6 +205,20 @@ namespace Pentacle.Builders
         }
 
         /// <summary>
+        /// Adds a list of item types to this item.
+        /// </summary>
+        /// <typeparam name="T">The item's custom type. Must be a subclass of BaseWearableSO.</typeparam>
+        /// <param name="w">The object instance of the item.</param>
+        /// <param name="itemTypes">The string item types to add to the item.<para>Can either be given as an array or as infinitely repeatable arguments.</para></param>
+        /// <returns>The instance of the item for method chaining.</returns>
+        public static T AddItemTypes<T>(this T w, params string[] itemTypes) where T : BaseWearableSO
+        {
+            w._ItemTypeIDs = [..w._ItemTypeIDs ?? [], ..itemTypes];
+
+            return w;
+        }
+
+        /// <summary>
         /// Sets the trigger effects of a MultiCustomTriggerEffectWearable item. This will remove any trigger effects the item had before this.
         /// </summary>
         /// <typeparam name="T">The item's custom type. Must be a subclass of MultiCustomTriggerEffectWearable.</typeparam>
