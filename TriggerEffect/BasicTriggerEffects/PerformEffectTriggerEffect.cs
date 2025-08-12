@@ -5,13 +5,18 @@ using System.Text;
 namespace Pentacle.TriggerEffect.BasicTriggerEffects
 {
     /// <summary>
-    /// A Trigger Effect that triggers a given list of effects when performed.
+    /// A trigger effect that performs a list of effects.
+    /// <para>If the TriggeredEffect containing this effect is immediate, the effects are performed as an immediate action. Otherwise, the effects are performed as a subaction.</para>
     /// </summary>
-    /// <param name="effects"></param>
+    /// <param name="effects">The effects that should be performed by this trigger effect.</param>
     public class PerformEffectTriggerEffect(List<EffectInfo> effects) : TriggerEffect
     {
+        /// <summary>
+        /// The effects that should be performed by this trigger effect.
+        /// </summary>
         public List<EffectInfo> effects = effects;
 
+        /// <inheritdoc/>
         public override void DoEffect(IUnit sender, object args, TriggeredEffect effectsAndTrigger, TriggerEffectExtraInfo extraInfo)
         {
             if (effectsAndTrigger.immediate)
