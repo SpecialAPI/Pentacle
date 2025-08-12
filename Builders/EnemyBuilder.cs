@@ -290,6 +290,21 @@ namespace Pentacle.Builders
         }
 
         /// <summary>
+        /// Adds a list of unit types to this enemy (such as being considered a fish).
+        /// </summary>
+        /// <typeparam name="T">The enemy's custom type. Must either be EnemySO or a subclass of EnemySO.</typeparam>
+        /// <param name="en">The object instance of the enemy.</param>
+        /// <param name="unitTypes">The string unit types to add to the enemy.<para>Can either be given as an array or as infinitely repeatable arguments.</para></param>
+        /// <returns>The instance of the enemy, for method chaining.</returns>
+        public static T AddUnitTypes<T>(this T en, params string[] unitTypes) where T : EnemySO
+        {
+            en.unitTypes ??= [];
+            en.unitTypes.AddRange(unitTypes);
+
+            return en;
+        }
+
+        /// <summary>
         /// Adds a list of hidden passive effects to the AdvancedEnemySO enemy.
         /// </summary>
         /// <typeparam name="T">The enemy's custom type. Must either be AdvancedEnemySO or a subclass of AdvancedEnemySO.</typeparam>
