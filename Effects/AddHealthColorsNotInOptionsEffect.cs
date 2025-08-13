@@ -4,10 +4,17 @@ using System.Text;
 
 namespace Pentacle.Effects
 {
+    /// <summary>
+    /// An effect that adds a list of pigment colors to the health color options of all targets, except the pigment colors already in the health color options.
+    /// </summary>
     public class AddHealthColorsNotInOptionsEffect : EffectSO
     {
+        /// <summary>
+        /// The health color options to add.
+        /// </summary>
         public List<ManaColorSO> healthColors;
 
+        /// <inheritdoc/>
         public override bool PerformEffect(CombatStats stats, IUnit caster, TargetSlotInfo[] targets, bool areTargetSlots, int entryVariable, out int exitAmount)
         {
             exitAmount = 0;
