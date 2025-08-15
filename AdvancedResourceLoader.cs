@@ -143,7 +143,7 @@ namespace Pentacle
             throw new BankLoadException(bankName, res);
         }
 
-        public static string TryAddExtension(this string n, string e)
+        private static string TryAddExtension(this string n, string e)
         {
             if (n.EndsWith($".{e}"))
                 return n;
