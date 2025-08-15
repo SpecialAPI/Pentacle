@@ -5,8 +5,19 @@ using System.Text;
 
 namespace Pentacle
 {
+    /// <summary>
+    /// Static class that provides tools for loading various assets from embedded resources.
+    /// </summary>
     public static class AdvancedResourceLoader
     {
+        /// <summary>
+        /// Loads a Unity Sprite object from a PNG image stored in embedded resources. Returns null if the image couldn't be loaded.
+        /// </summary>
+        /// <param name="name">The file name for the image. The .png extension is optional.</param>
+        /// <param name="pivot">The pivot point for the created sprite. Defaults to the center (0.5, 0.5) if null.</param>
+        /// <param name="pixelsperunit">The pixels per unit value for the created sprite.</param>
+        /// <param name="assembly">The assembly to load the image from. Defaults to the calling assembly if null.</param>
+        /// <returns>The loaded Sprite object.</returns>
         public static Sprite LoadSprite(string name, Vector2? pivot = null, int pixelsperunit = 32, Assembly assembly = null)
         {
             assembly ??= Assembly.GetCallingAssembly();
@@ -21,6 +32,12 @@ namespace Pentacle
             return sprite;
         }
 
+        /// <summary>
+        /// Loads a Unity Texture2D from a PNG image stored in embedded resources. Returns null if the image couldn't be loaded.
+        /// </summary>
+        /// <param name="name">The file name for the image. The .png extension is optional.</param>
+        /// <param name="assembly">The assembly to load the image from. Defaults to the calling assembly if null.</param>
+        /// <returns>The loaded Texture2D object.</returns>
         public static Texture2D LoadTexture(string name, Assembly assembly = null)
         {
             assembly ??= Assembly.GetCallingAssembly();
@@ -37,6 +54,13 @@ namespace Pentacle
             return tex;
         }
 
+        /// <summary>
+        /// Tries to load an array of bytes from a file stored in embedded resources.
+        /// </summary>
+        /// <param name="resname">The name of the file with the extension.</param>
+        /// <param name="ba">If the file was successfully loaded, outputs the bytes stored in the file. Otherwise, outputs an empty array.</param>
+        /// <param name="assembly">The assembly to load the file from. Defaults to the calling assembly if null.</param>
+        /// <returns>True if the file was successfully loaded, false otherwise.</returns>
         public static bool TryReadFromResource(string resname, out byte[] ba, Assembly assembly = null)
         {
             assembly ??= Assembly.GetCallingAssembly();
@@ -59,6 +83,12 @@ namespace Pentacle
             return true;
         }
 
+        /// <summary>
+        /// Loads an FMOD soundbank from a .bank file stored in embedded resources.
+        /// </summary>
+        /// <param name="resname">The file name for the soundbank file. The .bank extension is optional.</param>
+        /// <param name="loadSamples">If true, this will also load the soundbank's sample data.</param>
+        /// <param name="assembly">The assembly to load the soundbank from. Defaults to the calling assembly if null.</param>
         public static void LoadFMODBankFromResource(string resname, bool loadSamples = false, Assembly assembly = null)
         {
             assembly ??= Assembly.GetCallingAssembly();
@@ -69,6 +99,13 @@ namespace Pentacle
             LoadFMODBankFromBytes(ba, resname, loadSamples);
         }
 
+        /// <summary>
+        /// Loads an FMOD soundbank from the bytes stored in a .bank file.
+        /// </summary>
+        /// <param name="ba">The array of bytes that stores the soudbank's information.</param>
+        /// <param name="bankName">The name of the soundbank.</param>
+        /// <param name="loadSamples">If true, this will also load the soundbank's sample data.</param>
+        /// <exception cref="BankLoadException">Thrown if the soundbank couldn't be loaded successfully.</exception>
         public static void LoadFMODBankFromBytes(byte[] ba, string bankName, bool loadSamples = false)
         {
             if (RuntimeManager.Instance.loadedBanks.TryGetValue(bankName, out var bnk))
