@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Pentacle.Effects
 {
-    public class ThreatenEffect : EffectSO
+    public class FakeDamageEffect : EffectSO
     {
         public bool directDamage = true;
 
@@ -28,7 +28,7 @@ namespace Pentacle.Effects
                 if (areTargetSlots)
                     targetOffset = t.SlotID - target.SlotID;
 
-                exitAmount += target.Threaten(amount, caster, targetOffset, directDamage, !directDamage);
+                exitAmount += target.FakeDamage(amount, caster, targetOffset, directDamage, !directDamage);
             }
 
             if (exitAmount > 0 && directDamage)
