@@ -69,7 +69,7 @@ namespace Pentacle
 
             if (string.IsNullOrEmpty(name))
             {
-                Debug.LogError($"Couldn't load from resource name {resname}, returning an empty byte array.");
+                PentacleLogger.LogError($"Couldn't load from resource name {resname}, returning an empty byte array.");
                 ba = [];
 
                 return false;

@@ -224,7 +224,7 @@ namespace Pentacle.Tools
         {
             if (!SpecialDamageReversePatch.SpecialDamagePatchDone)
             {
-                Debug.LogError($"Trying to do SpecialDamage before the SpecialDamagePatch was done. This should not be happening.");
+                PentacleLogger.LogError($"Trying to do SpecialDamage before the SpecialDamagePatch was done. This should not be happening.");
                 return default;
             }
 
@@ -233,7 +233,7 @@ namespace Pentacle.Tools
             else if (u is EnemyCombat ec)
                 return SpecialDamageReversePatch.SpecialDamage_Enemies_ReversePatch(ec, amount, killer, deathType, targetSlotOffset, addHealthMana, directDamage, ignoresShield, damageId, sinfo);
 
-            Debug.LogError("Trying to do SpecialDanage to a unit that is neither an enemy nor a party member.");
+            PentacleLogger.LogError("Trying to do SpecialDanage to a unit that is neither an enemy nor a party member.");
             return default;
         }
 
