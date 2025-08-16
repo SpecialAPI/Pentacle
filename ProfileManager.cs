@@ -58,7 +58,7 @@ namespace Pentacle
         public void SetAssetBundle(AssetBundle bundle)
         {
             if (bundle == null)
-                Debug.LogError($"ModProfile.SetAssetBundle called with a null asset bundle.");
+                PentacleLogger.LogError($"{Guid}: ModProfile.SetAssetBundle called with a null asset bundle.");
 
             Bundle = bundle;
         }
@@ -67,7 +67,7 @@ namespace Pentacle
         {
             if (!AdvancedResourceLoader.TryReadFromResource(name, out var ba, Assembly))
             {
-                Debug.LogError($"Couldn't load an asset bundle with the name \"{name}\" from embedded resources.");
+                PentacleLogger.LogError($"{Guid}: Couldn't load an asset bundle with the name \"{name}\" from embedded resources.");
 
                 return;
             }

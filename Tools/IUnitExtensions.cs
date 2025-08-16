@@ -224,7 +224,7 @@ namespace Pentacle.Tools
         {
             if (!SpecialDamageReversePatch.SpecialDamagePatchDone)
             {
-                Debug.LogError($"Trying to do SpecialDamage before the SpecialDamagePatch was done. This should not be happening.");
+                PentacleLogger.LogError($"Trying to do SpecialDamage before the SpecialDamagePatch was done. This should not be happening.");
                 return default;
             }
 
@@ -233,7 +233,7 @@ namespace Pentacle.Tools
             else if (u is EnemyCombat ec)
                 return SpecialDamageReversePatch.SpecialDamage_Enemies_ReversePatch(ec, amount, killer, deathType, targetSlotOffset, addHealthMana, directDamage, ignoresShield, damageId, sinfo);
 
-            Debug.LogError("Trying to do SpecialDanage to a unit that is neither an enemy nor a party member.");
+            PentacleLogger.LogError("Trying to do SpecialDanage to a unit that is neither an enemy nor a party member.");
             return default;
         }
 
@@ -248,7 +248,7 @@ namespace Pentacle.Tools
         /// <param name="ignoresShield">If true, the fake damage will ignore shield on the unit's slots.</param>
         /// <param name="specialDamage">The ID of the fake damage's type. If this argument is empty, the fake damage's type will be determined by how much damage is dealt instead.</param>
         /// <returns>How much fake damage was dealt, taking damage modifiers and current health into account.</returns>
-        public static int Threaten(this IUnit u, int amount, IUnit killer, int targetSlotOffset = -1, bool directDamage = true, bool ignoresShield = false, string specialDamage = "")
+        public static int FakeDamage(this IUnit u, int amount, IUnit killer, int targetSlotOffset = -1, bool directDamage = true, bool ignoresShield = false, string specialDamage = "")
         {
             var firstSlot = u.SlotID;
             var lastSlot = u.LastSlotId();

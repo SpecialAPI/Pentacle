@@ -22,7 +22,7 @@ namespace Pentacle.CustomFogs
         public static void AddCustomFinalBossToFogs(string bossId, string dialogueOptionName)
         {
             if (CustomFogsBosses.ContainsKey(bossId))
-                Debug.LogError($"A custom final boss with the bossId \"{bossId}\" has already been added to Fogs.");
+                PentacleLogger.LogError($"A custom final boss with the bossId \"{bossId}\" has already been added to Fogs.");
 
             CustomFogsBosses[bossId] = dialogueOptionName;
         }

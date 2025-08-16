@@ -96,7 +96,7 @@ namespace Pentacle.Builders
 
             if (!achDb._steamAchievements.TryAddModdedAchievement(ach))
             {
-                Debug.LogError($"Achievement with id {ach.m_eAchievementID} already exists.");
+                PentacleLogger.LogError($"Achievement with ID {ach.m_eAchievementID} already exists.");
                 return ach;
             }
 
