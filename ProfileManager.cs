@@ -69,31 +69,35 @@ namespace Pentacle
         internal Dictionary<Type, Dictionary<string, AbilitySO>> abilityReferences = [];
 
         /// <summary>
-        /// Assigns an asset bundle to this profile.
+        /// Gets or sets the asset bundle assigned to this profile.
         /// </summary>
-        /// <param name="bundle">The asset bundle to assign to this profile.</param>
-        public void SetAssetBundle(AssetBundle bundle)
+        public AssetBundle AssetBundle
         {
-            if (bundle == null)
-                PentacleLogger.LogError($"{Guid}: ModProfile.SetAssetBundle called with a null asset bundle.");
-
-            Bundle = bundle;
+            get => Bundle;
+            set => Bundle = value;
         }
 
         /// <summary>
         /// Loads an asset bundle stored in the embedded resources of this profile's assembly and assigns it to this profile.
         /// </summary>
         /// <param name="name">The file name for the asset bundle.</param>
-        public void LoadAssetBundle(string name)
+        public AssetBundle LoadAssetBundle(string name)
         {
             if (!AdvancedResourceLoader.TryReadFromResource(name, out var ba, Assembly))
             {
                 PentacleLogger.LogError($"{Guid}: Couldn't load an asset bundle with the name \"{name}\" from embedded resources.");
-
-                return;
+                return null;
             }
 
-            Bundle = AssetBundle.LoadFromMemory(ba);
+            try
+            {
+                return Bundle = AssetBundle.LoadFromMemory(ba);
+            }
+            catch(Exception ex)
+            {
+                PentacleLogger.LogError($"{Guid}: Error while loading asset bundle from resources: {ex}");
+                return null;
+            }
         }
 
         /// <summary>
