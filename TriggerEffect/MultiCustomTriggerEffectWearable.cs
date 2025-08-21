@@ -7,7 +7,7 @@ namespace Pentacle.TriggerEffect
     /// <summary>
     /// An item that can have any amount of effects.
     /// </summary>
-    public class MultiCustomTriggerEffectWearable : BaseWearableSO
+    public class MultiCustomTriggerEffectWearable : BaseWearableSO, ITriggerEffectHandler
     {
         /// <summary>
         /// This item's effects.
@@ -24,6 +24,9 @@ namespace Pentacle.TriggerEffect
 
         public override bool IsItemImmediate => false;
         public override bool DoesItemTrigger => false;
+
+        string ITriggerEffectHandler.DisplayedName => GetItemLocData().text;
+        Sprite ITriggerEffectHandler.Sprite => wearableImage;
 
         private readonly Dictionary<int, Action<object, object>> effectMethods = [];
 
@@ -137,15 +140,9 @@ namespace Pentacle.TriggerEffect
 
             te.effect?.DoEffect(caster, args, te, new()
             {
-                activator = this,
-                getPopupUIAction = GetPopupUIAction,
+                handler = this,
                 activation = activation
             });
-        }
-
-        public CombatAction GetPopupUIAction(int id, bool isUnitCharacter, bool consumed)
-        {
-            return new ShowItemInformationUIAction(id, GetItemLocData().text, consumed, wearableImage);
         }
 
         public TriggeredEffect GetEffectAtIndex(int idx, out TriggerEffectActivation activation)
@@ -168,6 +165,23 @@ namespace Pentacle.TriggerEffect
                 return triggerEffects[idx];
 
             return null;
+        }
+
+        private CombatAction GetPopupUIAction(int id, bool isUnitCharacter, bool consumed)
+        {
+            return new ShowItemInformationUIAction(id, GetItemLocData().text, consumed, wearableImage);
+        }
+
+        bool ITriggerEffectHandler.TryGetPopupUIAction(int unitId, bool isUnitCharacter, bool consumed, out CombatAction action)
+        {
+            if (!isUnitCharacter)
+            {
+                action = null;
+                return false;
+            }
+
+            action = GetPopupUIAction(unitId, isUnitCharacter, consumed);
+            return true;
         }
     }
 }

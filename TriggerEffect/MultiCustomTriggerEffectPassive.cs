@@ -8,10 +8,13 @@ namespace Pentacle.TriggerEffect
     /// <summary>
     /// A passive that can have any amount of effects.
     /// </summary>
-    public class MultiCustomTriggerEffectPassive : AdvancedPassiveAbilitySO
+    public class MultiCustomTriggerEffectPassive : AdvancedPassiveAbilitySO, ITriggerEffectHandler
     {
         public override bool IsPassiveImmediate => false;
         public override bool DoesPassiveTrigger => true;
+
+        string ITriggerEffectHandler.DisplayedName => GetPassiveLocData().text;
+        Sprite ITriggerEffectHandler.Sprite => passiveIcon;
 
         /// <summary>
         /// Effects that should be performed on triggers.
@@ -138,15 +141,9 @@ namespace Pentacle.TriggerEffect
 
             te.effect.DoEffect(caster, args, te, new()
             {
-                activator = this,
-                getPopupUIAction = GetPopupUIAction,
+                handler = this,
                 activation = activation
             });
-        }
-
-        public CombatAction GetPopupUIAction(int id, bool isUnitCharacter, bool consumed)
-        {
-            return new ShowPassiveInformationUIAction(id, isUnitCharacter, GetPassiveLocData().text, passiveIcon);
         }
 
         public TriggeredEffect GetEffectAtIndex(int idx, out TriggerEffectActivation activation)
@@ -173,6 +170,17 @@ namespace Pentacle.TriggerEffect
 
         public override void TriggerPassive(object sender, object args)
         {
+        }
+
+        private CombatAction GetPopupUIAction(int id, bool isUnitCharacter, bool consumed)
+        {
+            return new ShowPassiveInformationUIAction(id, isUnitCharacter, GetPassiveLocData().text, passiveIcon);
+        }
+
+        bool ITriggerEffectHandler.TryGetPopupUIAction(int unitId, bool isUnitCharacter, bool consumed, out CombatAction action)
+        {
+            action = GetPopupUIAction(unitId, isUnitCharacter, consumed);
+            return true;
         }
     }
 }

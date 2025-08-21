@@ -23,15 +23,12 @@ namespace Pentacle.TriggerEffect
 
     public class TriggerEffectExtraInfo
     {
-        public object activator;
-        public Func<int, bool, bool, CombatAction> getPopupUIAction;
+        public ITriggerEffectHandler handler;
         public TriggerEffectActivation activation;
 
         public bool TryGetPopupUIAction(int unitId, bool isUnitCharacter, bool consumed, out CombatAction action)
         {
-            action = getPopupUIAction?.Invoke(unitId, isUnitCharacter, consumed);
-
-            return action != null;
+            return handler.TryGetPopupUIAction(unitId, isUnitCharacter, consumed, out action);
         }
     }
 

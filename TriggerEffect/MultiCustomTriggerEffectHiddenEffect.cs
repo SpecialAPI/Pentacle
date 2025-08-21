@@ -8,9 +8,12 @@ namespace Pentacle.TriggerEffect
     /// <summary>
     /// A Hidden Effect that can have any amount of effects.
     /// </summary>
-    public class MultiCustomTriggerEffectHiddenEffect : HiddenEffectSO
+    public class MultiCustomTriggerEffectHiddenEffect : HiddenEffectSO, ITriggerEffectHandler
     {
         public override bool Immediate => false;
+
+        string ITriggerEffectHandler.DisplayedName => string.Empty;
+        Sprite ITriggerEffectHandler.Sprite => null;
 
         /// <summary>
         /// Effects that should be performed on triggers.
@@ -123,8 +126,7 @@ namespace Pentacle.TriggerEffect
 
             te.effect?.DoEffect(caster, args, te, new()
             {
-                activator = this,
-                getPopupUIAction = null,
+                handler = this,
                 activation = activation
             });
         }
@@ -149,6 +151,12 @@ namespace Pentacle.TriggerEffect
                 return triggerEffects[idx];
 
             return null;
+        }
+
+        bool ITriggerEffectHandler.TryGetPopupUIAction(int unitId, bool isUnitCharacter, bool consumed, out CombatAction action)
+        {
+            action = null;
+            return false;
         }
     }
 }
