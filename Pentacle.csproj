@@ -5,8 +5,11 @@
       <LangVersion>latest</LangVersion>
       <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
       <ImplicitUsings>disable</ImplicitUsings>
-      <GenerateDocumentationFile>True</GenerateDocumentationFile>
   </PropertyGroup>
+
+	<PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
+      <GenerateDocumentationFile>True</GenerateDocumentationFile>
+	</PropertyGroup>
 
   <ItemGroup>
     <None Remove="Resources\UI_ManaToggle_Disabled.png" />
