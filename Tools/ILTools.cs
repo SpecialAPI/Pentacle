@@ -382,6 +382,14 @@ namespace Pentacle.Tools
         public static T EnumeratorGetField<T>(this object obj, string name) => (T)obj.GetType().EnumeratorField(name).GetValue(obj);
 
         /// <summary>
+        /// Sets the value of a compiler-generated IEnumerator's field.
+        /// </summary>
+        /// <param name="obj">The enumerator whose field will be set.</param>
+        /// <param name="name">The name of the field. For fields formatted like <![CDATA[<NAME>__NUMBER]]>, giving just <![CDATA[NAME]]> works.</param>
+        /// <param name="value">The new value for the field.</param>
+        public static void EnumeratorSetField(this object obj, string name, object value) => obj.GetType().EnumeratorField(name).SetValue(obj, value);
+
+        /// <summary>
         /// Gets a FieldInfo from the given method's declaring compiler-generated IEnumerator type.
         /// </summary>
         /// <param name="method">The method whose declaring type the field will be gotten from.</param>
