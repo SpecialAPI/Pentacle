@@ -92,7 +92,7 @@ namespace Pentacle.TriggerEffect
             }
         }
 
-        public Action<object, object> GetEffectMethod(int i)
+        private Action<object, object> GetEffectMethod(int i)
         {
             if (effectMethods.TryGetValue(i, out var existing))
                 return existing;
@@ -100,7 +100,7 @@ namespace Pentacle.TriggerEffect
             return effectMethods[i] = (sender, args) => TryPerformItemEffect(sender, args, i);
         }
 
-        public void TryPerformItemEffect(object sender, object args, int index)
+        private void TryPerformItemEffect(object sender, object args, int index)
         {
             if (index >= ((triggerEffects?.Count ?? 0) + (connectionEffects?.Count ?? 0) + (disconnectionEffects?.Count ?? 0)) || sender is not IPassiveEffector effector || !effector.CanPassiveTrigger(m_PassiveID))
                 return;
@@ -146,7 +146,7 @@ namespace Pentacle.TriggerEffect
             });
         }
 
-        public TriggeredEffect GetEffectAtIndex(int idx, out TriggerEffectActivation activation)
+        private TriggeredEffect GetEffectAtIndex(int idx, out TriggerEffectActivation activation)
         {
             activation = TriggerEffectActivation.Connection;
 

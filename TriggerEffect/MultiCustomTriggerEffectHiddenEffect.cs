@@ -80,7 +80,7 @@ namespace Pentacle.TriggerEffect
             }
         }
 
-        public Action<object, object> GetEffectMethod(int i)
+        private Action<object, object> GetEffectMethod(int i)
         {
             if (effectMethods.TryGetValue(i, out var existing))
                 return existing;
@@ -88,7 +88,7 @@ namespace Pentacle.TriggerEffect
             return effectMethods[i] = (sender, args) => TryPerformHiddenEffectEffect(sender, args, i);
         }
 
-        public void TryPerformHiddenEffectEffect(object sender, object args, int index)
+        private void TryPerformHiddenEffectEffect(object sender, object args, int index)
         {
             if (index >= ((triggerEffects?.Count ?? 0) + (connectionEffects?.Count ?? 0) + (disconnectionEffects?.Count ?? 0)) || sender is not IEffectorChecks effector)
                 return;
@@ -131,7 +131,7 @@ namespace Pentacle.TriggerEffect
             });
         }
 
-        public TriggeredEffect GetEffectAtIndex(int idx, out TriggerEffectActivation activation)
+        private TriggeredEffect GetEffectAtIndex(int idx, out TriggerEffectActivation activation)
         {
             activation = TriggerEffectActivation.Connection;
 
