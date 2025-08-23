@@ -234,8 +234,7 @@ namespace Pentacle.Tools
                 BacktrackToArg(i, ctx, remainingMoves, foundArgs);
         }
 
-        // TODO: make private
-        public static int InputCount(this Instruction instr)
+        private static int InputCount(this Instruction instr)
         {
             if (instr == null)
                 return 0;
@@ -269,8 +268,7 @@ namespace Pentacle.Tools
             };
         }
 
-        // TODO: make private
-        public static int OutputCount(this Instruction instr)
+        private static int OutputCount(this Instruction instr)
         {
             if (instr == null)
                 return 0;
@@ -297,14 +295,12 @@ namespace Pentacle.Tools
             };
         }
 
-        // TODO: make private
-        public static int StackDelta(this Instruction instr)
+        private static int StackDelta(this Instruction instr)
         {
             return instr.OutputCount() - instr.InputCount();
         }
 
-        // TODO: make private
-        public static List<Instruction> PossiblePreviousInstructions(this Instruction instr, ILContext ctx)
+        private static List<Instruction> PossiblePreviousInstructions(this Instruction instr, ILContext ctx)
         {
             var l = new List<Instruction>();
 
@@ -317,8 +313,7 @@ namespace Pentacle.Tools
             return l;
         }
 
-        // TODO: make private
-        public static Instruction[] PossibleNextInstructions(this Instruction instr)
+        private static Instruction[] PossibleNextInstructions(this Instruction instr)
         {
             return instr.OpCode.FlowControl switch
             {
@@ -330,8 +325,7 @@ namespace Pentacle.Tools
             };
         }
 
-        // TODO: make private
-        public static Instruction GetBranchTarget(this Instruction branch)
+        private static Instruction GetBranchTarget(this Instruction branch)
         {
             if (branch.Operand is Instruction tr)
                 return tr;
