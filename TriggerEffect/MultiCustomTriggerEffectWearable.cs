@@ -5,24 +5,26 @@ using System.Text;
 namespace Pentacle.TriggerEffect
 {
     /// <summary>
-    /// An item that can have any amount of effects.
+    /// An item that can have any amount of trigger-, connection- and disconnection-activated effects, using Pentacle's trigger effect system.
     /// </summary>
     public class MultiCustomTriggerEffectWearable : BaseWearableSO, ITriggerEffectHandler
     {
         /// <summary>
-        /// This item's effects.
+        /// Trigger effects that should be performed on certain triggers.
         /// </summary>
         public List<EffectsAndTrigger> triggerEffects;
         /// <summary>
-        /// Effects that should be performed when this item is connected.
+        /// Trigger effects that should be performed when this item is connected to a character.
         /// </summary>
         public List<TriggeredEffect> connectionEffects;
         /// <summary>
-        /// Effects that should be performed when this item is disconnected.
+        /// Trigger effects that should be performed when this item is disconnected from a character.
         /// </summary>
         public List<TriggeredEffect> disconnectionEffects;
 
+        /// <inheritdoc/>
         public override bool IsItemImmediate => false;
+        /// <inheritdoc/>
         public override bool DoesItemTrigger => false;
 
         string ITriggerEffectHandler.DisplayedName => GetItemLocData().text;
@@ -30,6 +32,7 @@ namespace Pentacle.TriggerEffect
 
         private readonly Dictionary<int, Action<object, object>> effectMethods = [];
 
+        /// <inheritdoc/>
         public override void OnTriggerAttachedAction(IWearableEffector caller)
         {
             if (connectionEffects == null)
@@ -41,6 +44,7 @@ namespace Pentacle.TriggerEffect
             }
         }
 
+        /// <inheritdoc/>
         public override void OnTriggerDettachedAction(IWearableEffector caller)
         {
             if (disconnectionEffects == null)
@@ -52,6 +56,7 @@ namespace Pentacle.TriggerEffect
             }
         }
 
+        /// <inheritdoc/>
         public override void CustomOnTriggerAttached(IWearableEffector caller)
         {
             if (triggerEffects == null)
@@ -69,6 +74,7 @@ namespace Pentacle.TriggerEffect
             }
         }
 
+        /// <inheritdoc/>
         public override void CustomOnTriggerDettached(IWearableEffector caller)
         {
             if (triggerEffects == null)
@@ -120,6 +126,7 @@ namespace Pentacle.TriggerEffect
                 CombatManager.Instance.AddSubAction(new PerformItemCustomAction(this, sender, args, index));
         }
 
+        /// <inheritdoc/>
         public override void FinalizeCustomTriggerItem(object sender, object args, int idx)
         {
             if (idx >= ((triggerEffects?.Count ?? 0) + (connectionEffects?.Count ?? 0) + (disconnectionEffects?.Count ?? 0)) || sender is not IWearableEffector effector || sender is not IUnit caster || effector.IsWearableConsumed)
