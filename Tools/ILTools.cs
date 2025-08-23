@@ -125,7 +125,7 @@ namespace Pentacle.Tools
         /// <param name="argIndex">The index of the argument that the move target needs to push a value for.</param>
         /// <param name="instance">The number of the argument intstruction this needs to move after. This matters if there are multiple instructions that can push the argument value for the input instruction.</param>
         /// <returns>True if successful, false otherwise.</returns>
-        public static bool TryGotoArg(this ILCursor crs, Instruction targetInstr, int argIndex, int instance = 0)
+        public static bool TryGotoArgForInstruction(this ILCursor crs, Instruction targetInstr, int argIndex, int instance = 0)
         {
             if (argIndex < 0)
                 return false;
@@ -152,9 +152,21 @@ namespace Pentacle.Tools
         /// <param name="argIndex">The index of the argument that the move target needs to push a value for.</param>
         /// <param name="instance">The number of the argument intstruction this needs to move after. This matters if there are multiple instructions that can push the argument value for the next instruction.</param>
         /// <returns>True if successful, false otherwise.</returns>
-        public static bool TryGotoArg(this ILCursor crs, int argIndex, int instance = 0)
+        public static bool TryGotoArgForNext(this ILCursor crs, int argIndex, int instance = 0)
         {
-            return crs.TryGotoArg(crs.Next, argIndex, instance);
+            return crs.TryGotoArgForInstruction(crs.Next, argIndex, instance);
+        }
+
+        /// <summary>
+        /// Tries to move an IL cursor after an instruction that pushes a value that will be used as a specific argument by the cursor's previous instruction.
+        /// </summary>
+        /// <param name="crs">The IL cursor that will be moved.</param>
+        /// <param name="argIndex">The index of the argument that the move target needs to push a value for.</param>
+        /// <param name="instance">The number of the argument intstruction this needs to move after. This matters if there are multiple instructions that can push the argument value for the previous instruction.</param>
+        /// <returns>True if successful, false otherwise.</returns>
+        public static bool TryGotoArgForPrevious(this ILCursor crs, int argIndex, int instance = 0)
+        {
+            return crs.TryGotoArgForInstruction(crs.Previous, argIndex, instance);
         }
 
         /// <summary>
@@ -165,7 +177,7 @@ namespace Pentacle.Tools
         /// <param name="targetInstr">The instruction that the move targets need to push argument values for.</param>
         /// <param name="argIndex">The index of the argument that the move targets need to push values for.</param>
         /// <returns>An enumerable that moves the IL cursor each iteration.</returns>
-        public static IEnumerable MatchArg(this ILCursor crs, Instruction targetInstr, int argIndex)
+        public static IEnumerable MatchArgForInstruction(this ILCursor crs, Instruction targetInstr, int argIndex)
         {
             if (argIndex < 0)
                 yield break;
@@ -193,9 +205,21 @@ namespace Pentacle.Tools
         /// <param name="crs">The IL cursor that will be moved.</param>
         /// <param name="argIndex">The index of the argument that the move targets need to push values for.</param>
         /// <returns>An enumerable that moves the IL cursor each iteration.</returns>
-        public static IEnumerable MatchArg(this ILCursor crs, int argIndex)
+        public static IEnumerable MatchArgForNext(this ILCursor crs, int argIndex)
         {
-            return crs.MatchArg(crs.Next, argIndex);
+            return crs.MatchArgForInstruction(crs.Next, argIndex);
+        }
+
+        /// <summary>
+        /// Returns an enumerable that moves the IL cursor after the next instruction that pushes a value that will be used as a specific argument by the cursor's current previous instruction each iteration, starting from the first instruction that does so. Each iteration returns the instruction that the cursor moved to.
+        /// <para>After there are no more instructions that meet the condition ahead of the cursor, the cursor is moved back to the position where it was before iteration started.</para>
+        /// </summary>
+        /// <param name="crs">The IL cursor that will be moved.</param>
+        /// <param name="argIndex">The index of the argument that the move targets need to push values for.</param>
+        /// <returns>An enumerable that moves the IL cursor each iteration.</returns>
+        public static IEnumerable MatchArgForPrevious(this ILCursor crs, int argIndex)
+        {
+            return crs.MatchArgForInstruction(crs.Previous, argIndex);
         }
 
         private static List<Instruction> GetArgumentInstructions(this Instruction instruction, ILContext context, int argumentIndex)
