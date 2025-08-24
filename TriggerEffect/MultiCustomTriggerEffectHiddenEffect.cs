@@ -6,30 +6,32 @@ using System.Text;
 namespace Pentacle.TriggerEffect
 {
     /// <summary>
-    /// A Hidden Effect that can have any amount of effects.
+    /// A hidden passive effect that can have any amount of trigger-, connection- and disconnection-activated effects, using Pentacle's trigger effect system.
     /// </summary>
     public class MultiCustomTriggerEffectHiddenEffect : HiddenEffectSO, ITriggerEffectHandler
     {
+        /// <inheritdoc/>
         public override bool Immediate => false;
 
         string ITriggerEffectHandler.DisplayedName => string.Empty;
         Sprite ITriggerEffectHandler.Sprite => null;
 
         /// <summary>
-        /// Effects that should be performed on triggers.
+        /// Trigger effects that should be performed on certain triggers.
         /// </summary>
         public List<EffectsAndTrigger> triggerEffects;
         /// <summary>
-        /// Effects that should be performed when this Hidden Effect is connected.
+        /// Trigger effects that should be performed when this hidden passive effect is connected to a unit.
         /// </summary>
         public List<TriggeredEffect> connectionEffects;
         /// <summary>
-        /// Effects that should be performed when this Hidden Effect is disconnected.
+        /// Trigger effects that should be performed when this hidden passive effect is disconnected from a unit.
         /// </summary>
         public List<TriggeredEffect> disconnectionEffects;
 
         private readonly Dictionary<int, Action<object, object>> effectMethods = [];
 
+        /// <inheritdoc/>
         public override void OnConnected(IUnit unit)
         {
             if (connectionEffects == null)
@@ -41,6 +43,7 @@ namespace Pentacle.TriggerEffect
             }
         }
 
+        /// <inheritdoc/>
         public override void OnDisconnected(IUnit unit)
         {
             if (disconnectionEffects == null)
@@ -50,6 +53,7 @@ namespace Pentacle.TriggerEffect
                 TryPerformHiddenEffectEffect(unit, null, i + (connectionEffects?.Count ?? 0));
         }
 
+        /// <inheritdoc/>
         public override void CustomOnTriggerAttached(IEffectorChecks caller)
         {
             if (triggerEffects == null)
@@ -65,6 +69,7 @@ namespace Pentacle.TriggerEffect
             }
         }
 
+        /// <inheritdoc/>
         public override void CustomOnTriggerDettached(IEffectorChecks caller)
         {
             if (triggerEffects == null)
@@ -114,6 +119,7 @@ namespace Pentacle.TriggerEffect
                 CombatManager.Instance.AddSubAction(new TriggerHiddenEffectCustomAction(this, sender, args, index));
         }
 
+        /// <inheritdoc/>
         public override void CustomTrigger(object sender, object args, int idx)
         {
             if (idx >= ((triggerEffects?.Count ?? 0) + (connectionEffects?.Count ?? 0) + (disconnectionEffects?.Count ?? 0)) || sender is not IUnit caster)
@@ -131,6 +137,7 @@ namespace Pentacle.TriggerEffect
             });
         }
 
+        /// <inheritdoc/>
         private TriggeredEffect GetEffectAtIndex(int idx, out TriggerEffectActivation activation)
         {
             activation = TriggerEffectActivation.Connection;
