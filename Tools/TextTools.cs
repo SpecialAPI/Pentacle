@@ -93,7 +93,6 @@ namespace Pentacle.Tools
             return input;
         }
 
-        // TODO: make private
         private static string GetReplacementWithSameCase(string match, string replacement)
         {
             if (match == match.ToLowerInvariant())
