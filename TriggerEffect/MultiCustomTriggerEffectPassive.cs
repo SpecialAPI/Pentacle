@@ -147,7 +147,7 @@ namespace Pentacle.TriggerEffect
             if (te.doesPopup && (te.effect == null || !te.effect.ManuallyHandlePopup))
                 CombatManager.Instance.AddUIAction(GetPopupUIAction(effector.ID, effector.IsUnitCharacter, false));
 
-            te.effect.DoEffect(caster, args, te, new()
+            te.effect?.DoEffect(caster, args, te, new()
             {
                 handler = this,
                 activation = activation
