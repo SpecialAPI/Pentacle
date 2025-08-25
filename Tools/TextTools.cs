@@ -11,9 +11,9 @@ namespace Pentacle.Tools
     /// </summary>
     public static class TextTools
     {
+        /*
         private static FieldInfo spriteAssetVersion = AccessTools.Field(typeof(TMP_SpriteAsset), "m_Version");
 
-        // TODO: remove/disable for the release
         public static void AddNewTextSprite(string name, Texture2D tex)
         {
             var spriteAsset = ScriptableObject.CreateInstance<TMP_SpriteAsset>();
@@ -54,6 +54,7 @@ namespace Pentacle.Tools
 
             MaterialReferenceManager.AddSpriteAsset(spriteAsset);
         }
+        */
 
         /// <summary>
         /// Replaces all instances of a string (case-insensitive) in the input string with another string, attempting to retain the capitalization of the original string.
@@ -93,7 +94,7 @@ namespace Pentacle.Tools
         }
 
         // TODO: make private
-        public static string GetReplacementWithSameCase(string match, string replacement)
+        private static string GetReplacementWithSameCase(string match, string replacement)
         {
             if (match == match.ToLowerInvariant())
                 return replacement.ToLowerInvariant();
