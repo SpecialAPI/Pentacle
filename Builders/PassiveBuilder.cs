@@ -309,10 +309,22 @@ namespace Pentacle.Builders
         /// </summary>
         public enum DescriptionInsert
         {
+            /// <summary>
+            /// Replaced with "party member" for characters and "enemy" for enemies.
+            /// </summary>
             ally,
+            /// <summary>
+            /// Replaced with "enemy" for characters and "party member" for enemies.
+            /// </summary>
             opponent,
 
+            /// <summary>
+            /// Replaced with "party members" for characters and "enemies" for enemies.
+            /// </summary>
             allies,
+            /// <summary>
+            /// Replaced with "enemies" for characters and "party members" for enemies.
+            /// </summary>
             opponents
         }
     }
