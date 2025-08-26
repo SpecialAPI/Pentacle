@@ -5,6 +5,9 @@ using UnityEngine.Profiling;
 
 namespace Pentacle.Builders
 {
+    /// <summary>
+    /// Static class which provides tools for creating stored values.
+    /// </summary>
     public static class StoredValueBuilder
     {
         /// <summary>
