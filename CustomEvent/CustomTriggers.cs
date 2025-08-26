@@ -4,6 +4,9 @@ using System.Text;
 
 namespace Pentacle.CustomEvent
 {
+    /// <summary>
+    /// Static class that stores the names of all custom triggers in Pentacle.
+    /// </summary>
     public static class CustomTriggers
     {
         /// <summary>
