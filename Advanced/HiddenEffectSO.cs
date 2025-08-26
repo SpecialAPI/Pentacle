@@ -187,6 +187,7 @@ namespace Pentacle.Advanced
     /// <param name="args">Additional information from the trigger that can be used by this hidden passive effect.</param>
     public class TriggerHiddenEffectAction(HiddenEffectSO effect, object sender, object args) : CombatAction
     {
+        /// <inheritdoc/>
         public override IEnumerator Execute(CombatStats stats)
         {
             if(effect == null)
@@ -205,6 +206,7 @@ namespace Pentacle.Advanced
     /// <param name="index">The index of the custom trigger this action should trigger.</param>
     public class TriggerHiddenEffectCustomAction(HiddenEffectSO effect, object sender, object args, int index) : CombatAction
     {
+        /// <inheritdoc/>
         public override IEnumerator Execute(CombatStats stats)
         {
             if (effect == null)
