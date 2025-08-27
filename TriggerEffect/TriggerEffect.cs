@@ -74,7 +74,7 @@ namespace Pentacle.TriggerEffect
     }
 
     /// <summary>
-    /// A class that stores information about how a trigger effect should be triggered.
+    /// A class that stores information about how a trigger effect should be triggered upon a certain event happening.
     /// </summary>
     public class TriggeredEffect
     {
