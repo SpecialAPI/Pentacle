@@ -74,28 +74,28 @@ namespace Pentacle.TriggerEffect
     }
 
     /// <summary>
-    /// Information about an effect and how it should be performed.
+    /// A class that stores information about how a trigger effect should be triggered.
     /// </summary>
     public class TriggeredEffect
     {
         /// <summary>
-        /// The effect that should be performed.
+        /// The trigger effect that should be triggered. If this is null, only the visual activation (as well as consumption for items) will happen.
         /// </summary>
         public TriggerEffect effect;
         /// <summary>
-        /// Effector conditions for this effect to be performed.
+        /// The effector conditions for the trigger effect. All of these conditions need to be fulfilled for the trigger effect to be triggered successfully.
         /// </summary>
         public List<EffectorConditionSO> conditions;
         /// <summary>
-        /// Should the effect be performed immediately when the trigger happens?
+        /// Determines if the trigger effect should be performed immediately or as a subaction.
         /// </summary>
         public bool immediate;
         /// <summary>
-        /// Should the effect trigger the passive/item popup? Does nothing for Hidden Effects.
+        /// Determines if a trigger effect handler using the trigger effect should visually show its activation.
         /// </summary>
         public bool doesPopup = true;
         /// <summary>
-        /// Should the item be consumed when this effect happens? Does nothing for passives or Hidden Effects.
+        /// Determines if an item using this trigger effect should be consumed after triggering it.
         /// </summary>
         public bool getsConsumed;
     }
