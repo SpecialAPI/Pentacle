@@ -101,19 +101,19 @@ namespace Pentacle.TriggerEffect
     }
 
     /// <summary>
-    /// Information about an effect that should be performed on a trigger.
+    /// A class that stores information about how a trigger effect should be triggered upon a trigger call being posted.
     /// </summary>
     public class EffectsAndTrigger : TriggeredEffect
     {
         /// <summary>
-        /// The trigger for this effect.
+        /// The trigger call that should trigger the trigger effect.
         /// </summary>
         public string trigger;
 
         /// <summary>
-        /// Gets all triggers that should trigger this effect.
+        /// Returns an enumerable containing the names of all trigger calls that trigger the trigger effect.
         /// </summary>
-        /// <returns>An enumerable of all triggers for this effect.</returns>
+        /// <returns>An enumerable of all trigger calls that trigger the trigger effect.</returns>
         public virtual IEnumerable<string> TriggerStrings()
         {
             if (!string.IsNullOrEmpty(trigger))
@@ -127,10 +127,11 @@ namespace Pentacle.TriggerEffect
     public class EffectsAndTriggers : EffectsAndTrigger
     {
         /// <summary>
-        /// A list of triggers for this effect.
+        /// A list of trigger calls that should trigger the trigger effect.
         /// </summary>
         public List<string> triggers = [];
 
+        /// <inheritdoc/>
         public override IEnumerable<string> TriggerStrings()
         {
             foreach (var b in base.TriggerStrings())
