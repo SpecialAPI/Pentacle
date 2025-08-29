@@ -21,15 +21,15 @@ namespace Pentacle.TriggerEffects
         /// <summary>
         /// Trigger effects that should be performed on certain triggers.
         /// </summary>
-        public List<TriggerEffectAndTriggerInfo> triggerEffects;
+        public List<TriggerEffectAndTriggerInfo> triggerEffects = [];
         /// <summary>
         /// Trigger effects that should be performed when this passive is connected to a unit.
         /// </summary>
-        public List<TriggerEffectInfo> connectionEffects;
+        public List<TriggerEffectInfo> connectionEffects = [];
         /// <summary>
         /// Trigger effects that should be performed when this passive is disconnected from a unit.
         /// </summary>
-        public List<TriggerEffectInfo> disconnectionEffects;
+        public List<TriggerEffectInfo> disconnectionEffects = [];
 
         private readonly Dictionary<int, Action<object, object>> effectMethods = [];
 

@@ -17,7 +17,7 @@ namespace Pentacle.TriggerEffects
         /// <summary>
         /// The effector conditions for the trigger effect. All of these conditions need to be fulfilled for the trigger effect to be triggered successfully.
         /// </summary>
-        public List<EffectorConditionSO> conditions;
+        public List<EffectorConditionSO> conditions = [];
         /// <summary>
         /// Determines if the trigger effect should be performed immediately or as a subaction.
         /// </summary>
