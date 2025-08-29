@@ -239,7 +239,7 @@ namespace Pentacle.Builders
         /// <param name="w">The object instance of the item.</param>
         /// <param name="connectionEffects">The new connection effects for the item, as TriggeredEffect objects.</param>
         /// <returns>The instance of the item for method chaining.</returns>
-        public static T SetConnectionEffects<T>(this T w, List<TriggeredEffect> connectionEffects) where T : MultiCustomTriggerEffectWearable
+        public static T SetConnectionEffects<T>(this T w, List<TriggerEffectInfo> connectionEffects) where T : MultiCustomTriggerEffectWearable
         {
             w.connectionEffects = connectionEffects;
 
@@ -253,7 +253,7 @@ namespace Pentacle.Builders
         /// <param name="w">The object instance of the item.</param>
         /// <param name="disconnectionEffects">The new disconnection effects for the item, as TriggeredEffect objects.</param>
         /// <returns>The instance of the item for method chaining.</returns>
-        public static T SetDisconnectionEffects<T>(this T w, List<TriggeredEffect> disconnectionEffects) where T : MultiCustomTriggerEffectWearable
+        public static T SetDisconnectionEffects<T>(this T w, List<TriggerEffectInfo> disconnectionEffects) where T : MultiCustomTriggerEffectWearable
         {
             w.disconnectionEffects = disconnectionEffects;
 

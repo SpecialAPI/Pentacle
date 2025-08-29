@@ -23,11 +23,11 @@ namespace Pentacle.TriggerEffects
         /// <summary>
         /// Trigger effects that should be performed when this hidden passive effect is connected to a unit.
         /// </summary>
-        public List<TriggeredEffect> connectionEffects;
+        public List<TriggerEffectInfo> connectionEffects;
         /// <summary>
         /// Trigger effects that should be performed when this hidden passive effect is disconnected from a unit.
         /// </summary>
-        public List<TriggeredEffect> disconnectionEffects;
+        public List<TriggerEffectInfo> disconnectionEffects;
 
         private readonly Dictionary<int, Action<object, object>> effectMethods = [];
 
@@ -138,7 +138,7 @@ namespace Pentacle.TriggerEffects
         }
 
         /// <inheritdoc/>
-        private TriggeredEffect GetEffectAtIndex(int idx, out TriggerEffectActivation activation)
+        private TriggerEffectInfo GetEffectAtIndex(int idx, out TriggerEffectActivation activation)
         {
             activation = TriggerEffectActivation.Connection;
 

@@ -17,7 +17,7 @@ namespace Pentacle.TriggerEffects.BasicTriggerEffects
         public List<EffectInfo> effects = effects;
 
         /// <inheritdoc/>
-        public override void DoEffect(IUnit sender, object args, TriggeredEffect effectsAndTrigger, TriggerEffectExtraInfo extraInfo)
+        public override void DoEffect(IUnit sender, object args, TriggerEffectInfo effectsAndTrigger, TriggerEffectExtraInfo extraInfo)
         {
             if (effectsAndTrigger.immediate)
                 CombatManager.Instance.ProcessImmediateAction(new ImmediateEffectAction([.. effects], sender, 0), true);

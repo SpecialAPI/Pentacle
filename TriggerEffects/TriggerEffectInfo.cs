@@ -8,7 +8,7 @@ namespace Pentacle.TriggerEffects
     /// <summary>
     /// A class that stores information about how a trigger effect should be triggered upon a certain event happening.
     /// </summary>
-    public class TriggeredEffect
+    public class TriggerEffectInfo
     {
         /// <summary>
         /// The trigger effect that should be triggered. If this is null, only the visual activation (as well as consumption for items) will happen.

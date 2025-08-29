@@ -16,11 +16,11 @@ namespace Pentacle.TriggerEffects
         /// <summary>
         /// Trigger effects that should be performed when this item is connected to a character.
         /// </summary>
-        public List<TriggeredEffect> connectionEffects;
+        public List<TriggerEffectInfo> connectionEffects;
         /// <summary>
         /// Trigger effects that should be performed when this item is disconnected from a character.
         /// </summary>
-        public List<TriggeredEffect> disconnectionEffects;
+        public List<TriggerEffectInfo> disconnectionEffects;
 
         /// <inheritdoc/>
         public override bool IsItemImmediate => false;
@@ -152,7 +152,7 @@ namespace Pentacle.TriggerEffects
             });
         }
 
-        private TriggeredEffect GetEffectAtIndex(int idx, out TriggerEffectActivation activation)
+        private TriggerEffectInfo GetEffectAtIndex(int idx, out TriggerEffectActivation activation)
         {
             activation = TriggerEffectActivation.Connection;
 

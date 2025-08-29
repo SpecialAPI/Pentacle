@@ -17,11 +17,11 @@ namespace Pentacle.TriggerEffects
         /// <param name="args">Addiional trigger-sent argument. This will always be null for connection- and disconnection-triggered trigger effects.</param>
         /// <param name="triggerInfo">The triggered effect that stores activation information about this trigger effect.</param>
         /// <param name="extraInfo">Extra information about how this trigger effect was triggered.</param>
-        public abstract void DoEffect(IUnit sender, object args, TriggeredEffect triggerInfo, TriggerEffectExtraInfo extraInfo);
+        public abstract void DoEffect(IUnit sender, object args, TriggerEffectInfo triggerInfo, TriggerEffectExtraInfo extraInfo);
 
         /// <summary>
         /// If true, the trigger effect handler will not show the trigger effect's activation automatically (for example, an item using this trigger effect will not do the "item used" popup). 
-        /// <para>This can be used for trigger effects that either delay the activation display or only trigger it under certain conditions. The trigger effect can manually show the acticvation by using <see cref="TriggerEffectExtraInfo.TryGetPopupUIAction"/>. Note that this doesn't automatically check for <see cref="TriggeredEffect.doesPopup"/>.</para>
+        /// <para>This can be used for trigger effects that either delay the activation display or only trigger it under certain conditions. The trigger effect can manually show the acticvation by using <see cref="TriggerEffectExtraInfo.TryGetPopupUIAction"/>. Note that this doesn't automatically check for <see cref="TriggerEffectInfo.doesPopup"/>.</para>
         /// </summary>
         public virtual bool ManuallyHandlePopup => false;
     }

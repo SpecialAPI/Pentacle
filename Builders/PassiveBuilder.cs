@@ -258,7 +258,7 @@ namespace Pentacle.Builders
         /// <param name="pa">The object instance of the passive.</param>
         /// <param name="connectionEffects">The new connection effects for the passive, as TriggeredEffect objects.</param>
         /// <returns>The instance of the passive, for method chaining.</returns>
-        public static T SetConnectionEffects<T>(this T pa, List<TriggeredEffect> connectionEffects) where T : MultiCustomTriggerEffectPassive
+        public static T SetConnectionEffects<T>(this T pa, List<TriggerEffectInfo> connectionEffects) where T : MultiCustomTriggerEffectPassive
         {
             pa.connectionEffects = connectionEffects;
 
@@ -272,7 +272,7 @@ namespace Pentacle.Builders
         /// <param name="pa">The object instance of the passive.</param>
         /// <param name="disconnectionEffects">The new disconnection effects for the passive, as TriggeredEffect objects.</param>
         /// <returns>The instance of the passive, for method chaining.</returns>
-        public static T SetDisconnectionEffects<T>(this T pa, List<TriggeredEffect> disconnectionEffects) where T : MultiCustomTriggerEffectPassive
+        public static T SetDisconnectionEffects<T>(this T pa, List<TriggerEffectInfo> disconnectionEffects) where T : MultiCustomTriggerEffectPassive
         {
             pa.disconnectionEffects = disconnectionEffects;
 

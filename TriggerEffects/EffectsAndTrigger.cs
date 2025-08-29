@@ -8,7 +8,7 @@ namespace Pentacle.TriggerEffects
     /// <summary>
     /// A class that stores information about how a trigger effect should be triggered upon a trigger call being posted.
     /// </summary>
-    public class EffectsAndTrigger : TriggeredEffect
+    public class EffectsAndTrigger : TriggerEffectInfo
     {
         /// <summary>
         /// The trigger call that should trigger the trigger effect.
