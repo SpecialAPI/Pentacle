@@ -18,7 +18,7 @@ namespace Pentacle.TriggerEffects.BasicTriggerEffects
         public int multiplier = multiplier;
 
         /// <inheritdoc/>
-        public override void DoEffect(IUnit sender, object args, TriggerEffectInfo triggerInfo, TriggerEffectExtraInfo extraInfo)
+        public override void DoEffect(IUnit sender, object args, TriggerEffectInfo triggerInfo, TriggerEffectActivationExtraInfo extraInfo)
         {
             if (!ValueReferenceTools.TryGetValueChangeException(args, out var exception))
                 return;

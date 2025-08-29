@@ -8,7 +8,7 @@ namespace Pentacle.TriggerEffects
     /// <summary>
     /// A class that provides additional information about how a trigger effect is triggered.
     /// </summary>
-    public class TriggerEffectExtraInfo
+    public class TriggerEffectActivationExtraInfo
     {
         /// <summary>
         /// The trigger effect handler that triggered the trigger effect.
