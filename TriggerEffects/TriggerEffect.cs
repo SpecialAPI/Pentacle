@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Pentacle.TriggerEffect
+namespace Pentacle.TriggerEffects
 {
     /// <summary>
     /// The base class for effects that can do something when a certain event happens.

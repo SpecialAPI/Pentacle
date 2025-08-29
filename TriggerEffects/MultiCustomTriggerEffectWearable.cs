@@ -1,70 +1,63 @@
-﻿using Pentacle.Advanced;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace Pentacle.TriggerEffect
+namespace Pentacle.TriggerEffects
 {
     /// <summary>
-    /// A passive that can have any amount of trigger-, connection- and disconnection-activated effects, using Pentacle's trigger effect system.
+    /// An item that can have any amount of trigger-, connection- and disconnection-activated effects, using Pentacle's trigger effect system.
     /// </summary>
-    public class MultiCustomTriggerEffectPassive : AdvancedPassiveAbilitySO, ITriggerEffectHandler
+    public class MultiCustomTriggerEffectWearable : BaseWearableSO, ITriggerEffectHandler
     {
-        /// <inheritdoc/>
-        public override bool IsPassiveImmediate => false;
-        /// <inheritdoc/>
-        public override bool DoesPassiveTrigger => true;
-
-        string ITriggerEffectHandler.DisplayedName => GetPassiveLocData().text;
-        Sprite ITriggerEffectHandler.Sprite => passiveIcon;
-
         /// <summary>
         /// Trigger effects that should be performed on certain triggers.
         /// </summary>
         public List<EffectsAndTrigger> triggerEffects;
         /// <summary>
-        /// Trigger effects that should be performed when this passive is connected to a unit.
+        /// Trigger effects that should be performed when this item is connected to a character.
         /// </summary>
         public List<TriggeredEffect> connectionEffects;
         /// <summary>
-        /// Trigger effects that should be performed when this passive is disconnected from a unit.
+        /// Trigger effects that should be performed when this item is disconnected from a character.
         /// </summary>
         public List<TriggeredEffect> disconnectionEffects;
+
+        /// <inheritdoc/>
+        public override bool IsItemImmediate => false;
+        /// <inheritdoc/>
+        public override bool DoesItemTrigger => false;
+
+        string ITriggerEffectHandler.DisplayedName => GetItemLocData().text;
+        Sprite ITriggerEffectHandler.Sprite => wearableImage;
 
         private readonly Dictionary<int, Action<object, object>> effectMethods = [];
 
         /// <inheritdoc/>
-        public MultiCustomTriggerEffectPassive()
-        {
-            _triggerOn = [];
-        }
-
-        /// <inheritdoc/>
-        public override void OnPassiveConnected(IUnit unit)
+        public override void OnTriggerAttachedAction(IWearableEffector caller)
         {
             if (connectionEffects == null)
                 return;
 
             for (var i = 0; i < connectionEffects.Count; i++)
             {
-                TryPerformItemEffect(unit, null, i);
+                TryPerformItemEffect(caller, null, i);
             }
         }
 
         /// <inheritdoc/>
-        public override void OnPassiveDisconnected(IUnit unit)
+        public override void OnTriggerDettachedAction(IWearableEffector caller)
         {
             if (disconnectionEffects == null)
                 return;
 
             for (var i = 0; i < disconnectionEffects.Count; i++)
             {
-                TryPerformItemEffect(unit, null, i + (connectionEffects?.Count ?? 0));
+                TryPerformItemEffect(caller, null, i + (connectionEffects?.Count ?? 0));
             }
         }
 
         /// <inheritdoc/>
-        public override void CustomOnTriggerAttached(IPassiveEffector caller)
+        public override void CustomOnTriggerAttached(IWearableEffector caller)
         {
             if (triggerEffects == null)
                 return;
@@ -82,7 +75,7 @@ namespace Pentacle.TriggerEffect
         }
 
         /// <inheritdoc/>
-        public override void CustomOnTriggerDettached(IPassiveEffector caller)
+        public override void CustomOnTriggerDettached(IWearableEffector caller)
         {
             if (triggerEffects == null)
                 return;
@@ -109,7 +102,7 @@ namespace Pentacle.TriggerEffect
 
         private void TryPerformItemEffect(object sender, object args, int index)
         {
-            if (index >= ((triggerEffects?.Count ?? 0) + (connectionEffects?.Count ?? 0) + (disconnectionEffects?.Count ?? 0)) || sender is not IPassiveEffector effector || !effector.CanPassiveTrigger(m_PassiveID))
+            if (index >= ((triggerEffects?.Count ?? 0) + (connectionEffects?.Count ?? 0) + (disconnectionEffects?.Count ?? 0)) || sender is not IWearableEffector effector || !effector.CanWearableTrigger)
                 return;
 
             var te = GetEffectAtIndex(index, out _);
@@ -127,16 +120,16 @@ namespace Pentacle.TriggerEffect
             }
 
             if (te.immediate)
-                FinalizeCustomTriggerPassive(sender, args, index);
+                FinalizeCustomTriggerItem(sender, args, index);
 
             else
-                CombatManager.Instance.AddSubAction(new PerformPassiveCustomAction(this, sender, args, index));
+                CombatManager.Instance.AddSubAction(new PerformItemCustomAction(this, sender, args, index));
         }
 
         /// <inheritdoc/>
-        public override void FinalizeCustomTriggerPassive(object sender, object args, int idx)
+        public override void FinalizeCustomTriggerItem(object sender, object args, int idx)
         {
-            if (idx >= ((triggerEffects?.Count ?? 0) + (connectionEffects?.Count ?? 0) + (disconnectionEffects?.Count ?? 0)) || sender is not IPassiveEffector effector || sender is not IUnit caster)
+            if (idx >= ((triggerEffects?.Count ?? 0) + (connectionEffects?.Count ?? 0) + (disconnectionEffects?.Count ?? 0)) || sender is not IWearableEffector effector || sender is not IUnit caster || effector.IsWearableConsumed)
                 return;
 
             var te = GetEffectAtIndex(idx, out var activation);
@@ -144,8 +137,13 @@ namespace Pentacle.TriggerEffect
             if (te == null)
                 return;
 
+            var consumed = te.getsConsumed;
+
+            if (consumed)
+                effector.ConsumeWearable();
+
             if (te.doesPopup && (te.effect == null || !te.effect.ManuallyHandlePopup))
-                CombatManager.Instance.AddUIAction(GetPopupUIAction(effector.ID, effector.IsUnitCharacter, false));
+                CombatManager.Instance.AddUIAction(GetPopupUIAction(effector.ID, true, consumed));
 
             te.effect?.DoEffect(caster, args, te, new()
             {
@@ -176,18 +174,19 @@ namespace Pentacle.TriggerEffect
             return null;
         }
 
-        /// <inheritdoc/>
-        public override void TriggerPassive(object sender, object args)
-        {
-        }
-
         private CombatAction GetPopupUIAction(int id, bool isUnitCharacter, bool consumed)
         {
-            return new ShowPassiveInformationUIAction(id, isUnitCharacter, GetPassiveLocData().text, passiveIcon);
+            return new ShowItemInformationUIAction(id, GetItemLocData().text, consumed, wearableImage);
         }
 
         bool ITriggerEffectHandler.TryGetPopupUIAction(int unitId, bool isUnitCharacter, bool consumed, out CombatAction action)
         {
+            if (!isUnitCharacter)
+            {
+                action = null;
+                return false;
+            }
+
             action = GetPopupUIAction(unitId, isUnitCharacter, consumed);
             return true;
         }

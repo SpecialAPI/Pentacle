@@ -3,74 +3,68 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace Pentacle.TriggerEffect
+namespace Pentacle.TriggerEffects
 {
     /// <summary>
-    /// A hidden passive effect that can have any amount of trigger-, connection- and disconnection-activated effects, using Pentacle's trigger effect system.
+    /// A passive that can have any amount of trigger-, connection- and disconnection-activated effects, using Pentacle's trigger effect system.
     /// </summary>
-    public class MultiCustomTriggerEffectHiddenEffect : HiddenEffectSO, ITriggerEffectHandler
+    public class MultiCustomTriggerEffectPassive : AdvancedPassiveAbilitySO, ITriggerEffectHandler
     {
         /// <inheritdoc/>
-        public override bool Immediate => false;
+        public override bool IsPassiveImmediate => false;
+        /// <inheritdoc/>
+        public override bool DoesPassiveTrigger => true;
 
-        string ITriggerEffectHandler.DisplayedName => string.Empty;
-        Sprite ITriggerEffectHandler.Sprite => null;
+        string ITriggerEffectHandler.DisplayedName => GetPassiveLocData().text;
+        Sprite ITriggerEffectHandler.Sprite => passiveIcon;
 
         /// <summary>
         /// Trigger effects that should be performed on certain triggers.
         /// </summary>
         public List<EffectsAndTrigger> triggerEffects;
         /// <summary>
-        /// Trigger effects that should be performed when this hidden passive effect is connected to a unit.
+        /// Trigger effects that should be performed when this passive is connected to a unit.
         /// </summary>
         public List<TriggeredEffect> connectionEffects;
         /// <summary>
-        /// Trigger effects that should be performed when this hidden passive effect is disconnected from a unit.
+        /// Trigger effects that should be performed when this passive is disconnected from a unit.
         /// </summary>
         public List<TriggeredEffect> disconnectionEffects;
 
         private readonly Dictionary<int, Action<object, object>> effectMethods = [];
 
         /// <inheritdoc/>
-        public override void OnConnected(IUnit unit)
+        public MultiCustomTriggerEffectPassive()
+        {
+            _triggerOn = [];
+        }
+
+        /// <inheritdoc/>
+        public override void OnPassiveConnected(IUnit unit)
         {
             if (connectionEffects == null)
                 return;
 
             for (var i = 0; i < connectionEffects.Count; i++)
             {
-                TryPerformHiddenEffectEffect(unit, null, i);
+                TryPerformItemEffect(unit, null, i);
             }
         }
 
         /// <inheritdoc/>
-        public override void OnDisconnected(IUnit unit)
+        public override void OnPassiveDisconnected(IUnit unit)
         {
             if (disconnectionEffects == null)
                 return;
 
             for (var i = 0; i < disconnectionEffects.Count; i++)
-                TryPerformHiddenEffectEffect(unit, null, i + (connectionEffects?.Count ?? 0));
-        }
-
-        /// <inheritdoc/>
-        public override void CustomOnTriggerAttached(IEffectorChecks caller)
-        {
-            if (triggerEffects == null)
-                return;
-
-            for (var i = 0; i < triggerEffects.Count; i++)
             {
-                var te = triggerEffects[i];
-                var strings = te.TriggerStrings();
-
-                foreach (var str in strings)
-                    CombatManager.Instance.AddObserver(GetEffectMethod(i + (connectionEffects?.Count ?? 0) + (disconnectionEffects?.Count ?? 0)), str, caller);
+                TryPerformItemEffect(unit, null, i + (connectionEffects?.Count ?? 0));
             }
         }
 
         /// <inheritdoc/>
-        public override void CustomOnTriggerDettached(IEffectorChecks caller)
+        public override void CustomOnTriggerAttached(IPassiveEffector caller)
         {
             if (triggerEffects == null)
                 return;
@@ -81,7 +75,27 @@ namespace Pentacle.TriggerEffect
                 var strings = te.TriggerStrings();
 
                 foreach (var str in strings)
+                {
+                    CombatManager.Instance.AddObserver(GetEffectMethod(i + (connectionEffects?.Count ?? 0) + (disconnectionEffects?.Count ?? 0)), str, caller);
+                }
+            }
+        }
+
+        /// <inheritdoc/>
+        public override void CustomOnTriggerDettached(IPassiveEffector caller)
+        {
+            if (triggerEffects == null)
+                return;
+
+            for (var i = 0; i < triggerEffects.Count; i++)
+            {
+                var te = triggerEffects[i];
+                var strings = te.TriggerStrings();
+
+                foreach (var str in strings)
+                {
                     CombatManager.Instance.RemoveObserver(GetEffectMethod(i + (connectionEffects?.Count ?? 0) + (disconnectionEffects?.Count ?? 0)), str, caller);
+                }
             }
         }
 
@@ -90,12 +104,12 @@ namespace Pentacle.TriggerEffect
             if (effectMethods.TryGetValue(i, out var existing))
                 return existing;
 
-            return effectMethods[i] = (sender, args) => TryPerformHiddenEffectEffect(sender, args, i);
+            return effectMethods[i] = (sender, args) => TryPerformItemEffect(sender, args, i);
         }
 
-        private void TryPerformHiddenEffectEffect(object sender, object args, int index)
+        private void TryPerformItemEffect(object sender, object args, int index)
         {
-            if (index >= ((triggerEffects?.Count ?? 0) + (connectionEffects?.Count ?? 0) + (disconnectionEffects?.Count ?? 0)) || sender is not IEffectorChecks effector)
+            if (index >= ((triggerEffects?.Count ?? 0) + (connectionEffects?.Count ?? 0) + (disconnectionEffects?.Count ?? 0)) || sender is not IPassiveEffector effector || !effector.CanPassiveTrigger(m_PassiveID))
                 return;
 
             var te = GetEffectAtIndex(index, out _);
@@ -113,22 +127,25 @@ namespace Pentacle.TriggerEffect
             }
 
             if (te.immediate)
-                CustomTrigger(sender, args, index);
+                FinalizeCustomTriggerPassive(sender, args, index);
 
             else
-                CombatManager.Instance.AddSubAction(new TriggerHiddenEffectCustomAction(this, sender, args, index));
+                CombatManager.Instance.AddSubAction(new PerformPassiveCustomAction(this, sender, args, index));
         }
 
         /// <inheritdoc/>
-        public override void CustomTrigger(object sender, object args, int idx)
+        public override void FinalizeCustomTriggerPassive(object sender, object args, int idx)
         {
-            if (idx >= ((triggerEffects?.Count ?? 0) + (connectionEffects?.Count ?? 0) + (disconnectionEffects?.Count ?? 0)) || sender is not IUnit caster)
+            if (idx >= ((triggerEffects?.Count ?? 0) + (connectionEffects?.Count ?? 0) + (disconnectionEffects?.Count ?? 0)) || sender is not IPassiveEffector effector || sender is not IUnit caster)
                 return;
 
             var te = GetEffectAtIndex(idx, out var activation);
 
             if (te == null)
                 return;
+
+            if (te.doesPopup && (te.effect == null || !te.effect.ManuallyHandlePopup))
+                CombatManager.Instance.AddUIAction(GetPopupUIAction(effector.ID, effector.IsUnitCharacter, false));
 
             te.effect?.DoEffect(caster, args, te, new()
             {
@@ -137,7 +154,6 @@ namespace Pentacle.TriggerEffect
             });
         }
 
-        /// <inheritdoc/>
         private TriggeredEffect GetEffectAtIndex(int idx, out TriggerEffectActivation activation)
         {
             activation = TriggerEffectActivation.Connection;
@@ -160,10 +176,20 @@ namespace Pentacle.TriggerEffect
             return null;
         }
 
+        /// <inheritdoc/>
+        public override void TriggerPassive(object sender, object args)
+        {
+        }
+
+        private CombatAction GetPopupUIAction(int id, bool isUnitCharacter, bool consumed)
+        {
+            return new ShowPassiveInformationUIAction(id, isUnitCharacter, GetPassiveLocData().text, passiveIcon);
+        }
+
         bool ITriggerEffectHandler.TryGetPopupUIAction(int unitId, bool isUnitCharacter, bool consumed, out CombatAction action)
         {
-            action = null;
-            return false;
+            action = GetPopupUIAction(unitId, isUnitCharacter, consumed);
+            return true;
         }
     }
 }

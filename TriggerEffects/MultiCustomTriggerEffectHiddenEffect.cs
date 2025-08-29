@@ -1,63 +1,60 @@
-﻿using System;
+﻿using Pentacle.Advanced;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace Pentacle.TriggerEffect
+namespace Pentacle.TriggerEffects
 {
     /// <summary>
-    /// An item that can have any amount of trigger-, connection- and disconnection-activated effects, using Pentacle's trigger effect system.
+    /// A hidden passive effect that can have any amount of trigger-, connection- and disconnection-activated effects, using Pentacle's trigger effect system.
     /// </summary>
-    public class MultiCustomTriggerEffectWearable : BaseWearableSO, ITriggerEffectHandler
+    public class MultiCustomTriggerEffectHiddenEffect : HiddenEffectSO, ITriggerEffectHandler
     {
+        /// <inheritdoc/>
+        public override bool Immediate => false;
+
+        string ITriggerEffectHandler.DisplayedName => string.Empty;
+        Sprite ITriggerEffectHandler.Sprite => null;
+
         /// <summary>
         /// Trigger effects that should be performed on certain triggers.
         /// </summary>
         public List<EffectsAndTrigger> triggerEffects;
         /// <summary>
-        /// Trigger effects that should be performed when this item is connected to a character.
+        /// Trigger effects that should be performed when this hidden passive effect is connected to a unit.
         /// </summary>
         public List<TriggeredEffect> connectionEffects;
         /// <summary>
-        /// Trigger effects that should be performed when this item is disconnected from a character.
+        /// Trigger effects that should be performed when this hidden passive effect is disconnected from a unit.
         /// </summary>
         public List<TriggeredEffect> disconnectionEffects;
-
-        /// <inheritdoc/>
-        public override bool IsItemImmediate => false;
-        /// <inheritdoc/>
-        public override bool DoesItemTrigger => false;
-
-        string ITriggerEffectHandler.DisplayedName => GetItemLocData().text;
-        Sprite ITriggerEffectHandler.Sprite => wearableImage;
 
         private readonly Dictionary<int, Action<object, object>> effectMethods = [];
 
         /// <inheritdoc/>
-        public override void OnTriggerAttachedAction(IWearableEffector caller)
+        public override void OnConnected(IUnit unit)
         {
             if (connectionEffects == null)
                 return;
 
             for (var i = 0; i < connectionEffects.Count; i++)
             {
-                TryPerformItemEffect(caller, null, i);
+                TryPerformHiddenEffectEffect(unit, null, i);
             }
         }
 
         /// <inheritdoc/>
-        public override void OnTriggerDettachedAction(IWearableEffector caller)
+        public override void OnDisconnected(IUnit unit)
         {
             if (disconnectionEffects == null)
                 return;
 
             for (var i = 0; i < disconnectionEffects.Count; i++)
-            {
-                TryPerformItemEffect(caller, null, i + (connectionEffects?.Count ?? 0));
-            }
+                TryPerformHiddenEffectEffect(unit, null, i + (connectionEffects?.Count ?? 0));
         }
 
         /// <inheritdoc/>
-        public override void CustomOnTriggerAttached(IWearableEffector caller)
+        public override void CustomOnTriggerAttached(IEffectorChecks caller)
         {
             if (triggerEffects == null)
                 return;
@@ -68,14 +65,12 @@ namespace Pentacle.TriggerEffect
                 var strings = te.TriggerStrings();
 
                 foreach (var str in strings)
-                {
                     CombatManager.Instance.AddObserver(GetEffectMethod(i + (connectionEffects?.Count ?? 0) + (disconnectionEffects?.Count ?? 0)), str, caller);
-                }
             }
         }
 
         /// <inheritdoc/>
-        public override void CustomOnTriggerDettached(IWearableEffector caller)
+        public override void CustomOnTriggerDettached(IEffectorChecks caller)
         {
             if (triggerEffects == null)
                 return;
@@ -86,9 +81,7 @@ namespace Pentacle.TriggerEffect
                 var strings = te.TriggerStrings();
 
                 foreach (var str in strings)
-                {
                     CombatManager.Instance.RemoveObserver(GetEffectMethod(i + (connectionEffects?.Count ?? 0) + (disconnectionEffects?.Count ?? 0)), str, caller);
-                }
             }
         }
 
@@ -97,12 +90,12 @@ namespace Pentacle.TriggerEffect
             if (effectMethods.TryGetValue(i, out var existing))
                 return existing;
 
-            return effectMethods[i] = (sender, args) => TryPerformItemEffect(sender, args, i);
+            return effectMethods[i] = (sender, args) => TryPerformHiddenEffectEffect(sender, args, i);
         }
 
-        private void TryPerformItemEffect(object sender, object args, int index)
+        private void TryPerformHiddenEffectEffect(object sender, object args, int index)
         {
-            if (index >= ((triggerEffects?.Count ?? 0) + (connectionEffects?.Count ?? 0) + (disconnectionEffects?.Count ?? 0)) || sender is not IWearableEffector effector || !effector.CanWearableTrigger)
+            if (index >= ((triggerEffects?.Count ?? 0) + (connectionEffects?.Count ?? 0) + (disconnectionEffects?.Count ?? 0)) || sender is not IEffectorChecks effector)
                 return;
 
             var te = GetEffectAtIndex(index, out _);
@@ -120,30 +113,22 @@ namespace Pentacle.TriggerEffect
             }
 
             if (te.immediate)
-                FinalizeCustomTriggerItem(sender, args, index);
+                CustomTrigger(sender, args, index);
 
             else
-                CombatManager.Instance.AddSubAction(new PerformItemCustomAction(this, sender, args, index));
+                CombatManager.Instance.AddSubAction(new TriggerHiddenEffectCustomAction(this, sender, args, index));
         }
 
         /// <inheritdoc/>
-        public override void FinalizeCustomTriggerItem(object sender, object args, int idx)
+        public override void CustomTrigger(object sender, object args, int idx)
         {
-            if (idx >= ((triggerEffects?.Count ?? 0) + (connectionEffects?.Count ?? 0) + (disconnectionEffects?.Count ?? 0)) || sender is not IWearableEffector effector || sender is not IUnit caster || effector.IsWearableConsumed)
+            if (idx >= ((triggerEffects?.Count ?? 0) + (connectionEffects?.Count ?? 0) + (disconnectionEffects?.Count ?? 0)) || sender is not IUnit caster)
                 return;
 
             var te = GetEffectAtIndex(idx, out var activation);
 
             if (te == null)
                 return;
-
-            var consumed = te.getsConsumed;
-
-            if (consumed)
-                effector.ConsumeWearable();
-
-            if (te.doesPopup && (te.effect == null || !te.effect.ManuallyHandlePopup))
-                CombatManager.Instance.AddUIAction(GetPopupUIAction(effector.ID, true, consumed));
 
             te.effect?.DoEffect(caster, args, te, new()
             {
@@ -152,6 +137,7 @@ namespace Pentacle.TriggerEffect
             });
         }
 
+        /// <inheritdoc/>
         private TriggeredEffect GetEffectAtIndex(int idx, out TriggerEffectActivation activation)
         {
             activation = TriggerEffectActivation.Connection;
@@ -174,21 +160,10 @@ namespace Pentacle.TriggerEffect
             return null;
         }
 
-        private CombatAction GetPopupUIAction(int id, bool isUnitCharacter, bool consumed)
-        {
-            return new ShowItemInformationUIAction(id, GetItemLocData().text, consumed, wearableImage);
-        }
-
         bool ITriggerEffectHandler.TryGetPopupUIAction(int unitId, bool isUnitCharacter, bool consumed, out CombatAction action)
         {
-            if (!isUnitCharacter)
-            {
-                action = null;
-                return false;
-            }
-
-            action = GetPopupUIAction(unitId, isUnitCharacter, consumed);
-            return true;
+            action = null;
+            return false;
         }
     }
 }

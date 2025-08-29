@@ -1,5 +1,5 @@
 ﻿using Pentacle.Tools;
-using Pentacle.TriggerEffect;
+using Pentacle.TriggerEffects;
 using System;
 using System.Collections.Generic;
 using System.Globalization;

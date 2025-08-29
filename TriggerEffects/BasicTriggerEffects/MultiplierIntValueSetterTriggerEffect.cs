@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace Pentacle.TriggerEffect.BasicTriggerEffects
+namespace Pentacle.TriggerEffects.BasicTriggerEffects
 {
     /// <summary>
     /// A trigger effect that adds a MultiplyIntValueModifier to a value change exception stored in args.

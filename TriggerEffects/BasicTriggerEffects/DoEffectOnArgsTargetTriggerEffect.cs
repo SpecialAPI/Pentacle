@@ -4,7 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace Pentacle.TriggerEffect.BasicTriggerEffects
+namespace Pentacle.TriggerEffects.BasicTriggerEffects
 {
     /// <summary>
     /// A trigger effect that triggers another trigger effect on the unit value of a unit holder stored in args.
