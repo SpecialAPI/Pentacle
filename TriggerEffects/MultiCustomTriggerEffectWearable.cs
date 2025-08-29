@@ -12,7 +12,7 @@ namespace Pentacle.TriggerEffects
         /// <summary>
         /// Trigger effects that should be performed on certain triggers.
         /// </summary>
-        public List<EffectsAndTrigger> triggerEffects;
+        public List<TriggerEffectAndTriggerInfo> triggerEffects;
         /// <summary>
         /// Trigger effects that should be performed when this item is connected to a character.
         /// </summary>

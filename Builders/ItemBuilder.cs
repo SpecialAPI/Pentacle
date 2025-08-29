@@ -225,7 +225,7 @@ namespace Pentacle.Builders
         /// <param name="w">The object instance of the item.</param>
         /// <param name="triggerEffects">The new trigger effects for the item, as EffectsAndTrigger objects.</param>
         /// <returns>The instance of the item for method chaining.</returns>
-        public static T SetTriggerEffects<T>(this T w, List<EffectsAndTrigger> triggerEffects) where T : MultiCustomTriggerEffectWearable
+        public static T SetTriggerEffects<T>(this T w, List<TriggerEffectAndTriggerInfo> triggerEffects) where T : MultiCustomTriggerEffectWearable
         {
             w.triggerEffects = triggerEffects;
 
@@ -341,7 +341,7 @@ namespace Pentacle.Builders
         /// <param name="w">The object instance of the item.</param>
         /// <param name="effects">The effects to add to the effect lists, as EffectsAndTrigger objects.<para>Can either be given as an array or as infinitely repeatable arguments.</para></param>
         /// <returns>The instance of the item for method chaining.</returns>
-        public static T AddEffectsToAll<T>(this T w, params EffectsAndTrigger[] effects) where T : MultiCustomTriggerEffectWearable
+        public static T AddEffectsToAll<T>(this T w, params TriggerEffectAndTriggerInfo[] effects) where T : MultiCustomTriggerEffectWearable
         {
             w.triggerEffects.AddRange(effects);
             w.connectionEffects.AddRange(effects);

@@ -8,7 +8,7 @@ namespace Pentacle.TriggerEffects
     /// <summary>
     /// Information about an effect that should be performed on any of the given triggers.
     /// </summary>
-    public class EffectsAndTriggers : EffectsAndTrigger
+    public class TriggerEffectAndTriggersInfo : TriggerEffectAndTriggerInfo
     {
         /// <summary>
         /// A list of trigger calls that should trigger the trigger effect.

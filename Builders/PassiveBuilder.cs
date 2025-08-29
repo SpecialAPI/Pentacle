@@ -244,7 +244,7 @@ namespace Pentacle.Builders
         /// <param name="pa">The object instance of the passive.</param>
         /// <param name="triggerEffects">The new trigger effects for the passive, as EffectsAndTrigger objects.</param>
         /// <returns>The instance of the passive, for method chaining.</returns>
-        public static T SetTriggerEffects<T>(this T pa, List<EffectsAndTrigger> triggerEffects) where T : MultiCustomTriggerEffectPassive
+        public static T SetTriggerEffects<T>(this T pa, List<TriggerEffectAndTriggerInfo> triggerEffects) where T : MultiCustomTriggerEffectPassive
         {
             pa.triggerEffects = triggerEffects;
 
@@ -286,7 +286,7 @@ namespace Pentacle.Builders
         /// <param name="pa">The object instance of the passive.</param>
         /// <param name="effects">The effects to add to the effect lists, as EffectsAndTrigger objects.<para>Can either be given as an array or as infinitely repeatable arguments.</para></param>
         /// <returns>The instance of the passive, for method chaining.</returns>
-        public static T AddEffectsToAll<T>(this T pa, params EffectsAndTrigger[] effects) where T : MultiCustomTriggerEffectPassive
+        public static T AddEffectsToAll<T>(this T pa, params TriggerEffectAndTriggerInfo[] effects) where T : MultiCustomTriggerEffectPassive
         {
             pa.triggerEffects.AddRange(effects);
             pa.connectionEffects.AddRange(effects);
