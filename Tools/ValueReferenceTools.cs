@@ -1,5 +1,5 @@
-﻿using Pentacle.CustomEvent.Args;
-using Pentacle.CustomEvent.Args.BasegameReferenceHolders;
+﻿using Pentacle.Triggers.Args;
+using Pentacle.Triggers.Args.BasegameReferenceHolders;
 using System;
 using System.Collections.Generic;
 using System.Text;

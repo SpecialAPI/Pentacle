@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using System.Text;
 
-namespace Pentacle.CustomEvent.Patches
+namespace Pentacle.Triggers.Patches
 {
     [HarmonyPatch]
     internal static class OverrideEnemyAbilityUsage

@@ -1,10 +1,10 @@
-﻿using Pentacle.CustomEvent.Args;
+﻿using Pentacle.Triggers.Args;
 using Pentacle.Tools;
 using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace Pentacle.CustomEvent.Patches
+namespace Pentacle.Triggers.Patches
 {
     [HarmonyPatch]
     internal static class AbilityPerformedTriggers

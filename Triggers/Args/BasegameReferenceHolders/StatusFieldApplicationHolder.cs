@@ -1,4 +1,4 @@
-﻿namespace Pentacle.CustomEvent.Args.BasegameReferenceHolders
+﻿namespace Pentacle.Triggers.Args.BasegameReferenceHolders
 {
     internal class StatusFieldApplicationHolder(StatusFieldApplication statusFieldApplication) : IBoolHolder, IIntHolder, IStringHolder
     {

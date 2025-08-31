@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Pentacle.CustomEvent
+namespace Pentacle.Triggers
 {
     /// <summary>
     /// Static class that stores the names of all custom triggers in Pentacle.

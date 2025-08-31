@@ -1,4 +1,4 @@
-﻿using Pentacle.CustomEvent.Args;
+﻿using Pentacle.Triggers.Args;
 using Pentacle.Tools;
 using System;
 using System.Collections.Generic;

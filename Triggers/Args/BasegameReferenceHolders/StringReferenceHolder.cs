@@ -1,4 +1,4 @@
-﻿namespace Pentacle.CustomEvent.Args.BasegameReferenceHolders
+﻿namespace Pentacle.Triggers.Args.BasegameReferenceHolders
 {
     internal class StringReferenceHolder(StringReference stringRef) : IStringHolder
     {

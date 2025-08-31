@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Pentacle.CustomEvent.Args
+namespace Pentacle.Triggers.Args
 {
     /// <summary>
     /// Provides information about an ability that's being performed.

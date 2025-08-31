@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace Pentacle.CustomEvent.Patches
+namespace Pentacle.Triggers.Patches
 {
     [HarmonyPatch]
     internal static class ModifyWrongPigmentAmount

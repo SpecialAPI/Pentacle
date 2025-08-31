@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Pentacle.CustomEvent.Args
+namespace Pentacle.Triggers.Args
 {
     /// <summary>
     /// Used to modify whether a certain pigment color can be produced or not.

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Pentacle.CustomEvent.Args.BasegameReferenceHolders
+namespace Pentacle.Triggers.Args.BasegameReferenceHolders
 {
     internal class DamageReceivedValueChangeExceptionHolder(DamageReceivedValueChangeException exception) : IValueChangeException, IUnitHolder, IStringHolder, IBoolHolder
     {

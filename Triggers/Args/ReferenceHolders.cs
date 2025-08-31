@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Pentacle.CustomEvent.Args
+namespace Pentacle.Triggers.Args
 {
     /// <summary>
     /// An interface for objects that hold one or more boolean values.
