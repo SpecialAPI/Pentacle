@@ -22,17 +22,17 @@ namespace Pentacle.Triggers
         public static readonly string OnBeforeAbilityEffects = $"{MOD_PREFIX}_BeforeAbilityEffects";
         /// <summary>
         /// Gets sent to a character when its abilities get initialized.
-        /// <para>Sends an <see cref="IntegerReference"/> with value equal to the character's actual level as args. Its can be modified to change which level the character's abilities will be.</para>
+        /// <para>Sends an <see cref="IntegerReference"/> with value equal to the character's actual level as args. Its value can be modified to change which level the character's abilities will be.</para>
         /// </summary>
         public static readonly string ModifyAbilityRank = $"{MOD_PREFIX}_ModifyAbilityRank";
         /// <summary>
         /// Gets sent to a character when calculating the amount of wrong pigment used for an ability.
-        /// <para>Sends an <see cref="ModifyWrongPigmentReference"/> with value equal to the actual amount of wrong pigment as args. Its wrongPigmentAmount value can be modified to change the amount of wrong pigment used for the ability.</para>
+        /// <para>Sends a <see cref="ModifyWrongPigmentReference"/> as args. Its wrongPigmentAmount value can be modified to change the amount of wrong pigment used for the ability.</para>
         /// </summary>
         public static readonly string ModifyWrongPigmentAmount = $"{MOD_PREFIX}_ModifyWrongPigmentAmount";
         /// <summary>
         /// Gets sent to a character when calculating the amount of wrong pigment in the cost slots of the perform ability button.
-        /// <para>Sends an <see cref="ModifyWrongPigmentReference"/> with value equal to the actual amount of wrong pigment as args. Its wrongPigmentAmount value can be modified to change the button's displayed amount of wrong pigment.</para>
+        /// <para>Sends a <see cref="ModifyWrongPigmentReference"/> as args. Its wrongPigmentAmount value can be modified to change the button's displayed amount of wrong pigment.</para>
         /// </summary>
         public static readonly string ModifyWrongPigmentAmount_UI = $"{MOD_PREFIX}_ModifyWrongPigmentAmount_UI";
         /// <summary>
