@@ -34,10 +34,10 @@ namespace Pentacle.Triggers.Patches
             if (!stats.TryGetUnit(ui.UnitInInfoID, ui.IsInfoFromCharacter, out var unit))
                 return;
 
-            var intRef = new IntegerReference(layout.SlotsThatDealDamage);
+            var intRef = new ModifyWrongPigmentReference(layout.SlotsThatDealDamage);
             CombatManager.Instance.PostNotification(CustomTriggers.ModifyWrongPigmentAmount_UI, unit, intRef);
 
-            layout.SlotsThatDealDamage = Mathf.Max(0, intRef.value);
+            layout.SlotsThatDealDamage = Mathf.Max(0, intRef.wrongPigmentAmount);
         }
 
         [HarmonyPatch(typeof(CharacterCombat), nameof(CharacterCombat.CalculateAbilityCostsDamage))]
