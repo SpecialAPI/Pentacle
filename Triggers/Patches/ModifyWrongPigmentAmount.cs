@@ -1,4 +1,5 @@
 ﻿using Pentacle.Tools;
+using Pentacle.Triggers.Args;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -54,10 +55,10 @@ namespace Pentacle.Triggers.Patches
 
         private static void ModifyWrongPigmentAmount_Character_TriggerEvent(CharacterCombat cc)
         {
-            var intRef = new IntegerReference(cc.LastCalculatedWrongMana);
+            var intRef = new ModifyWrongPigmentReference(cc.LastCalculatedWrongMana);
             CombatManager.Instance.PostNotification(CustomTriggers.ModifyWrongPigmentAmount, cc, intRef);
 
-            cc.LastCalculatedWrongMana = Mathf.Max(0, intRef.value);
+            cc.LastCalculatedWrongMana = Mathf.Max(0, intRef.wrongPigmentAmount);
         }
     }
 }

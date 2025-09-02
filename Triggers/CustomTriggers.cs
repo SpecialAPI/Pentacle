@@ -27,7 +27,7 @@ namespace Pentacle.Triggers
         public static readonly string ModifyAbilityRank = $"{MOD_PREFIX}_ModifyAbilityRank";
         /// <summary>
         /// Gets sent to a character when calculating the amount of wrong pigment used for an ability.
-        /// <para>Sends an <see cref="IntegerReference"/> with value equal to the actual amount of wrong pigment as args. Its can be modified to change the amount of wrong pigment used for the ability.</para>
+        /// <para>Sends an <see cref="ModifyWrongPigmentReference"/> with value equal to the actual amount of wrong pigment as args. Its wrongPigmentAmount value can be modified to change the amount of wrong pigment used for the ability.</para>
         /// </summary>
         public static readonly string ModifyWrongPigmentAmount = $"{MOD_PREFIX}_ModifyWrongPigmentAmount";
         /// <summary>
