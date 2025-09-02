@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Pentacle.Triggers.Args;
+using System;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using System.Text;
@@ -12,10 +13,11 @@ namespace Pentacle.Triggers.Patches
         [HarmonyPrefix]
         public static bool OverrideAbilityUsage_Prefix(EnemyCombat __instance, ref int[] __result)
         {
-            var overrideAb = new List<int>();
-            CombatManager.Instance.PostNotification(CustomTriggers.OverrideEnemyAbilityUsage, __instance, overrideAb);
+            var overrideAbRef = new EnemyAbilityOverrideReference();
+            CombatManager.Instance.PostNotification(CustomTriggers.OverrideEnemyAbilityUsage, __instance, overrideAbRef);
 
-            if (overrideAb.Count <= 0)
+            var overrideAb = overrideAbRef.overrideAbiltyIDs;
+            if (overrideAb == null || overrideAb.Count <= 0)
                 return true;
 
             var res = new List<int>();
