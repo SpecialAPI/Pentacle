@@ -22,7 +22,7 @@ namespace Pentacle.Triggers
         public static readonly string OnBeforeAbilityEffects = $"{MOD_PREFIX}_BeforeAbilityEffects";
         /// <summary>
         /// Gets sent to a character when its abilities get initialized.
-        /// <para>Sends an <see cref="IntegerReference"/> with value equal to the character's actual level as args. Its value can be modified to change which level the character's abilities will be.</para>
+        /// <para>Sends a <see cref="ModifyAbilityRankReference"/> as args. Its abilityRank value can be modified to change which level the character's abilities will be.</para>
         /// </summary>
         public static readonly string ModifyAbilityRank = $"{MOD_PREFIX}_ModifyAbilityRank";
         /// <summary>

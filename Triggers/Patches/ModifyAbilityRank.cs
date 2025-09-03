@@ -1,4 +1,5 @@
 ﻿using Pentacle.Tools;
+using Pentacle.Triggers.Args;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -25,10 +26,10 @@ namespace Pentacle.Triggers.Patches
 
         private static int ModifyAbilityRank_TriggerEvent(int curr, CharacterCombat cc)
         {
-            var intRef = new IntegerReference(curr);
-            CombatManager.Instance.PostNotification(CustomTriggers.ModifyAbilityRank, cc, intRef);
+            var rankRef = new ModifyAbilityRankReference(curr);
+            CombatManager.Instance.PostNotification(CustomTriggers.ModifyAbilityRank, cc, rankRef);
 
-            return cc.Character.ClampRank(intRef.value);
+            return cc.Character.ClampRank(rankRef.abilityRank);
         }
     }
 }
