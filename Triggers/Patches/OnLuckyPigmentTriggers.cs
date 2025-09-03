@@ -1,5 +1,6 @@
-﻿using Pentacle.Tools;
-using MonoMod.Cil;
+﻿using MonoMod.Cil;
+using Pentacle.Tools;
+using Pentacle.Triggers.Args;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -58,9 +59,9 @@ namespace Pentacle.Triggers.Patches
             if (stats == null)
                 return curr;
 
-            var intRef = new IntegerReference(amount);
+            var luckyPigmentRef = new OnLuckyPigmentSuccessReference(amount);
             foreach(var u in stats.UnitsOnField())
-                CombatManager.Instance.PostNotification(CustomTriggers.OnLuckyPigmentSuccess, u, intRef);
+                CombatManager.Instance.PostNotification(CustomTriggers.OnLuckyPigmentSuccess, u, luckyPigmentRef);
 
             return curr;
         }

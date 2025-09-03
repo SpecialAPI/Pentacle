@@ -1,4 +1,5 @@
 ﻿using Pentacle.Triggers;
+using Pentacle.Triggers.Args;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -147,9 +148,9 @@ namespace Pentacle.Tools
             var jumpInfo = new JumpAnimationInformation(true, stats.combatUI.LuckyManaPosition);
             stats.MainManaBar.AddManaAmount(stats.LuckyManaColorOptions[stats.SelectedLuckyColor], amount, jumpInfo);
 
-            var intRef = new IntegerReference(amount);
+            var luckyPigmentRef = new OnLuckyPigmentSuccessReference(amount);
             foreach (var u in stats.UnitsOnField())
-                CombatManager.Instance.PostNotification(CustomTriggers.OnLuckyPigmentSuccess, u, intRef);
+                CombatManager.Instance.PostNotification(CustomTriggers.OnLuckyPigmentSuccess, u, luckyPigmentRef);
 
             return amount;
         }

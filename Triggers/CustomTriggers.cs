@@ -37,7 +37,7 @@ namespace Pentacle.Triggers
         public static readonly string ModifyWrongPigmentAmount_UI = $"{MOD_PREFIX}_ModifyWrongPigmentAmount_UI";
         /// <summary>
         /// Gets sent to all enemies and characters when lucky pigment gets produced.
-        /// <para>Sends an <see cref="IntegerReference"/> with value equal to the amount of lucky pigment produced as args. The args are only meant for getting that amount, its value should not be modified.</para>
+        /// <para>Sends an <see cref="OnLuckyPigmentSuccessReference"/> as args, providing info about how much lucky pigment was produced.</para>
         /// </summary>
         public static readonly string OnLuckyPigmentSuccess = $"{MOD_PREFIX}_OnLuckyPigmentSuccess";
         /// <summary>
