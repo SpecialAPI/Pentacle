@@ -56,10 +56,10 @@ namespace Pentacle.Triggers
         /// </summary>
         public static readonly string OnAnyoneMoved = $"{MOD_PREFIX}_OnAnyoneMoved";
         /// <summary>
-        /// Gets sent to an enemy when an enemy rolls which abilities it will perform.
-        /// <para>Sends an <see cref="EnemyAbilityOverrideReference"/> as args. If ability indexes are added the args' overrideAbiltyIDs list, the abilities the enemy rolls will be replaced by abilities of those indexes. -1 (or any other invalid ability index) can be added to the list to make the enemy not roll any abilities at all (as long as no valid ability indexes are in the list).</para>
+        /// Gets sent to an enemy after it rolls its abilities normally.
+        /// <para>Sends an <see cref="ModifyUsedEnemyAbilitiesReference"/> as args. Elements can be added and/or removes from its rolledAbilityIDs list to </para>
         /// </summary>
-        public static readonly string OverrideEnemyAbilityUsage = $"{MOD_PREFIX}_OverrideEnemyAbilityUsage";
+        public static readonly string ModifyUsedEnemyAbilities = $"{MOD_PREFIX}_ModifyUsedEnemyAbilities";
         /// <summary>
         /// Gets sent to all enemies, characters and slots at the start of the player's turn.
         /// <para>Sends <see langword="null"/> as args.</para>
