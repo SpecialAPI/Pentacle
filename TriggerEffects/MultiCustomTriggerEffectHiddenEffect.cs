@@ -1,4 +1,4 @@
-﻿using Pentacle.Advanced;
+﻿using Pentacle.HiddenPassiveEffects;
 using System;
 using System.Collections.Generic;
 using System.Text;

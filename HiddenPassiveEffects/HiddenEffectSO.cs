@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Pentacle.Advanced
+namespace Pentacle.HiddenPassiveEffects
 {
     /// <summary>
     /// The base class for Pentacle's hidden passive effect system.

@@ -1,9 +1,10 @@
-﻿using Pentacle.Tools;
+﻿using Pentacle.Advanced;
+using Pentacle.Tools;
 using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace Pentacle.Advanced.Patches.AdvancedEnemy
+namespace Pentacle.HiddenPassiveEffects.Patches
 {
     [HarmonyPatch]
     internal static class HiddenEffectPatches_Enemy
