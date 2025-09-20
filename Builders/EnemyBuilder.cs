@@ -312,7 +312,7 @@ namespace Pentacle.Builders
         /// <param name="en">The object instance of the enemy.</param>
         /// <param name="hiddenEffects">The hidden passive effects to add to the enemy, as HiddenEffectSO objects.<para>Can either be given as an array or as infinitely repeatable arguments.</para></param>
         /// <returns>The instance of the enemy, for method chaining.</returns>
-        public static T AddHiddenEffects<T>(this T en, params HiddenEffectSO[] hiddenEffects) where T : AdvancedEnemySO
+        public static T AddHiddenEffects<T>(this T en, params HiddenPassiveEffectSO[] hiddenEffects) where T : AdvancedEnemySO
         {
             en.hiddenEffects ??= [];
             en.hiddenEffects.AddRange(hiddenEffects);

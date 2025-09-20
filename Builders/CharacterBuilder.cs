@@ -341,7 +341,7 @@ namespace Pentacle.Builders
         /// <param name="ch">The object instance of the character.</param>
         /// <param name="hiddenEffects">The hidden passive effects to add to the character, as HiddenEffectSO objects.<para>Can either be given as an array or as infinitely repeatable arguments.</para></param>
         /// <returns>The instance of the character, for method chaining.</returns>
-        public static T AddHiddenEffects<T>(this T ch, params HiddenEffectSO[] hiddenEffects) where T : AdvancedCharacterSO
+        public static T AddHiddenEffects<T>(this T ch, params HiddenPassiveEffectSO[] hiddenEffects) where T : AdvancedCharacterSO
         {
             ch.hiddenEffects ??= [];
             ch.hiddenEffects.AddRange(hiddenEffects);

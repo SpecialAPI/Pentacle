@@ -8,7 +8,7 @@ namespace Pentacle.TriggerEffects
     /// <summary>
     /// A hidden passive effect that can have any amount of trigger-, connection- and disconnection-activated effects, using Pentacle's trigger effect system.
     /// </summary>
-    public class MultiCustomTriggerEffectHiddenEffect : HiddenEffectSO, ITriggerEffectHandler
+    public class MultiCustomTriggerEffectHiddenPassiveEffect : HiddenPassiveEffectSO, ITriggerEffectHandler
     {
         /// <inheritdoc/>
         public override bool Immediate => false;

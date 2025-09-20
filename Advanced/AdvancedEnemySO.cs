@@ -14,6 +14,6 @@ namespace Pentacle.Advanced
         /// <summary>
         /// A list of this enemy's hidden passive effects.
         /// </summary>
-        public List<HiddenEffectSO> hiddenEffects = [];
+        public List<HiddenPassiveEffectSO> hiddenEffects = [];
     }
 }

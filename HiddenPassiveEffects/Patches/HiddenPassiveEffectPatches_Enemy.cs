@@ -7,13 +7,13 @@ using System.Text;
 namespace Pentacle.HiddenPassiveEffects.Patches
 {
     [HarmonyPatch]
-    internal static class HiddenEffectPatches_Enemy
+    internal static class HiddenPassiveEffectPatches_Enemy
     {
-        private static readonly MethodInfo aache_u_a = AccessTools.Method(typeof(HiddenEffectPatches_Enemy), nameof(AttachAndConnectHiddenEffects_Unbox_Attach));
-        private static readonly MethodInfo dadhe_b_d = AccessTools.Method(typeof(HiddenEffectPatches_Enemy), nameof(DettachAndDisconnectHiddenEffects_Box_Dettach));
-        private static readonly MethodInfo che_i_c = AccessTools.Method(typeof(HiddenEffectPatches_Enemy), nameof(ConnectHiddenEffects_Initialization_Connect));
-        private static readonly MethodInfo che_ne_c = AccessTools.Method(typeof(HiddenEffectPatches_Enemy), nameof(ConnectHiddenEffects_NewEnemy_Connect));
-        private static readonly MethodInfo che_t_c = AccessTools.Method(typeof(HiddenEffectPatches_Enemy), nameof(ConnectHiddenEffects_Transform_Connect));
+        private static readonly MethodInfo aache_u_a = AccessTools.Method(typeof(HiddenPassiveEffectPatches_Enemy), nameof(AttachAndConnectHiddenEffects_Unbox_Attach));
+        private static readonly MethodInfo dadhe_b_d = AccessTools.Method(typeof(HiddenPassiveEffectPatches_Enemy), nameof(DettachAndDisconnectHiddenEffects_Box_Dettach));
+        private static readonly MethodInfo che_i_c = AccessTools.Method(typeof(HiddenPassiveEffectPatches_Enemy), nameof(ConnectHiddenEffects_Initialization_Connect));
+        private static readonly MethodInfo che_ne_c = AccessTools.Method(typeof(HiddenPassiveEffectPatches_Enemy), nameof(ConnectHiddenEffects_NewEnemy_Connect));
+        private static readonly MethodInfo che_t_c = AccessTools.Method(typeof(HiddenPassiveEffectPatches_Enemy), nameof(ConnectHiddenEffects_Transform_Connect));
 
         private static void AttachHiddenEffects(EnemyCombat cc)
         {

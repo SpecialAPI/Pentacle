@@ -9,7 +9,7 @@ namespace Pentacle.HiddenPassiveEffects
     /// <para>Hidden passive effects can only be added to characters and enemies that use Pentacle's AdvancedCharacterSO and AdvancedEnemySO classes respectively.</para>
     /// <para>It is not possible to add new hidden passive effects to an individual enemy or character in the middle of combat.</para>
     /// </summary>
-    public abstract class HiddenEffectSO : ScriptableObject, ITriggerEffect<IEffectorChecks>
+    public abstract class HiddenPassiveEffectSO : ScriptableObject, ITriggerEffect<IEffectorChecks>
     {
         /// <summary>
         /// The list of string trigger calls that trigger this hidden passive effect.
@@ -185,7 +185,7 @@ namespace Pentacle.HiddenPassiveEffects
     /// <param name="effect">The hidden passive effect this action should trigger.</param>
     /// <param name="sender">The object that sent the trigger call that triggered this effect.</param>
     /// <param name="args">Additional information from the trigger that can be used by this hidden passive effect.</param>
-    public class TriggerHiddenEffectAction(HiddenEffectSO effect, object sender, object args) : CombatAction
+    public class TriggerHiddenEffectAction(HiddenPassiveEffectSO effect, object sender, object args) : CombatAction
     {
         /// <inheritdoc/>
         public override IEnumerator Execute(CombatStats stats)
@@ -204,7 +204,7 @@ namespace Pentacle.HiddenPassiveEffects
     /// <param name="sender">The object that sent the trigger call that triggered this effect.</param>
     /// <param name="args">Additional information from the trigger that can be used by this hidden passive effect.</param>
     /// <param name="index">The index of the custom trigger this action should trigger.</param>
-    public class TriggerHiddenEffectCustomAction(HiddenEffectSO effect, object sender, object args, int index) : CombatAction
+    public class TriggerHiddenEffectCustomAction(HiddenPassiveEffectSO effect, object sender, object args, int index) : CombatAction
     {
         /// <inheritdoc/>
         public override IEnumerator Execute(CombatStats stats)

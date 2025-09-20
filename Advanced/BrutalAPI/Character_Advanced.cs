@@ -19,7 +19,7 @@ namespace Pentacle.Advanced.BrutalAPI
         /// <summary>
         /// Gets or sets this character's hidden passive effects.
         /// </summary>
-        public List<HiddenEffectSO> HiddenEffects
+        public List<HiddenPassiveEffectSO> HiddenEffects
         {
             get => advancedCharacter.hiddenEffects;
             set => advancedCharacter.hiddenEffects = value;

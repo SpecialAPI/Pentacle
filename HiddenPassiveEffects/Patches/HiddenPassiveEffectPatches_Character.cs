@@ -7,16 +7,16 @@ using System.Text;
 namespace Pentacle.HiddenPassiveEffects.Patches
 {
     [HarmonyPatch]
-    internal static class HiddenEffectPatches_Character
+    internal static class HiddenPassiveEffectPatches_Character
     {
-        private static readonly MethodInfo aache_u_a = AccessTools.Method(typeof(HiddenEffectPatches_Character), nameof(AttachAndConnectHiddenEffects_Unbox_Attach));
-        private static readonly MethodInfo dadhe_b_d = AccessTools.Method(typeof(HiddenEffectPatches_Character), nameof(DettachAndDisconnectHiddenEffects_Box_Dettach));
-        private static readonly MethodInfo dadhe_f_d = AccessTools.Method(typeof(HiddenEffectPatches_Character), nameof(DettachAndDisconnectHiddenEffects_Fleeting_Dettach));
-        private static readonly MethodInfo che_i_c = AccessTools.Method(typeof(HiddenEffectPatches_Character), nameof(ConnectHiddenEffects_Initialization_Connect));
-        private static readonly MethodInfo che_r_c = AccessTools.Method(typeof(HiddenEffectPatches_Character), nameof(ConnectHiddenEffects_Resurrect_Connect));
-        private static readonly MethodInfo che_nc_c = AccessTools.Method(typeof(HiddenEffectPatches_Character), nameof(ConnectHiddenEffects_NewCharacter_Connect));
-        private static readonly MethodInfo che_t_c = AccessTools.Method(typeof(HiddenEffectPatches_Character), nameof(ConnectHiddenEffects_Transform_Connect));
-        private static readonly MethodInfo dhe_d_d = AccessTools.Method(typeof(HiddenEffectPatches_Character), nameof(DisconnectHiddenEffects_Death_Disconnect));
+        private static readonly MethodInfo aache_u_a = AccessTools.Method(typeof(HiddenPassiveEffectPatches_Character), nameof(AttachAndConnectHiddenEffects_Unbox_Attach));
+        private static readonly MethodInfo dadhe_b_d = AccessTools.Method(typeof(HiddenPassiveEffectPatches_Character), nameof(DettachAndDisconnectHiddenEffects_Box_Dettach));
+        private static readonly MethodInfo dadhe_f_d = AccessTools.Method(typeof(HiddenPassiveEffectPatches_Character), nameof(DettachAndDisconnectHiddenEffects_Fleeting_Dettach));
+        private static readonly MethodInfo che_i_c = AccessTools.Method(typeof(HiddenPassiveEffectPatches_Character), nameof(ConnectHiddenEffects_Initialization_Connect));
+        private static readonly MethodInfo che_r_c = AccessTools.Method(typeof(HiddenPassiveEffectPatches_Character), nameof(ConnectHiddenEffects_Resurrect_Connect));
+        private static readonly MethodInfo che_nc_c = AccessTools.Method(typeof(HiddenPassiveEffectPatches_Character), nameof(ConnectHiddenEffects_NewCharacter_Connect));
+        private static readonly MethodInfo che_t_c = AccessTools.Method(typeof(HiddenPassiveEffectPatches_Character), nameof(ConnectHiddenEffects_Transform_Connect));
+        private static readonly MethodInfo dhe_d_d = AccessTools.Method(typeof(HiddenPassiveEffectPatches_Character), nameof(DisconnectHiddenEffects_Death_Disconnect));
 
         private static void AttachHiddenEffects(CharacterCombat cc)
         {
