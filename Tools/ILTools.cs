@@ -361,6 +361,20 @@ namespace Pentacle.Tools
         }
 
         /// <summary>
+        /// Emits an instruction that calls a static delegate without any additional invocations.
+        /// </summary>
+        /// <param name="crs">The cursor that should emit the instruction.</param>
+        /// <param name="call">The delegate that the instruction should call.</param>
+        /// <exception cref="ArgumentException"></exception>
+        public static void EmitStaticDelegate(this ILCursor crs, Delegate call)
+        {
+            if (call.GetInvocationList().Length != 1 || call.Target != null)
+                throw new ArgumentException("Delegate is either not static or has additional invocations");
+
+            crs.Emit(OpCodes.Call, call.Method);
+        }
+
+        /// <summary>
         /// A fixed version of Instruction.ToString() that works with ILLabel branch targets.
         /// </summary>
         /// <param name="c">The instruction to convert to a string.</param>
