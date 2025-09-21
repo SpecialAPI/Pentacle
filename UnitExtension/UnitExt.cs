@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Pentacle.HiddenPassiveEffects;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -22,6 +23,11 @@ namespace Pentacle.UnitExtension
         /// The index of this unit's current health color option.
         /// </summary>
         public int HealthColorIndex = 0;
+
+        /// <summary>
+        /// A list of his unit's hidden passive effects.
+        /// </summary>
+        public readonly List<HiddenPassiveEffectSO> HiddenPassiveEffects = [];
 
         internal UnitExt(IUnit unit)
         {
