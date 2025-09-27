@@ -9,187 +9,173 @@ namespace Pentacle.HiddenPassiveEffects.Patches
     [HarmonyPatch]
     internal static class HiddenPassiveEffectPatches_Character
     {
-        private static readonly MethodInfo aache_u_a = AccessTools.Method(typeof(HiddenPassiveEffectPatches_Character), nameof(AttachAndConnectHiddenEffects_Unbox_Attach));
-        private static readonly MethodInfo dadhe_b_d = AccessTools.Method(typeof(HiddenPassiveEffectPatches_Character), nameof(DettachAndDisconnectHiddenEffects_Box_Dettach));
-        private static readonly MethodInfo dadhe_f_d = AccessTools.Method(typeof(HiddenPassiveEffectPatches_Character), nameof(DettachAndDisconnectHiddenEffects_Fleeting_Dettach));
-        private static readonly MethodInfo che_i_c = AccessTools.Method(typeof(HiddenPassiveEffectPatches_Character), nameof(ConnectHiddenEffects_Initialization_Connect));
-        private static readonly MethodInfo che_r_c = AccessTools.Method(typeof(HiddenPassiveEffectPatches_Character), nameof(ConnectHiddenEffects_Resurrect_Connect));
-        private static readonly MethodInfo che_nc_c = AccessTools.Method(typeof(HiddenPassiveEffectPatches_Character), nameof(ConnectHiddenEffects_NewCharacter_Connect));
-        private static readonly MethodInfo che_t_c = AccessTools.Method(typeof(HiddenPassiveEffectPatches_Character), nameof(ConnectHiddenEffects_Transform_Connect));
-        private static readonly MethodInfo dhe_d_d = AccessTools.Method(typeof(HiddenPassiveEffectPatches_Character), nameof(DisconnectHiddenEffects_Death_Disconnect));
-
-        private static void AttachHiddenEffects(CharacterCombat cc)
+        private static void AddAndConnectHiddenPassiveEffects(CharacterCombat ch)
         {
-            if (cc == null || cc.Character == null)
+            if (ch.Character is not AdvancedCharacterSO advCHSO || advCHSO.hiddenEffects is not List<HiddenPassiveEffectSO> hiddenPassives)
                 return;
 
-            if (cc.Character is not AdvancedCharacterSO adv || adv.hiddenEffects == null)
-                return;
+            var ext = ch.Ext();
 
-            foreach (var e in adv.hiddenEffects)
+            foreach(var hpe in hiddenPassives)
             {
-                if (e == null)
+                if (hpe == null)
                     continue;
 
-                e.OnTriggerAttached(cc);
+                ext.HiddenPassiveEffects.Add(hpe);
+                hpe.OnTriggerAttached(ch);
             }
         }
 
-        private static void DettachHiddenEffects(CharacterCombat cc)
+        private static void RemoveDettachAndDisconnectHiddenPassiveEffects(CharacterCombat ch)
         {
-            if (cc == null || cc.Character == null)
-                return;
-
-            if (cc.Character is not AdvancedCharacterSO adv || adv.hiddenEffects == null)
-                return;
-
-            foreach (var e in adv.hiddenEffects)
+            foreach(var hpe in ch.Ext().HiddenPassiveEffects)
             {
-                if (e == null)
+                if(hpe == null)
                     continue;
 
-                e.OnTriggerDettached(cc);
+                hpe.OnTriggerDettached(ch);
+                hpe.OnDisconnected(ch);
+            }
+
+            ch.Ext().HiddenPassiveEffects.Clear();
+        }
+
+        private static void DettachAndDisconnectHiddenPassiveEffects(CharacterCombat ch)
+        {
+            foreach (var hpe in ch.Ext().HiddenPassiveEffects)
+            {
+                if (hpe == null)
+                    continue;
+
+                hpe.OnTriggerDettached(ch);
+                hpe.OnDisconnected(ch);
             }
         }
 
-        private static void ConnectHiddenEffects(CharacterCombat cc)
+        private static void DettachHiddenPassiveEffects(CharacterCombat ch)
         {
-            if (cc == null || cc.Character == null)
-                return;
-
-            if (cc.Character is not AdvancedCharacterSO adv || adv.hiddenEffects == null)
-                return;
-
-            foreach (var e in adv.hiddenEffects)
+            foreach (var hpe in ch.Ext().HiddenPassiveEffects)
             {
-                if (e == null)
+                if (hpe == null)
                     continue;
 
-                e.OnConnected(cc);
+                hpe.OnTriggerDettached(ch);
             }
         }
 
-        private static void DisconnectHiddenEffects(CharacterCombat cc)
+        private static void DisconnectHiddenPassiveEffects(CharacterCombat ch)
         {
-            if (cc == null || cc.Character == null)
-                return;
-
-            if (cc.Character is not AdvancedCharacterSO adv || adv.hiddenEffects == null)
-                return;
-
-            foreach (var e in adv.hiddenEffects)
+            foreach (var hpe in ch.Ext().HiddenPassiveEffects)
             {
-                if (e == null)
+                if (hpe == null)
                     continue;
 
-                e.OnDisconnected(cc);
+                hpe.OnDisconnected(ch);
+            }
+        }
+
+        private static void AttachHiddenPassiveEffects(CharacterCombat ch)
+        {
+            foreach (var hpe in ch.Ext().HiddenPassiveEffects)
+            {
+                if (hpe == null)
+                    continue;
+
+                hpe.OnTriggerAttached(ch);
+            }
+        }
+
+        private static void ConnectHiddenPassiveEffects(CharacterCombat ch)
+        {
+            foreach (var hpe in ch.Ext().HiddenPassiveEffects)
+            {
+                if (hpe == null)
+                    continue;
+
+                hpe.OnConnected(ch);
             }
         }
 
         [HarmonyPatch(typeof(CharacterCombat), MethodType.Constructor, typeof(int), typeof(int), typeof(CharacterSO), typeof(bool), typeof(int), typeof(int[]), typeof(int), typeof(BaseWearableSO), typeof(WearableStaticModifiers), typeof(bool), typeof(string), typeof(bool))]
-        [HarmonyPostfix]
-        private static void AttachHiddenEffects_Constructor_Postfix(CharacterCombat __instance)
+        [HarmonyILManipulator]
+        private static void AddAndConnectHiddenPassiveEffects_Constructor_Transpiler(ILContext ctx)
         {
-            AttachHiddenEffects(__instance);
+            var crs = new ILCursor(ctx);
+
+            if (!crs.JumpToNext(x => x.MatchCallOrCallvirt<CharacterCombat>(nameof(CharacterCombat.DefaultPassiveAbilityInitialization))))
+                return;
+
+            crs.Emit(OpCodes.Ldarg_0);
+            crs.EmitStaticDelegate(AddAndConnectHiddenPassiveEffects);
         }
 
         [HarmonyPatch(typeof(CharacterCombat), nameof(CharacterCombat.TransformCharacter))]
-        [HarmonyPostfix]
-        private static void AttachHiddenEffects_Transform_Postfix(CharacterCombat __instance)
+        [HarmonyILManipulator]
+        private static void AddConnectRemoveDisconnectHiddenPassiveEffects_Transform_Transpiler(ILContext ctx)
         {
-            AttachHiddenEffects(__instance);
-        }
+            var crs = new ILCursor(ctx);
 
-        [HarmonyPatch(typeof(CharacterCombat), nameof(CharacterCombat.ResurrectCharacterStart))]
-        [HarmonyPostfix]
-        private static void AttachHiddenEffects_Resurrect_Postfix(CharacterCombat __instance)
-        {
-            AttachHiddenEffects(__instance);
-        }
+            if (!crs.JumpBeforeNext(x => x.MatchCallOrCallvirt<CharacterCombat>(nameof(CharacterCombat.RemoveAndDisconnectAllPassiveAbilities))))
+                return;
 
-        [HarmonyPatch(typeof(CharacterCombat), nameof(CharacterCombat.ReConnectResurrectedCharacter))] // this one doesn't seem to be used anywhere
-        [HarmonyPostfix]
-        private static void AttachAndConnectHiddenEffects_Resurrect2_Postfix(CharacterCombat __instance)
-        {
-            AttachHiddenEffects(__instance);
-            ConnectHiddenEffects(__instance);
+            crs.Emit(OpCodes.Ldarg_0);
+            crs.EmitStaticDelegate(RemoveDettachAndDisconnectHiddenPassiveEffects);
+
+            if (!crs.JumpToNext(x => x.MatchCallOrCallvirt<CharacterCombat>(nameof(CharacterCombat.DefaultPassiveAbilityInitialization))))
+                return;
+
+            crs.Emit(OpCodes.Ldarg_0);
+            crs.EmitStaticDelegate(AddAndConnectHiddenPassiveEffects);
         }
 
         [HarmonyPatch(typeof(CombatStats), nameof(CombatStats.TryUnboxCharacter))]
         [HarmonyILManipulator]
-        private static void AttachAndConnectHiddenEffects_Unbox_Transpiler(ILContext ctx)
+        private static void ReconnectHiddenPassiveEffects_Unbox_Transpiler(ILContext ctx)
         {
             var crs = new ILCursor(ctx);
+
+            if (!crs.JumpToNext(x => x.MatchCallOrCallvirt<CharacterCombat>(nameof(CharacterCombat.DefaultPassiveAbilityInitialization))))
+                return;
+
+            crs.Emit(OpCodes.Ldloc_2);
+            crs.EmitStaticDelegate(AttachHiddenPassiveEffects);
 
             if (!crs.JumpToNext(x => x.MatchCallOrCallvirt<CharacterCombat>(nameof(CharacterCombat.ConnectPassives))))
                 return;
 
             crs.Emit(OpCodes.Ldloc_2);
-            crs.Emit(OpCodes.Call, aache_u_a);
-        }
-
-        private static void AttachAndConnectHiddenEffects_Unbox_Attach(CharacterCombat cc)
-        {
-            AttachHiddenEffects(cc);
-            ConnectHiddenEffects(cc);
-        }
-
-        [HarmonyPatch(typeof(CharacterCombat), nameof(CharacterCombat.TransformCharacter))]
-        [HarmonyPrefix]
-        private static void DettachAndDisconnectHiddenEffects_Transform_Prefix(CharacterCombat __instance)
-        {
-            DisconnectHiddenEffects(__instance);
-            DettachHiddenEffects(__instance);
+            crs.EmitStaticDelegate(ConnectHiddenPassiveEffects);
         }
 
         [HarmonyPatch(typeof(CharacterCombat), nameof(CharacterCombat.FinalizeDeadConnections))]
-        [HarmonyPrefix]
-        private static void DettachHiddenEffects_Death_Prefix(CharacterCombat __instance)
-        {
-            DettachHiddenEffects(__instance);
-        }
-
-        [HarmonyPatch(typeof(CombatStats), nameof(CombatStats.TryBoxCharacter))]
         [HarmonyILManipulator]
-        private static void DettachAndDisconnectHiddenEffects_Box_Transpiler(ILContext ctx)
+        private static void DettachHiddenPassiveEffects_FinalizeDeadConnections_Transpiler(ILContext ctx)
         {
             var crs = new ILCursor(ctx);
 
-            if (!crs.JumpToNext(x => x.MatchCallOrCallvirt<CharacterCombat>(nameof(CharacterCombat.RemoveAndDisconnectAllPassiveAbilities))))
+            if (!crs.JumpBeforeNext(x => x.MatchCallOrCallvirt<CharacterCombat>(nameof(CharacterCombat.DettachPassives))))
                 return;
 
-            crs.Emit(OpCodes.Ldloc_0);
-            crs.Emit(OpCodes.Call, dadhe_b_d);
+            crs.Emit(OpCodes.Ldarg_0);
+            crs.EmitStaticDelegate(DettachHiddenPassiveEffects);
         }
 
-        private static void DettachAndDisconnectHiddenEffects_Box_Dettach(CharacterCombat cc)
-        {
-            DisconnectHiddenEffects(cc);
-            DettachHiddenEffects(cc);
-        }
-
-        [HarmonyPatch(typeof(FleetingUnitAction), nameof(FleetingUnitAction.Execute), MethodType.Enumerator)]
+        [HarmonyPatch(typeof(CharacterCombat), nameof(CharacterCombat.ResurrectCharacterStart))]
         [HarmonyILManipulator]
-        private static void DettachAndDisconnectHiddenEffects_Fleeting_Transpiler(ILContext ctx)
+        private static void ReconnectHiddenPassiveEffects_ResurrectStart_Transpiler(ILContext ctx)
         {
             var crs = new ILCursor(ctx);
 
-            if (!crs.JumpToNext(x => x.MatchCallOrCallvirt<CharacterCombat>(nameof(CharacterCombat.RemoveAndDisconnectAllPassiveAbilities))))
+            if (!crs.JumpToNext(x => x.MatchCallOrCallvirt<CharacterCombat>(nameof(CharacterCombat.AttachAllPassives))))
                 return;
 
-            crs.Emit(OpCodes.Ldloc_2);
-            crs.Emit(OpCodes.Call, dadhe_f_d);
-        }
-
-        private static void DettachAndDisconnectHiddenEffects_Fleeting_Dettach(CharacterCombat cc)
-        {
-            DisconnectHiddenEffects(cc);
-            DettachHiddenEffects(cc);
+            crs.Emit(OpCodes.Ldarg_0);
+            crs.EmitStaticDelegate(AttachHiddenPassiveEffects);
         }
 
         [HarmonyPatch(typeof(CombatStats), nameof(CombatStats.Initialization))]
         [HarmonyILManipulator]
-        private static void ConnectHiddenEffects_Initialization_Transpiler(ILContext ctx)
+        private static void ConnectHiddenPassiveEffects_CombatInitialization_Transpiler(ILContext ctx)
         {
             var crs = new ILCursor(ctx);
 
@@ -197,17 +183,17 @@ namespace Pentacle.HiddenPassiveEffects.Patches
                 return;
 
             crs.Emit(OpCodes.Ldloc, 8);
-            crs.Emit(OpCodes.Call, che_i_c);
+            crs.EmitStaticDelegate(ConnectHiddenPassiveEffects_CombatInitialization_Connect);
         }
 
-        private static void ConnectHiddenEffects_Initialization_Connect(Dictionary<int, CharacterCombat>.ValueCollection.Enumerator e)
+        private static void ConnectHiddenPassiveEffects_CombatInitialization_Connect(Dictionary<int, CharacterCombat>.ValueCollection.Enumerator enumerator)
         {
-            ConnectHiddenEffects(e.Current);
+            ConnectHiddenPassiveEffects(enumerator.Current);
         }
 
         [HarmonyPatch(typeof(CombatStats), nameof(CombatStats.ResurrectDeadCharacter))]
         [HarmonyILManipulator]
-        private static void ConnectHiddenEffects_Resurrect_Transpiler(ILContext ctx)
+        private static void ReconnectHiddenPassiveEffects_Resurrect_Transpiler(ILContext ctx)
         {
             var crs = new ILCursor(ctx);
 
@@ -215,17 +201,12 @@ namespace Pentacle.HiddenPassiveEffects.Patches
                 return;
 
             crs.Emit(OpCodes.Ldarg_1);
-            crs.Emit(OpCodes.Call, che_r_c);
-        }
-
-        private static void ConnectHiddenEffects_Resurrect_Connect(CharacterCombat cc)
-        {
-            ConnectHiddenEffects(cc);
+            crs.EmitStaticDelegate(ConnectHiddenPassiveEffects);
         }
 
         [HarmonyPatch(typeof(CombatStats), nameof(CombatStats.AddNewCharacter))]
         [HarmonyILManipulator]
-        private static void ConnectHiddenEffects_NewCharacter_Transpiler(ILContext ctx)
+        private static void ConnectHiddenPassiveEffects_NewCharacter_Transpiler(ILContext ctx)
         {
             var crs = new ILCursor(ctx);
 
@@ -233,17 +214,12 @@ namespace Pentacle.HiddenPassiveEffects.Patches
                 return;
 
             crs.Emit(OpCodes.Ldloc_2);
-            crs.Emit(OpCodes.Call, che_nc_c);
-        }
-
-        private static void ConnectHiddenEffects_NewCharacter_Connect(CharacterCombat cc)
-        {
-            ConnectHiddenEffects(cc);
+            crs.EmitStaticDelegate(ConnectHiddenPassiveEffects);
         }
 
         [HarmonyPatch(typeof(CombatStats), nameof(CombatStats.TryTransformCharacter))]
         [HarmonyILManipulator]
-        private static void ConnectHiddenEffects_Transform_Transpiler(ILContext ctx)
+        private static void ConnectHiddenPassiveEffects_Transform_Transpiler(ILContext ctx)
         {
             var crs = new ILCursor(ctx);
 
@@ -251,30 +227,58 @@ namespace Pentacle.HiddenPassiveEffects.Patches
                 return;
 
             crs.Emit(OpCodes.Ldloc_0);
-            crs.Emit(OpCodes.Call, che_t_c);
-        }
-
-        private static void ConnectHiddenEffects_Transform_Connect(CharacterCombat cc)
-        {
-            ConnectHiddenEffects(cc);
+            crs.EmitStaticDelegate(ConnectHiddenPassiveEffects);
         }
 
         [HarmonyPatch(typeof(CharacterCombat), nameof(CharacterCombat.CharacterDeath))]
         [HarmonyILManipulator]
-        private static void DisconnectHiddenEffects_Death_Transpiler(ILContext ctx)
+        private static void DisconnectHiddenPassiveEffects_Death_Transpiler(ILContext ctx)
         {
             var crs = new ILCursor(ctx);
 
-            if (!crs.JumpToNext(x => x.MatchCallOrCallvirt<CharacterCombat>(nameof(CharacterCombat.DisconnectPassives))))
+            if (!crs.JumpBeforeNext(x => x.MatchCallOrCallvirt<CharacterCombat>(nameof(CharacterCombat.DisconnectPassives))))
                 return;
 
             crs.Emit(OpCodes.Ldarg_0);
-            crs.Emit(OpCodes.Call, dhe_d_d);
+            crs.EmitStaticDelegate(DisconnectHiddenPassiveEffects);
         }
 
-        private static void DisconnectHiddenEffects_Death_Disconnect(CharacterCombat cc)
+        [HarmonyPatch(typeof(CombatStats), nameof(CombatStats.TryBoxCharacter))]
+        [HarmonyILManipulator]
+        private static void DisconnectHiddenPassiveEffects_Box_Transpiler(ILContext ctx)
         {
-            DisconnectHiddenEffects(cc);
+            var crs = new ILCursor(ctx);
+
+            if (!crs.JumpBeforeNext(x => x.MatchCallOrCallvirt<CharacterCombat>(nameof(CharacterCombat.DisconnectPassives))))
+                return;
+
+            crs.Emit(OpCodes.Ldloc_0);
+            crs.EmitStaticDelegate(DisconnectHiddenPassiveEffects);
+
+            if (!crs.JumpBeforeNext(x => x.MatchCallOrCallvirt<CharacterCombat>(nameof(CharacterCombat.RemoveAndDisconnectAllPassiveAbilities))))
+                return;
+
+            crs.Emit(OpCodes.Ldloc_0);
+            crs.EmitStaticDelegate(DettachHiddenPassiveEffects);
+        }
+
+        [HarmonyPatch(typeof(FleetingUnitAction), nameof(FleetingUnitAction.Execute), MethodType.Enumerator)]
+        [HarmonyILManipulator]
+        private static void DisconnectHiddenPassiveEffects_Fleeting_Transpiler(ILContext ctx)
+        {
+            var crs = new ILCursor(ctx);
+
+            if (!crs.JumpBeforeNext(x => x.MatchCallOrCallvirt<CharacterCombat>(nameof(CharacterCombat.DisconnectPassives))))
+                return;
+
+            crs.Emit(OpCodes.Ldloc_2);
+            crs.EmitStaticDelegate(DisconnectHiddenPassiveEffects);
+
+            if (!crs.JumpBeforeNext(x => x.MatchCallOrCallvirt<CharacterCombat>(nameof(CharacterCombat.RemoveAndDisconnectAllPassiveAbilities))))
+                return;
+
+            crs.Emit(OpCodes.Ldloc_2);
+            crs.EmitStaticDelegate(DettachHiddenPassiveEffects);
         }
     }
 }
