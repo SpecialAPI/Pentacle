@@ -1,4 +1,5 @@
 ﻿using Pentacle.Advanced;
+using Pentacle.Tools;
 
 namespace Pentacle.HiddenPassiveEffects.Patches
 {
@@ -90,6 +91,19 @@ namespace Pentacle.HiddenPassiveEffects.Patches
 
                 hpe.OnConnected(en);
             }
+        }
+
+        [HarmonyPatch(typeof(EnemyCombat), MethodType.Constructor, typeof(int), typeof(int), typeof(EnemySO), typeof(bool), typeof(int))]
+        [HarmonyILManipulator]
+        private static void AddAndConnectHiddenPassiveEffects_Constructor_Transpiler(ILContext ctx)
+        {
+            var crs = new ILCursor(ctx);
+
+            if (!crs.JumpToNext(x => x.MatchCallOrCallvirt<EnemyCombat>(nameof(EnemyCombat.DefaultPassiveAbilityInitialization))))
+                return;
+
+            crs.Emit(OpCodes.Ldarg_0);
+            crs.EmitStaticDelegate(AddAndConnectHiddenPassiveEffects);
         }
     }
 }
