@@ -112,13 +112,18 @@ namespace Pentacle.HiddenPassiveEffects.Patches
         {
             var crs = new ILCursor(ctx);
 
-            // Disconnecting the passives will be handled in the FinalizationEnd patch.
-
             if (!crs.JumpToNext(x => x.MatchCallOrCallvirt<EnemyCombat>(nameof(EnemyCombat.DefaultPassiveAbilityInitialization))))
                 return;
 
             crs.Emit(OpCodes.Ldarg_0);
             crs.EmitStaticDelegate(AddAndConnectHiddenPassiveEffects);
+        }
+
+        [HarmonyPatch(typeof(EnemyCombat), nameof(EnemyCombat.FinalizationEnd))]
+        [HarmonyPrefix]
+        private static void DettachAndDisconnectHiddenPassiveEffects_FinalizationEnd_Prefix(EnemyCombat __instance)
+        {
+            DettachAndDisconnectHiddenPassiveEffects(__instance);
         }
     }
 }
