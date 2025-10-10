@@ -112,6 +112,12 @@ namespace Pentacle.HiddenPassiveEffects.Patches
         {
             var crs = new ILCursor(ctx);
 
+            if (!crs.JumpBeforeNext(x => x.MatchCallOrCallvirt<EnemyCombat>(nameof(EnemyCombat.FinalizationEnd))))
+                return;
+
+            crs.Emit(OpCodes.Ldarg_0);
+            crs.EmitStaticDelegate(RemoveDettachAndDisconnectHiddenPassiveEffects);
+
             if (!crs.JumpToNext(x => x.MatchCallOrCallvirt<EnemyCombat>(nameof(EnemyCombat.DefaultPassiveAbilityInitialization))))
                 return;
 
