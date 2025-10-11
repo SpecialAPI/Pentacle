@@ -131,5 +131,23 @@ namespace Pentacle.HiddenPassiveEffects.Patches
         {
             DettachAndDisconnectHiddenPassiveEffects(__instance);
         }
+
+        [HarmonyPatch(typeof(CombatStats), nameof(CombatStats.Initialization))]
+        [HarmonyILManipulator]
+        private static void ConnectHiddenPassiveEffects_CombatInitialization_Transpiler(ILContext ctx)
+        {
+            var crs = new ILCursor(ctx);
+
+            if (!crs.JumpToNext(x => x.MatchCallOrCallvirt<EnemyCombat>(nameof(EnemyCombat.ConnectPassives))))
+                return;
+
+            crs.Emit(OpCodes.Ldloc, 9);
+            crs.EmitStaticDelegate(ConnectHiddenPassiveEffects_CombatInitialization_Connect);
+        }
+
+        private static void ConnectHiddenPassiveEffects_CombatInitialization_Connect(Dictionary<int, EnemyCombat>.ValueCollection.Enumerator enumerator)
+        {
+            ConnectHiddenPassiveEffects(enumerator.Current);
+        }
     }
 }
