@@ -149,5 +149,18 @@ namespace Pentacle.HiddenPassiveEffects.Patches
         {
             ConnectHiddenPassiveEffects(enumerator.Current);
         }
+
+        [HarmonyPatch(typeof(CombatStats), nameof(CombatStats.TryTransformEnemy))]
+        [HarmonyILManipulator]
+        private static void ConnectHiddenPassiveEffects_Transform_Transpiler(ILContext ctx)
+        {
+            var crs = new ILCursor(ctx);
+
+            if (!crs.JumpToNext(x => x.MatchCallOrCallvirt<EnemyCombat>(nameof(EnemyCombat.ConnectPassives))))
+                return;
+
+            crs.Emit(OpCodes.Ldloc_0);
+            crs.EmitStaticDelegate(ConnectHiddenPassiveEffects);
+        }
     }
 }
