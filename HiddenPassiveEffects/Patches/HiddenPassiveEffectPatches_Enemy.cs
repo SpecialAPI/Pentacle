@@ -127,9 +127,12 @@ namespace Pentacle.HiddenPassiveEffects.Patches
 
         [HarmonyPatch(typeof(EnemyCombat), nameof(EnemyCombat.FinalizationEnd))]
         [HarmonyPrefix]
-        private static void DettachAndDisconnectHiddenPassiveEffects_FinalizationEnd_Prefix(EnemyCombat __instance)
+        private static void DettachAndDisconnectHiddenPassiveEffects_FinalizationEnd_Prefix(EnemyCombat __instance, bool disconnectPassives)
         {
-            DettachAndDisconnectHiddenPassiveEffects(__instance);
+            if (disconnectPassives)
+                DettachAndDisconnectHiddenPassiveEffects(__instance);
+            else
+                DettachHiddenPassiveEffects(__instance);
         }
 
         [HarmonyPatch(typeof(CombatStats), nameof(CombatStats.Initialization))]
