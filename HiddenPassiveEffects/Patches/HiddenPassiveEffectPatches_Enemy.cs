@@ -178,5 +178,18 @@ namespace Pentacle.HiddenPassiveEffects.Patches
             crs.Emit(OpCodes.Ldloc_2);
             crs.EmitStaticDelegate(ConnectHiddenPassiveEffects);
         }
+
+        [HarmonyPatch(typeof(EnemyCombat), nameof(EnemyCombat.EnemyDeath))]
+        [HarmonyILManipulator]
+        private static void DisconnectHiddenPassiveEffects_Death_Transpiler(ILContext ctx)
+        {
+            var crs = new ILCursor(ctx);
+
+            if (!crs.JumpBeforeNext(x => x.MatchCallOrCallvirt<EnemyCombat>(nameof(EnemyCombat.DisconnectPassives))))
+                return;
+
+            crs.Emit(OpCodes.Ldarg_0);
+            crs.EmitStaticDelegate(DisconnectHiddenPassiveEffects);
+        }
     }
 }
