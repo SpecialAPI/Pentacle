@@ -204,5 +204,24 @@ namespace Pentacle.HiddenPassiveEffects.Patches
             crs.Emit(OpCodes.Ldloc_3);
             crs.EmitStaticDelegate(DisconnectHiddenPassiveEffects);
         }
+
+        [HarmonyPatch(typeof(CombatStats), nameof(CombatStats.TryBoxEnemy))]
+        [HarmonyILManipulator]
+        private static void DisconnectHiddenPassiveEffects_Box_Transpiler(ILContext ctx)
+        {
+            var crs = new ILCursor(ctx);
+
+            if (!crs.JumpBeforeNext(x => x.MatchCallOrCallvirt<EnemyCombat>(nameof(EnemyCombat.DisconnectPassives))))
+                return;
+
+            crs.Emit(OpCodes.Ldloc_0);
+            crs.EmitStaticDelegate(DisconnectHiddenPassiveEffects);
+
+            if (!crs.JumpBeforeNext(x => x.MatchCallOrCallvirt<EnemyCombat>(nameof(EnemyCombat.RemoveAndDisconnectAllPassiveAbilities))))
+                return;
+
+            crs.Emit(OpCodes.Ldloc_0);
+            crs.EmitStaticDelegate(DettachHiddenPassiveEffects);
+        }
     }
 }
