@@ -16,16 +16,18 @@ namespace Pentacle.Triggers.Patches
             var modifyAbRef = new ModifyUsedEnemyAbilitiesReference([..__result]);
             CombatManager.Instance.PostNotification(CustomTriggers.ModifyUsedEnemyAbilities, __instance, modifyAbRef);
 
-            for(var i = 0; i < modifyAbRef.usedAbilityIDs.Count; i++)
+            var abIds = modifyAbRef.usedAbilityIDs;
+            for(var i = 0; i < abIds.Count; i++)
             {
-                if (i >= 0 && i < __instance.Abilities.Count)
+                var abId = abIds[i];
+                if (abId >= 0 && abId < __instance.Abilities.Count)
                     continue;
 
-                modifyAbRef.usedAbilityIDs.RemoveAt(i);
+                abIds.RemoveAt(i);
                 i--;
             }
 
-            __result = [..modifyAbRef.usedAbilityIDs];
+            __result = [..abIds];
         }
     }
 }
