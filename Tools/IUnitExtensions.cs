@@ -222,76 +222,19 @@ namespace Pentacle.Tools
         /// <returns>A DamageInfo that stores how much damage was dealt and whether it was fatal or not.</returns>
         public static DamageInfo SpecialDamage(this IUnit u, int amount, IUnit killer, SpecialDamageInfo sinfo, string deathType, int targetSlotOffset = -1, bool addHealthMana = true, bool directDamage = true, bool ignoresShield = false, string damageId = "")
         {
-            if (!SpecialDamageReversePatch.SpecialDamagePatchDone)
+            if (!DamageReversePatches.ReversePatchesDone)
             {
-                PentacleLogger.LogError($"Trying to do SpecialDamage before the SpecialDamagePatch was done. This should not be happening.");
+                PentacleLogger.LogError($"Trying to do SpecialDamage before the Damage reverse patches are done. This should not be happening.");
                 return default;
             }
 
             if (u is CharacterCombat cc)
-                return SpecialDamageReversePatch.SpecialDamage_Characters_ReversePatch(cc, amount, killer, deathType, targetSlotOffset, addHealthMana, directDamage, ignoresShield, damageId, sinfo);
+                return DamageReversePatches.SpecialDamage_Characters_ReversePatch(cc, amount, killer, deathType, targetSlotOffset, addHealthMana, directDamage, ignoresShield, damageId, sinfo);
             else if (u is EnemyCombat ec)
-                return SpecialDamageReversePatch.SpecialDamage_Enemies_ReversePatch(ec, amount, killer, deathType, targetSlotOffset, addHealthMana, directDamage, ignoresShield, damageId, sinfo);
+                return DamageReversePatches.SpecialDamage_Enemies_ReversePatch(ec, amount, killer, deathType, targetSlotOffset, addHealthMana, directDamage, ignoresShield, damageId, sinfo);
 
             PentacleLogger.LogError("Trying to do SpecialDanage to a unit that is neither an enemy nor a party member.");
             return default;
-        }
-
-        /// <summary>
-        /// Deals fake damage to a unit. This will trigger all the damage-related notifications, but won't change the unit's health or produce pigment.
-        /// </summary>
-        /// <param name="u">The unit that will be dealt fake damage.</param>
-        /// <param name="amount">The amount of fake damage to deal.</param>
-        /// <param name="killer">The unit dealing the fake damage.</param>
-        /// <param name="targetSlotOffset">The offset of the hit slot from the unit's first slot. If this number is negative, the fake damage will be applied to all of the unit's slots.</param>
-        /// <param name="directDamage">If true, the fake damage will be considered direct. If false, the fake damage will be considered indirect.</param>
-        /// <param name="ignoresShield">If true, the fake damage will ignore shield on the unit's slots.</param>
-        /// <param name="specialDamage">The ID of the fake damage's type. If this argument is empty, the fake damage's type will be determined by how much damage is dealt instead.</param>
-        /// <returns>How much fake damage was dealt, taking damage modifiers and current health into account.</returns>
-        public static int FakeDamage(this IUnit u, int amount, IUnit killer, int targetSlotOffset = -1, bool directDamage = true, bool ignoresShield = false, string specialDamage = "")
-        {
-            var firstSlot = u.SlotID;
-            var lastSlot = u.LastSlotId();
-
-            if (targetSlotOffset >= 0)
-            {
-                targetSlotOffset = Mathf.Clamp(u.SlotID + targetSlotOffset, firstSlot, lastSlot);
-                firstSlot = targetSlotOffset;
-                lastSlot = targetSlotOffset;
-            }
-
-            var ex = new DamageReceivedValueChangeException(amount, specialDamage, directDamage, ignoresShield, firstSlot, lastSlot, killer, u);
-
-            CombatManager.Instance.PostNotification(TriggerCalls.OnBeingDamaged.ToString(), u, ex);
-            amount = ex.GetModifiedValue();
-
-            var newHealth = Mathf.Max(u.CurrentHealth - amount, 0);
-            var damageDealt = u.CurrentHealth - newHealth;
-
-            if(damageDealt > 0)
-            {
-                if (specialDamage == "")
-                    specialDamage = Utils.GetBasicDamageIDFromAmount(amount);
-
-                if (u is CharacterCombat)
-                    CombatManager.Instance.AddUIAction(new CharacterDamagedUIAction(u.ID, u.CurrentHealth, u.MaximumHealth, amount, CombatType_GameIDs.Dmg_Weak.ToString()));
-                else if (u is EnemyCombat)
-                    CombatManager.Instance.AddUIAction(new EnemyDamagedUIAction(u.ID, u.CurrentHealth, u.MaximumHealth, amount, CombatType_GameIDs.Dmg_Weak.ToString()));
-
-                CombatManager.Instance.PostNotification(TriggerCalls.OnDamaged.ToString(), u, new IntegerReference(damageDealt));
-
-                if (directDamage)
-                    CombatManager.Instance.PostNotification(TriggerCalls.OnDirectDamaged.ToString(), u, new IntegerReference(damageDealt));
-            }
-            else
-            {
-                if (u is CharacterCombat)
-                    CombatManager.Instance.AddUIAction(new CharacterNotDamagedUIAction(u.ID, CombatType_GameIDs.Dmg_Weak.ToString()));
-                else if (u is EnemyCombat)
-                    CombatManager.Instance.AddUIAction(new EnemyNotDamagedUIAction(u.ID));
-            }
-
-            return damageDealt;
         }
     }
 }

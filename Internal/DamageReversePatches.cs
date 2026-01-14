@@ -7,89 +7,102 @@ using Pentacle.Misc;
 
 namespace Pentacle.Internal
 {
-    internal static class SpecialDamageReversePatch
+    internal static class DamageReversePatches
     {
-        internal static bool SpecialDamagePatchDone;
-
-        private static readonly MethodInfo sd_mpa = AccessTools.Method(typeof(SpecialDamageReversePatch), nameof(SpecialDamage_ModifyPigmentAmount));
-        private static readonly MethodInfo sd_mapa = AccessTools.Method(typeof(SpecialDamageReversePatch), nameof(SpecialDamage_ModifyAddPigmentAction));
-        private static readonly MethodInfo sd_aedmp = AccessTools.Method(typeof(SpecialDamageReversePatch), nameof(SpecialDamage_ApplyExtraDamageModifierPercentage));
-        private static readonly MethodInfo sd_mpc = AccessTools.Method(typeof(SpecialDamageReversePatch), nameof(SpecialDamage_ModifyPigmentColor));
-        private static readonly MethodInfo sd_dobdc = AccessTools.Method(typeof(SpecialDamageReversePatch), nameof(SpecialDamage_DisableOnBeingDamagedCall));
-        private static readonly MethodInfo sd_dodc = AccessTools.Method(typeof(SpecialDamageReversePatch), nameof(SpecialDamage_DisableOnDamageCall));
-        private static readonly MethodInfo sd_cm = AccessTools.Method(typeof(SpecialDamageReversePatch), nameof(SpecialDamage_CombatManager));
+        internal static bool ReversePatchesDone;
 
         private static void SpecialDamage_Transpiler(ILContext ctx, MethodBase mthd)
         {
+            const int SInfoArg = 9;
+
             if (ctx == null || mthd == null)
                 return;
 
             var crs = new ILCursor(ctx);
-            var processor = ctx.Body.GetILProcessor();
-
             var isCharacter = mthd.DeclaringType == typeof(CharacterCombat);
-            var sinfoArgNumber = 9;
 
+            #region DisableOnBeingDamagedCalls
             if (!crs.JumpBeforeNext(x => x.MatchCallOrCallvirt<CombatManager>($"get_{nameof(CombatManager.Instance)}")))
                 return;
 
-            if (!crs.TryFindNext(out var postNotif, x => x.MatchCallOrCallvirt<CombatManager>(nameof(CombatManager.PostNotification))) || postNotif == null || postNotif.Length <= 0)
+            if (!crs.TryFindNext(out var postNotif, x => x.MatchCallOrCallvirt<CombatManager>(nameof(CombatManager.PostNotification))))
                 return;
 
             var afterPostNotifInstr = postNotif[0].Next.Next;
 
-            crs.Emit(OpCodes.Ldarg, sinfoArgNumber);
-            crs.Emit(OpCodes.Call, sd_dobdc);
+            crs.Emit(OpCodes.Ldarg, SInfoArg);
+            crs.EmitStaticDelegate(SpecialDamage_DisableOnBeingDamagedCall);
             crs.Emit(OpCodes.Brtrue, afterPostNotifInstr);
+            #endregion
 
-            if (!crs.JumpBeforeNext(x => x.MatchStloc(3)))
+            #region FakeDamage
+            if (!crs.JumpToNext(x => x.OpCode == OpCodes.Brfalse || x.OpCode == OpCodes.Brfalse_S))
                 return;
 
-            crs.Emit(OpCodes.Ldarg, sinfoArgNumber);
-            crs.Emit(OpCodes.Ldarg_1);
-            crs.Emit(OpCodes.Call, sd_aedmp);
+            if (!crs.TryFindNext(out var setHealth, isCharacter
+                ? (Instruction x) => x.MatchCallOrCallvirt<CharacterCombat>($"set_{nameof(CharacterCombat.CurrentHealth)}")
+                : (Instruction x) => x.MatchCallOrCallvirt<EnemyCombat>($"set_{nameof(EnemyCombat.CurrentHealth)}")))
+                return;
 
-            var matchHealthColor = (Func<Instruction, bool>)(isCharacter
+            var afterSetHealth = setHealth[0].Next.Next;
+
+            crs.Emit(OpCodes.Ldarg, SInfoArg);
+            crs.EmitStaticDelegate(SpecialDamage_FakeDamage);
+            crs.Emit(OpCodes.Brtrue, afterSetHealth);
+            #endregion
+
+            #region ProduceSpecialPigment
+            if (!crs.JumpToNext(isCharacter
                 ? (Instruction x) => x.MatchCallOrCallvirt<CharacterCombat>($"get_{nameof(CharacterCombat.HealthColor)}")
-                : (Instruction x) => x.MatchCallOrCallvirt<EnemyCombat>($"get_{nameof(EnemyCombat.HealthColor)}"));
-
-            if (!crs.JumpToNext(matchHealthColor))
+                : (Instruction x) => x.MatchCallOrCallvirt<EnemyCombat>($"get_{nameof(EnemyCombat.HealthColor)}")))
                 return;
 
-            crs.Emit(OpCodes.Ldarg, sinfoArgNumber);
-            crs.Emit(OpCodes.Call, sd_mpc);
+            crs.Emit(OpCodes.Ldarg, SInfoArg);
+            crs.EmitStaticDelegate(SpecialDamage_ModifyPigmentColor);
+            #endregion
 
-            var matchPigmentFromDamage = (Func<Instruction, bool>)(isCharacter
+            #region ExtraPigment
+            if (!crs.JumpToNext(isCharacter
                 ? (Instruction x) => x.MatchCallOrCallvirt<CombatSettings_Data>($"get_{nameof(CombatSettings_Data.CharacterPigmentAmount)}")
-                : (Instruction x) => x.MatchCallOrCallvirt<CombatSettings_Data>($"get_{nameof(CombatSettings_Data.EnemyPigmentAmount)}"));
-
-            if (!crs.JumpToNext(matchPigmentFromDamage))
+                : (Instruction x) => x.MatchCallOrCallvirt<CombatSettings_Data>($"get_{nameof(CombatSettings_Data.EnemyPigmentAmount)}")))
                 return;
 
-            crs.Emit(OpCodes.Ldarg, sinfoArgNumber);
-            crs.Emit(OpCodes.Call, sd_mpa);
+            crs.Emit(OpCodes.Ldarg, SInfoArg);
+            crs.EmitStaticDelegate(SpecialDamage_ModifyPigmentAmount);
+            #endregion
 
+            #region ForcePigmentProduction
             if (!crs.JumpBeforeNext(x => x.MatchLdcI4(0)))
                 return;
 
-            crs.Emit(OpCodes.Ldarg, sinfoArgNumber);
-            crs.Emit(OpCodes.Call, sd_mapa);
+            crs.Emit(OpCodes.Ldarg, SInfoArg);
+            crs.EmitStaticDelegate(SpecialDamage_ModifyAddPigmentAction);
+            #endregion
 
+            #region DisableOnDamageCalls
             // Need to figure out why MoveType.AfterLabels doesn't work
             if (!crs.JumpToNext(x => x.MatchCallOrCallvirt<CombatManager>($"get_{nameof(CombatManager.Instance)}")))
                 return;
 
             var brCrs = new ILCursor(crs);
-
             if (!brCrs.JumpBeforeNext(x => x.OpCode == OpCodes.Br || x.OpCode == OpCodes.Br_S, 2))
                 return;
 
             var brInstr = brCrs.Next;
 
-            crs.Emit(OpCodes.Ldarg, sinfoArgNumber);
-            crs.Emit(OpCodes.Call, sd_dodc);
+            crs.Emit(OpCodes.Ldarg, SInfoArg);
+            crs.EmitStaticDelegate(SpecialDamage_DisableOnDamageCall);
             crs.Emit(OpCodes.Brtrue, brInstr);
-            crs.Emit(OpCodes.Call, sd_cm);
+            crs.EmitStaticDelegate(SpecialDamage_CombatManager);
+            #endregion
+        }
+
+        private static bool SpecialDamage_FakeDamage(SpecialDamageInfo info)
+        {
+            if(info == null)
+                return false;
+
+            return info.FakeDamage;
         }
 
         private static bool SpecialDamage_DisableOnDamageCall(CombatManager _, SpecialDamageInfo info)
@@ -122,20 +135,6 @@ namespace Pentacle.Internal
                 return current;
 
             return info.SpecialPigment;
-        }
-
-        private static int SpecialDamage_ApplyExtraDamageModifierPercentage(int modAmount, SpecialDamageInfo info, int baseAmount)
-        {
-            if (info == null)
-                return modAmount;
-
-            if (info.ExtraDamageModifierPercentage == 0)
-                return modAmount;
-
-            if (info.ExtraDamageModifierPercentage == -100)
-                return baseAmount;
-
-            return (int)Mathf.LerpUnclamped(baseAmount, modAmount, 1f + (info.ExtraDamageModifierPercentage / 100f));
         }
 
         private static IImmediateAction SpecialDamage_ModifyAddPigmentAction(AddManaToManaBarAction curr, SpecialDamageInfo info)
@@ -188,9 +187,9 @@ namespace Pentacle.Internal
 
         internal static void Patch()
         {
-            HarmonyInstance.PatchAll(typeof(SpecialDamageReversePatch));
+            HarmonyInstance.PatchAll(typeof(DamageReversePatches));
 
-            SpecialDamagePatchDone = true;
+            ReversePatchesDone = true;
         }
     }
 }

@@ -10,13 +10,6 @@ namespace Pentacle.Tools
     public class SpecialDamageInfo
     {
         /// <summary>
-        /// Modifies how much OnBeingDamaged damage modifiers affect the dealt damage. At 0 (the default value) damage modifiers affect the damage normally, at -100 damage modifiers don't affect the damage at all and at 100 damage modifiers are twice as effective (e.g Scars will increase damage by 2 per stack).
-        /// <para>More specifically, the final damage dealt is determined using this formula:</para>
-        /// <code>finalDamage = modifiedDamage + (modifiedDamage - unmodifiedDamage) * (ExtraDamageModifierPercentage / 100)</code>
-        /// </summary>
-        public int ExtraDamageModifierPercentage;
-
-        /// <summary>
         /// If true, the damage will not trigger the OnBeingDamaged trigger call.
         /// </summary>
         public bool DisableOnBeingDamagedCalls;
@@ -47,5 +40,10 @@ namespace Pentacle.Tools
         /// If true, <see cref="ExtraPigment"/> will determine the exact amount of pigment produced, instead of adding to that amount.
         /// </summary>
         public bool SetsPigment;
+
+        /// <summary>
+        /// If true, the damage will not change the target's health, but will still produce pigment and call all associated triggers.
+        /// </summary>
+        public bool FakeDamage;
     }
 }

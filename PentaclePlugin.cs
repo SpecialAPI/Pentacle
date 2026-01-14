@@ -46,7 +46,7 @@ namespace Pentacle
         {
             DelayedActions.ProcessPostAwakeActions();
 
-            SpecialDamageReversePatch.Patch();
+            DamageReversePatches.Patch();
         }
     }
 }
