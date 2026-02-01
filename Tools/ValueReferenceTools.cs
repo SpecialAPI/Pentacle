@@ -116,6 +116,7 @@ namespace Pentacle.Tools
                 DamageReceivedValueChangeException drex     => new DamageReceivedValueChangeExceptionHolder(drex),
                 HealingDealtValueChangeException hdex       => new HealingDealtValueChangeExceptionHolder(hdex),
                 HealingReceivedValueChangeException hrex    => new HealingReceivedValueChangeExceptionHolder(hrex),
+                IUnit u                                     => new SimpleUnitHolder(u),
 
                 _                                           => null
             };
