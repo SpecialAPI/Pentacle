@@ -26,6 +26,7 @@ namespace Pentacle.Triggers.Args.BasegameReferenceHolders
         }
 
         bool IValueChangeException.DamageDealt => true;
+        int IValueChangeException.OriginalValue => exception.amount;
 
         void IValueChangeException.AddModifier(IntValueModifier modifier)
         {

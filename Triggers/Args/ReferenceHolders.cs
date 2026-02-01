@@ -82,6 +82,10 @@ namespace Pentacle.Triggers.Args
         /// <para>This should be true for value change exceptions related to dealing damage, healing, etc. and false for other value change exceptions.</para>
         /// </summary>
         bool DamageDealt { get; }
+        /// <summary>
+        /// The unmodified value of this value change exception.
+        /// </summary>
+        int OriginalValue { get; }
 
         /// <summary>
         /// Adds an int value modifier to this value change exception.
