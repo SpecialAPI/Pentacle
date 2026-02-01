@@ -30,7 +30,10 @@ namespace Pentacle.Tools
             boolHolder = args switch
             {
                 IBoolHolder bh                              => bh,
+
                 BooleanReference br                         => new BooleanReferenceHolder(br),
+                IntegerReference_Damage ird                 => new IntegerReferenceDamageHolder(ird),
+                IntegerReference_Heal irh                   => new IntegerReferenceHealHolder(irh),
                 BooleanWithTriggerReference bwtr            => new BooleanWithTriggerReferenceHolder(bwtr),
                 StatusFieldApplication sfa                  => new StatusFieldApplicationHolder(sfa),
                 DamageReceivedValueChangeException drex     => new DamageReceivedValueChangeExceptionHolder(drex),
@@ -58,7 +61,11 @@ namespace Pentacle.Tools
             intHolder = args switch
             {
                 IIntHolder ih                               => ih,
+                
+                IntegerReference_Damage ird                 => new IntegerReferenceDamageHolder(ird),
+                IntegerReference_Heal irh                   => new IntegerReferenceHealHolder(irh),
                 IntegerReference ir                         => new IntegerReferenceHolder(ir),
+
                 StatusFieldApplication sfa                  => new StatusFieldApplicationHolder(sfa),
 
                 _                       => null
@@ -84,7 +91,10 @@ namespace Pentacle.Tools
             stringHolder = args switch
             {
                 IStringHolder sh                            => sh,
+
                 StringReference sr                          => new StringReferenceHolder(sr),
+                IntegerReference_Damage ird                 => new IntegerReferenceDamageHolder(ird),
+                IntegerReference_Heal irh                   => new IntegerReferenceHealHolder(irh),
                 StatusFieldApplication sfa                  => new StatusFieldApplicationHolder(sfa),
                 DamageReceivedValueChangeException drex     => new DamageReceivedValueChangeExceptionHolder(drex),
 
@@ -112,6 +122,9 @@ namespace Pentacle.Tools
             unitHolder = args switch
             {
                 IUnitHolder uh                              => uh,
+                
+                IntegerReference_Damage ird                 => new IntegerReferenceDamageHolder(ird),
+                IntegerReference_Heal irh                   => new IntegerReferenceHealHolder(irh),
                 DamageDealtValueChangeException ddex        => new DamageDealtValueChangeExceptionHolder(ddex),
                 DamageReceivedValueChangeException drex     => new DamageReceivedValueChangeExceptionHolder(drex),
                 HealingDealtValueChangeException hdex       => new HealingDealtValueChangeExceptionHolder(hdex),
@@ -140,6 +153,7 @@ namespace Pentacle.Tools
             exception = args switch
             {
                 IValueChangeException ex                    => ex,
+
                 IntValueChangeException iex                 => new IntValueChangeExceptionHolder(iex),
                 DamageDealtValueChangeException ddex        => new DamageDealtValueChangeExceptionHolder(ddex),
                 DamageReceivedValueChangeException drex     => new DamageReceivedValueChangeExceptionHolder(drex),
