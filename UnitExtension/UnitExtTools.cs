@@ -22,7 +22,7 @@ namespace Pentacle.UnitExtension
             dat.name = $"{MOD_PREFIX}_UnitExt_USD";
             dat._UnitStoreDataID = $"{MOD_PREFIX}_UnitExt";
 
-            MiscDB.AddNewUnitStoreData(dat.name, dat);
+            UnitStoreData.AddCustom_Any_UnitStoreDataToPool(dat, dat._UnitStoreDataID);
         }
 
 
