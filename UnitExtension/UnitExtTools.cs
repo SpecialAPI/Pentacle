@@ -19,8 +19,8 @@ namespace Pentacle.UnitExtension
 
             var dat = StoreData_UnitExt = CreateScriptable<UnitStoreData_BasicSO>();
 
-            dat.name = $"{MOD_PREFIX}_UnitExt_SV";
-            dat._UnitStoreDataID = $"{MOD_PREFIX}_UnitExt_SV";
+            dat.name = $"{MOD_PREFIX}_UnitExt_USD";
+            dat._UnitStoreDataID = $"{MOD_PREFIX}_UnitExt";
 
             MiscDB.AddNewUnitStoreData(dat.name, dat);
         }
