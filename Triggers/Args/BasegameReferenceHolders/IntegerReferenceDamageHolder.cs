@@ -4,7 +4,7 @@ using System.Text;
 
 namespace Pentacle.Triggers.Args.BasegameReferenceHolders
 {
-    public class IntegerReferenceDamageHolder(IntegerReference_Damage intRef) : IIntHolder, IBoolHolder, IUnitHolder, IStringHolder
+    internal class IntegerReferenceDamageHolder(IntegerReference_Damage intRef) : IIntHolder, IBoolHolder, IUnitHolder, IStringHolder
     {
         public IntegerReference_Damage intRef = intRef;
 
