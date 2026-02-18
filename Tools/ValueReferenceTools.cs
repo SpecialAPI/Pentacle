@@ -120,6 +120,7 @@ namespace Pentacle.Tools
         /// <item>If <paramref name="args"/> is a DamageReceivedValueChangeException, outputs an IUnitHolder whose 2 read-only values get the DamageReceivedValueChangeException's possibleSourceUnit and damagedUnit respectively.</item>
         /// <item>If <paramref name="args"/> is a HealingDealtValueChangeException, outputs an IUnitHolder whose 2 read-only values get the HealingDealtValueChangeException's healingUnit and casterUnit respectively.</item>
         /// <item>If <paramref name="args"/> is a HealingReceivedValueChangeException, outputs an IUnitHolder whose 2 read-only values get the HealingReceivedValueChangeException's possibleSourceUnit and healingUnit respectively.</item>
+        /// <item>If <paramref name="args"/> is a AbilityUsageReference, outputs an IUnitHolder whose read-only value gets the AbilityUsageReference's referenced unit using its m_UnitID and m_IsUnitCharacter parameters.</item>
         /// <item>If <paramref name="args"/> is a IUnit, outputs an IUnitHolder whose read-only value gets that IUnit.</item>
         /// </list>
         /// </summary>
@@ -138,6 +139,7 @@ namespace Pentacle.Tools
                 DamageReceivedValueChangeException drex     => new DamageReceivedValueChangeExceptionHolder(drex),
                 HealingDealtValueChangeException hdex       => new HealingDealtValueChangeExceptionHolder(hdex),
                 HealingReceivedValueChangeException hrex    => new HealingReceivedValueChangeExceptionHolder(hrex),
+                AbilityUsageReference aur                   => new AbilityUsageReferenceHolder(aur),
                 IUnit u                                     => new SimpleUnitHolder(u),
 
                 _                                           => null
