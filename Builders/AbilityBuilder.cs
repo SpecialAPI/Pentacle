@@ -90,7 +90,6 @@ namespace Pentacle.Builders
             ab.intents = [];
 
             ab.priority = Priority.Normal;
-            ab.abilitySprite = EnemyDB.DefaultAbilitySprite;
 
             return ab;
         }
@@ -219,6 +218,81 @@ namespace Pentacle.Builders
             ab._abilityName = name;
             ab._description = description;
             ab.abilitySprite = sprite;
+
+            return ab;
+        }
+
+        /// <summary>
+        /// Sets the name and description for the ability to the given values, sets its sprite to the default enemy ability sprite and adds it to the enemy ability database.
+        /// </summary>
+        /// <typeparam name="T">The ability's custom type. Must either be AbilitySO or a subclass of AbilitySO.</typeparam>
+        /// <param name="ab">The object instance of the ability.</param>
+        /// <param name="name">The in-game name of the ability.</param>
+        /// <param name="description">The in-game description of the ability.</param>
+        /// <param name="addToDatabase">If true, the ability will be added to the enemy ability database.</param>
+        /// <param name="addToPool">If both this and <paramref name="addToDatabase"/> are true, the ability will be added to the pool of enemy abilities that in-game systems can access.</param>
+        /// <returns>The instance of the ability, for method chaining.</returns>
+        public static T SetBasicInformationEnemy<T>(this T ab, string name, string description, bool addToDatabase = true, bool addToPool = true) where T : AbilitySO
+        {
+            ab._abilityName = name;
+            ab._description = description;
+            ab.abilitySprite = EnemyDB.DefaultAbilitySprite;
+
+            if (addToDatabase)
+                ab.AddToEnemyDatabase(addToPool);
+
+            return ab;
+        }
+
+        /// <summary>
+        /// General method for setting the name, description and sprite for the ability and adds it to the character ability database.
+        /// </summary>
+        /// <typeparam name="T">The ability's custom type. Must either be AbilitySO or a subclass of AbilitySO.</typeparam>
+        /// <param name="ab">The object instance of the ability.</param>
+        /// <param name="name">The in-game name of the ability.</param>
+        /// <param name="description">The in-game description of the ability.</param>
+        /// <param name="spriteName">The name of the image file in the project files.<para />.png extension is optional.</param>
+        /// <param name="addToDatabase">If true, the ability will be added to the character ability database.</param>
+        /// <param name="addToPool">If both this and <paramref name="addToDatabase"/> are true, the ability will be added to the pool of character abilities that in-game systems can access.</param>
+        /// <param name="profile">Your mod profile.</param>
+        /// <returns>The instance of the ability, for method chaining.</returns>
+        public static T SetBasicInformationCharacter<T>(this T ab, string name, string description, string spriteName = null, bool addToDatabase = true, bool addToPool = true, ModProfile profile = null) where T : AbilitySO
+        {
+            ab._abilityName = name;
+            ab._description = description;
+
+            if (spriteName != null)
+            {
+                profile ??= ProfileManager.GetProfile(Assembly.GetCallingAssembly());
+                if (ProfileManager.EnsureProfileExists(profile))
+                    ab.abilitySprite = profile.LoadSprite(spriteName);
+            }
+
+            if(addToDatabase)
+                ab.AddToCharacterDatabase(addToPool);
+
+            return ab;
+        }
+
+        /// <summary>
+        /// General method for setting the name, description and sprite for the ability and adds it to the character ability database.
+        /// </summary>
+        /// <typeparam name="T">The ability's custom type. Must either be AbilitySO or a subclass of AbilitySO.</typeparam>
+        /// <param name="ab">The object instance of the ability.</param>
+        /// <param name="name">The in-game name of the ability.</param>
+        /// <param name="description">The in-game description of the ability.</param>
+        /// <param name="sprite">The ability sprite as a Sprite object.</param>
+        /// <param name="addToDatabase">If true, the ability will be added to the character ability database.</param>
+        /// <param name="addToPool">If both this and <paramref name="addToDatabase"/> are true, the ability will be added to the pool of character abilities that in-game systems can access.</param>
+        /// <returns>The instance of the ability, for method chaining.</returns>
+        public static T SetBasicInformationCharacter<T>(this T ab, string name, string description, Sprite sprite, bool addToDatabase = true, bool addToPool = true) where T : AbilitySO
+        {
+            ab._abilityName = name;
+            ab._description = description;
+            ab.abilitySprite = sprite;
+
+            if (addToDatabase)
+                ab.AddToCharacterDatabase(addToPool);
 
             return ab;
         }
