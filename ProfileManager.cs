@@ -15,7 +15,7 @@ namespace Pentacle
         /// Creates a new mod profile and connects it to an assembly.
         /// </summary>
         /// <param name="guid">The GUID of the mod registering the profile.</param>
-        /// <param name="prefix">The mod prefix that will be used by the profile.</param>
+        /// <param name="prefix">The mod prefix that will be used by the profile. If this parameter is null or empty, the profile will not use prefixes.</param>
         /// <param name="assembly">The assembly that will be used by the profile, and also the assembly that the profile will be connected to. Defaults to the calling assembly if null.</param>
         /// <returns>The created mod profile.</returns>
         public static ModProfile RegisterMod(string guid, string prefix, Assembly assembly = null)
@@ -101,12 +101,21 @@ namespace Pentacle
         }
 
         /// <summary>
-        /// Converts a basic ID to a modded ID by adding this profile's prefix to it. The format for modded IDs is ProfilePrefix_BasicID.
+        /// Converts a basic ID to a modded ID by adding this profile's prefix to it. The format for modded IDs is ProfilePrefix_BasicID. If this profile's prefix is null or empty, the original ID will be returned instead.
         /// </summary>
         /// <param name="original">The basic ID to convert.</param>
         /// <returns>The modded ID for the input basic ID.</returns>
         public string GetID(string original)
         {
+            if (original == null)
+            {
+                PentacleLogger.LogError($"{Guid}: Null original ID for GetID.\n{Environment.StackTrace}");
+                return string.Empty;
+            }
+
+            if(string.IsNullOrEmpty(Prefix))
+                return original;
+
             return $"{Prefix}_{original}";
         }
 
