@@ -37,10 +37,26 @@ namespace Pentacle.Builders
         public static Color StoredValueColor_Rare = new(0.7725f, 0.2667f, 0.8196f);
 
         /// <summary>
+        /// Creates a new stored value info of the given custom class. Uses <paramref name="storedValueId"/> + _USD for the object ID.
+        /// </summary>
+        /// <typeparam name="T">The custom type for the created stored value info. Must either be UnitStoreData_BasicSO or a subclass of UnitStoreData_BasicSO.</typeparam>
+        /// <param name="storedValueId">The database id of the stored value info.</param>
+        /// <param name="profile">Your mod profile.</param>
+        /// <returns>An object instance of the created stored value info</returns>
+        public static T NewStoredValue<T>(string storedValueId, ModProfile profile = null) where T : UnitStoreData_BasicSO
+        {
+            profile ??= ProfileManager.GetProfile(Assembly.GetCallingAssembly());
+            if (!ProfileManager.EnsureProfileExists(profile))
+                return null;
+
+            return NewStoredValue<T>($"{storedValueId}_USD", storedValueId, profile);
+        }
+
+        /// <summary>
         /// Creates a new stored value info of the given custom class.
         /// </summary>
         /// <typeparam name="T">The custom type for the created stored value info. Must either be UnitStoreData_BasicSO or a subclass of UnitStoreData_BasicSO.</typeparam>
-        /// <param name="id_USD">The string id of the stored value info. Naming convention: StoredValueName_USD</param>
+        /// <param name="id_USD">The object id of the stored value info. Naming convention: StoredValueName_USD</param>
         /// <param name="storedValueId">The database id of the stored value info.</param>
         /// <param name="profile">Your mod profile.</param>
         /// <returns>An object instance of the created stored value info</returns>
